@@ -1,6 +1,10 @@
 ## SpringBoot Version (3.1.5)
 - Version : 3.1.5
 - Project : Gradle-Groovy
+    - 선정 이유
+        - Gradle 빌드시간 10 ~ 100배 이상 빠름
+        - 업데이트 반영 내용을 알 수 있어 빌드에 점진적으로 추가 가능
+        - pom.xml에 비해 build.gradle 가독성 높음
 - Java Version : 17
 - 선정 이유 : 
     - JAVA 17 버전 필수로 앞으로 자바 8 -> 17로 넘어가는 만큼 경험해보기 위해
