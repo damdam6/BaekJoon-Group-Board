@@ -2,7 +2,7 @@ CREATE TABLE `users` (
   `user_id` integer PRIMARY KEY AUTO_INCREMENT,
   `user_name` varchar(255) NOT NULL,
   `tier` integer NOT NULL,
-  `rank` integer NOT NULL,
+  `solved_rank` integer NOT NULL,
   `img_url` varchar(255) NOT NULL
 );
 
@@ -40,6 +40,7 @@ CREATE TABLE `group` (
 
 CREATE TABLE `recom_problem` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
+  `user_id` integer NOT NULL,
   `group_id` integer NOT NULL,
   `problem_num` integer NOT NULL,
   `title` varchar(255) NOT NULL,
