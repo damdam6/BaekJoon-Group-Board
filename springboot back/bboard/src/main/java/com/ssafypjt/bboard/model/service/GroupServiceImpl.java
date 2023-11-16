@@ -41,30 +41,25 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public int makeGroup(Group group) {
-        if (groupRepository.selectGroup(group.getId()) == null)
-            return groupRepository.insertGroup(group);
-        return -1;
+        return groupRepository.insertGroup(group);
     }
 
     @Override
     public int removeGroup(int groupId) {
-        if (groupRepository.selectGroup(groupId) != null)
-            return groupRepository.deleteGroup(groupId);
-        return -1;
+        userGroupRepository.removeAllUserGroup(groupId);
+        return groupRepository.deleteGroup(groupId);
     }
 
     @Override
-    public int addUser(int groupId, int userId) {
-        if (userGroupRepository.selectUserId(userId) == null)
-            return userGroupRepository.insertUserGroup(userId, groupId);
-        return 0;
+    public int addUser(Group group, int userId) { // 유저 등록 & 유저-그룹 관계 등록
+        int groupId = group.getId();
+        if (groupId == 0) groupId = groupRepository.selectGroupByName(group.getGroupName());
+        return userGroupRepository.insertUserGroup(userId, groupId);
     }
 
     @Override
     public int removeUser(int groupId, int userId) {
-        if (userGroupRepository.selectUserId(userId) != null)
-            return userGroupRepository.removeUserGroup(userId, groupId);
-        return 0;
+        return userGroupRepository.removeUserGroup(userId, groupId);
     }
 
     @Override

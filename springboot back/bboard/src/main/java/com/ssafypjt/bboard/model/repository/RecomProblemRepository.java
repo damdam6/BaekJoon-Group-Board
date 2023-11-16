@@ -3,9 +3,10 @@ package com.ssafypjt.bboard.model.repository;
 import com.ssafypjt.bboard.model.dto.RecomProblem;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-
+@Mapper
 public interface RecomProblemRepository {
 
     // 한 유저가 한개의 추천 문제만 줄 수 있게!

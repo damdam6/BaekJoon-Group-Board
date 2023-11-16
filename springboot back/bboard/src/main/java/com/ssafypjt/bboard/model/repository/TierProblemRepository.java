@@ -3,10 +3,12 @@ package com.ssafypjt.bboard.model.repository;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+@Mapper
 public interface TierProblemRepository {
     @Insert("INSERT INTO tier_problem WHERE user_id = #{userId}")
     public int insertUserTier(int userId);

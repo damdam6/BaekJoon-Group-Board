@@ -2,8 +2,10 @@ package com.ssafypjt.bboard.model.repository;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface ProblemAlgorithmRepository {
 
     @Delete("DELETE FROM problem_algorithm")

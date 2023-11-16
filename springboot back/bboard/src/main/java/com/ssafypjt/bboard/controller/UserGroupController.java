@@ -45,6 +45,7 @@ public class UserGroupController {
     @PostMapping("/user")
     public ResponseEntity<?> addUser(@RequestBody User user){
         int result = userService.addUser(user);
+        // 유저가 실제 solved.ac 에 존재하는지 확인하는 로직 구현 필요
 
         switch (result){
             case 0 :
@@ -65,17 +66,14 @@ public class UserGroupController {
     }
 
     @PostMapping("/group") // 그룹 등록
-    public ResponseEntity<?> addGroup(@RequestBody Group group){
-        int result = groupService.makeGroup(group);
+    public ResponseEntity<?> addGroup(@RequestBody Map<String, Object> requestMap){
+        Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
+        User user = objectMapper.convertValue(requestMap.get("user"), User.class);
 
-        switch (result){
-            case 0 :
-                return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-            case -1 :
-                return new ResponseEntity<Void>(HttpStatus.IM_USED);
-            default:
-                return new ResponseEntity<Group>(group, HttpStatus.OK);
-        }
+        int result = groupService.makeGroup(group);
+        if (result == 0) return new ResponseEntity<Void>(HttpStatus.IM_USED);
+        groupService.addUser(group, user.getUserId());
+        return new ResponseEntity<Group>(group, HttpStatus.OK);
     }
 
     @PostMapping("/group/leave") // 그룹 탈퇴
@@ -111,10 +109,9 @@ public class UserGroupController {
 
     @PostMapping("/group/add-user")
     public ResponseEntity<?> addUser(@RequestBody Map<String, Object> requestMap){
-
         Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
         User user = objectMapper.convertValue(requestMap.get("user"), User.class);
-        int result = groupService.addUser(group.getId(), user.getUserId());
+        int result = groupService.addUser(group, user.getUserId());
 
         switch (result){
             case 0 :

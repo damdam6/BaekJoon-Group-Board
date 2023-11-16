@@ -18,7 +18,7 @@ public interface GroupService {
     public int removeGroup(int groupId);
 
     // 관리자가 유저 등록시키기, adminValid 필요
-    public int addUser(int groupId, int userId);
+    public int addUser(Group group, int userId);
 
     // 관리자가 유저 탈퇴시키기, adminValid 필요
     public int removeUser(int groupId, int userId);

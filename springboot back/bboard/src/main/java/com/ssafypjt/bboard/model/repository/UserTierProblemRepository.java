@@ -3,10 +3,12 @@ package com.ssafypjt.bboard.model.repository;
 import com.ssafypjt.bboard.model.dto.UserTierProblem;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+@Mapper
 public interface UserTierProblemRepository {
 
     // user_tier_problem에서 갱신을 어떻게 할 거지, 다 지우고 새로 받아올껀가 아니면 변경된 애들만?
