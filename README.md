@@ -1,1 +1,1 @@
-# BaekJoon-Group-Board-SSAFYPJT
+# BaekJoon-Group-Board
