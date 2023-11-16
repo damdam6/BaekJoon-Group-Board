@@ -1,6 +1,7 @@
 package com.ssafypjt.bboard.model.service;
 
 import com.ssafypjt.bboard.model.dto.Group;
+import com.ssafypjt.bboard.model.dto.User;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface GroupService {
 
     // 그룹 삭제, adminValid 필요
     public int removeGroup(int groupId);
+
+    public List<User> getUsers(int groupId);
 
     // 관리자가 유저 등록시키기, adminValid 필요
     public int addUser(Group group, int userId);

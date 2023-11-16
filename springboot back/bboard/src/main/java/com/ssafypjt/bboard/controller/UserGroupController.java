@@ -87,25 +87,26 @@ public class UserGroupController {
 
     // 관리자 페이지 기능
     @PostMapping("/group/admin") // 관리자 권한 확인 (비밀번호로 확인)
-    public ResponseEntity<Integer> adminLogin(@RequestBody Group group){
+    public ResponseEntity<Boolean> adminLogin(@RequestBody Group group){
         if (groupService.adminValid(group.getId(), group.getPassword())){
-            return new ResponseEntity<Integer>(1, HttpStatus.OK);
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
         }
-        return new ResponseEntity<Integer>(0, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<Boolean>(false, HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping("/group/{groupId}") // 그룹 삭제
     public ResponseEntity<?> deleteGroup(@PathVariable int groupId){
         int result = groupService.removeGroup(groupId);
-        switch (result){
-            case 0 :
-                return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-            case -1 :
-                return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-            default:
-                return new ResponseEntity<Integer>(groupId, HttpStatus.OK);
-        }
+        if (result == 0) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Integer>(groupId, HttpStatus.OK);
     }
+
+    @GetMapping("/group/get-user/{groupId}")
+    public ResponseEntity<?> getUsers(@PathVariable int groupId){
+        List<User> list = groupService.getUsers(groupId);
+        return new ResponseEntity<List<User>>(list, HttpStatus.OK);
+    }
+
 
     @PostMapping("/group/add-user")
     public ResponseEntity<?> addUser(@RequestBody Map<String, Object> requestMap){
@@ -113,14 +114,8 @@ public class UserGroupController {
         User user = objectMapper.convertValue(requestMap.get("user"), User.class);
         int result = groupService.addUser(group, user.getUserId());
 
-        switch (result){
-            case 0 :
-                return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-            case -1 :
-                return new ResponseEntity<Void>(HttpStatus.IM_USED);
-            default:
-                return new ResponseEntity<User>(user, HttpStatus.OK);
-        }
+        if (result == 0) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @PostMapping("/group/remove-user")
@@ -129,14 +124,8 @@ public class UserGroupController {
         User user = objectMapper.convertValue(requestMap.get("userId"), User.class);
         int result = groupService.removeUser(group.getId(), user.getUserId());
 
-        switch (result){
-            case 0 :
-                return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-            case -1 :
-                return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-            default:
-                return new ResponseEntity<User>(user, HttpStatus.OK);
-        }
+        if (result == 0) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
 }

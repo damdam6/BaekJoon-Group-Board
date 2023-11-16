@@ -1,6 +1,7 @@
 package com.ssafypjt.bboard.model.service;
 
 import com.ssafypjt.bboard.model.dto.Group;
+import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.repository.GroupRepository;
 import com.ssafypjt.bboard.model.repository.UserGroupRepository;
 import com.ssafypjt.bboard.model.repository.UserRepository;
@@ -48,6 +49,14 @@ public class GroupServiceImpl implements GroupService{
     public int removeGroup(int groupId) {
         userGroupRepository.removeAllUserGroup(groupId);
         return groupRepository.deleteGroup(groupId);
+    }
+
+    public List<User> getUsers(int groupId){
+        List<User> userList = new ArrayList<>();
+        for(int userId : userGroupRepository.selectUserId(groupId)){
+            userList.add(userRepository.selectUser(userId));
+        }
+        return userList;
     }
 
     @Override
