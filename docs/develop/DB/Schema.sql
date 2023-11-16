@@ -10,7 +10,7 @@ CREATE TABLE `tier_problem` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `user_id` integer NOT NULL,
   `tier` integer NOT NULL,
-  `count` integer NOT NULL
+  `problem_count` integer NOT NULL
 );
 
 CREATE TABLE `user_group` (

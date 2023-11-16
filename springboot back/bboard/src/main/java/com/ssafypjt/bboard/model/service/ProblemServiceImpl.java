@@ -12,6 +12,7 @@ import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.RecomProblem;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.repository.GroupRepository;
+import com.ssafypjt.bboard.model.repository.ProblemAlgorithmRepository;
 import com.ssafypjt.bboard.model.repository.ProblemRepository;
 import com.ssafypjt.bboard.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +30,17 @@ public class ProblemServiceImpl implements ProblemService {
     private ProblemRepository problemRepository;
     private UserRepository userRepository;
     private GroupRepository groupRepository;
+    private ProblemAlgorithmRepository problemAlgorithmRepository;
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper = new ObjectMapper(); // API 가져올 때 필요한 object Mapper 공통으로 사용
 
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, GroupRepository groupRepository, RestTemplate restTemplate) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, GroupRepository groupRepository, RestTemplate restTemplate) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
+        this.problemAlgorithmRepository = problemAlgorithmRepository;
         this.restTemplate = restTemplate;
     }
 
@@ -70,8 +73,8 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public int resetProblems() {
         // 기존 테이블 삭제
-        problemRepository.deleteAllProblems();
-        problemRepository.deleteAllAlgorithms();
+        problemRepository.deleteAll();
+        problemAlgorithmRepository.deleteAll();
 
         // 전체 유저 목록
         List<User> userList = userRepository.selectAllUser();
@@ -103,7 +106,7 @@ public class ProblemServiceImpl implements ProblemService {
                     algorithm.append(aNode.get("key").asText()).append(" ");
                 }
                 // 여기까지
-                problemRepository.insertAlgorithm(problem.getProblemNum(), algorithm.toString()); // 알고리즘 테이블 삽입
+                problemAlgorithmRepository.insertAlgorithm(problem.getProblemNum(), algorithm.toString()); // 알고리즘 테이블 삽입
                 problem.setUserId(user.getUserId());
                 count += problemRepository.insertProblem(problem);
 

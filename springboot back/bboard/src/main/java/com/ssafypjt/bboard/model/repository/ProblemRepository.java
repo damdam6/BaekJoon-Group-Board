@@ -25,15 +25,9 @@ public interface ProblemRepository {
     public String selectAlgorithm(int problemNum);
 
     @Delete("DELETE from problem")
-    public int deleteAllProblems();
+    public int deleteAll();
 
     @Insert("INSERT INTO problem (id, user_id, problem_num, tier, title) VALUES (#{id}, #{userId}, #{problemNum}, #{tier}, #{title})")
     public int insertProblem(Problem problem);
-
-    @Delete("DELETE FROM problem_algorithm")
-    public int deleteAllAlgorithms();
-
-    @Insert("INSERT IGNORE INTO problem_algorithm (problem_num, algorithm) VALUES (#{problemNum}, #{algorithm})")
-    public int insertAlgorithm(@Param("problemNum") int problemNum, @Param("algorithm") String algorithm);
 
 }
