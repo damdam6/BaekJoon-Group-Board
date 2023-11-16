@@ -1,17 +1,14 @@
-package com.ssafy.board.config;
+package com.ssafypjt.bboard.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		// static에 자료가 없다면 해당 코드를 추가하지 않아도 된다
 		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
 
 		registry.addResourceHandler("/swagger-ui/**")
@@ -19,17 +16,19 @@ public class WebConfig implements WebMvcConfigurer {
 
 	}
 
-	// 등록할 인터셉터가 있다면...
-	// 필드를 통해 의존성을 주입 받고
+
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		// 등록하면된다...
+		//  인터셉터를 사용..해야할까?
+		// 내가 원하는 customInterceptor를 만들어서 등록하면 됨
+//		registry.addInterceptor(customInterceptor).addPathPatterns("/**");
 	}
-	
-	//CORS 에러를 해결하기 위해서 컨트롤러에 각각 작성을 할수도 있지만 공통처리(전역처리)라면 요기다 한방에 가넝
+
+	// 잘 안되면 *로 해버리자
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("*");
+		registry.addMapping("/**").allowedOrigins("https://solved.ac/api/v3");
 	
 	}
 	
