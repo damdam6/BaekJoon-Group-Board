@@ -9,16 +9,16 @@ import java.util.List;
 @Mapper
 public interface ProblemRepository {
 
-    @Select("SELECT * FROM problem") // * 수정
+    @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM problem") // * 수정
     public List<Problem> selectAllProblems();
 
-    @Select("SELECT * FROM problem WHERE id = #{id}") // * 수정
+    @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM problem WHERE id = #{id}") // * 수정
     public Problem selectProblem(int id);
 
-    @Select("SELECT * FROM tier_problem") // * 수정
+    @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM tier_problem") // * 수정
     public List<Problem> selectAllTierProblems(int tier, int groupId);
 
-    @Select("SELECT * FROM recom_problem") // * 수정
+    @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM recom_problem") // * 수정
     public List<RecomProblem> selectRecomProblems(int groupId);
 
     @Select("SELECT algorithm from problem_algorithm WHERE problem_num = #{problemNum}")

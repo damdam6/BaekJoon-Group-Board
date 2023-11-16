@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface GroupRepository {
-    @Select("SELECT * FROM group WHERE id = #{id}")
+    @Select("SELECT id, group_name as groupName, password FROM group WHERE id = #{id}")
     public Group selectGroup(int id);
 
     @Insert("INSERT INTO group (group_name, password) VALUES (#{groupName}, #{password})")
@@ -23,8 +23,8 @@ public interface GroupRepository {
     @Delete("DELETE FROM user_group WHERE user_id = #{userId}, group_id = #{id}") // 그룹-유저 관계 삭제
     public int removeUser(int id, int userId);
 
-    @Select("SELECT * FROM group WHERE id = #{id}, password = #{password}") // 비번 권한 확인용
-    public Group selectGroup(int id, String password);
+    @Select("SELECT id, group_name as groupName, password FROM group WHERE id = #{id}, password = #{password}") // 비번 권한 확인용
+    public Group selectGroupByPassword(int id, String password);
 
 //    public int updateGroupName(int id, String newName);
 
