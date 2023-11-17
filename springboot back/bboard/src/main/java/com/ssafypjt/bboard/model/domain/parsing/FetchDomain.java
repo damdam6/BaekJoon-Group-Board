@@ -1,4 +1,4 @@
-package com.ssafypjt.bboard.model.domain;
+package com.ssafypjt.bboard.model.domain.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;

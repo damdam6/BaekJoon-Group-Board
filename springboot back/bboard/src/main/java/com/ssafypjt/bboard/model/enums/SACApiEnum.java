@@ -1,15 +1,15 @@
 package com.ssafypjt.bboard.model.enums;
 
-import com.ssafypjt.bboard.model.domain.ProblemAndAlgoObjectDomain;
+import com.ssafypjt.bboard.model.domain.parsing.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 
 public enum SACApiEnum{
-    USER("user", "https://solved.ac/api/v3/user/show?", new String[] {"handle="}, User.class),
-    TIER("tier", "https://solved.ac/api/v3/user/problem_stats?", new String[] {"handle="},UserTier.class),
-    USERTIERPROBLEM("tierProblem", "https://solved.ac/api/v3/search/problem?", new String[] {"query=","&sort=level&direction=desc&page="}, Problem.class),
-    PROBLEMANDALGO("problemAndAlgo", "https://solved.ac/api/v3/user/top_100?", new String[] {"handle="} ,ProblemAndAlgoObjectDomain.class);
+    USER("user", "/api/v3/user/show", new String[] {"handle="}, User.class),
+    TIER("tier", "/api/v3/user/problem_stats", new String[] {"handle="},UserTier.class),
+    USERTIERPROBLEM("tierProblem", "/api/v3/search/problem", new String[] {"query=","&sort=level&direction=desc&page="}, Problem.class),
+    PROBLEMANDALGO("problemAndAlgo", "/api/v3/user/top_100", new String[] {"handle="} ,ProblemAndAlgoObjectDomain.class);
 
     private final String name;
     private final String path;

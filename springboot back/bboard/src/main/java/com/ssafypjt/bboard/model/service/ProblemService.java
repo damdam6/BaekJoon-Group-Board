@@ -1,11 +1,9 @@
 package com.ssafypjt.bboard.model.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ssafypjt.bboard.model.domain.ProblemAndAlgoObjectDomain;
+import com.ssafypjt.bboard.model.domain.parsing.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.*;
 
 import java.util.List;
-import java.util.PriorityQueue;
 
 public interface ProblemService {
 
@@ -43,10 +41,5 @@ public interface ProblemService {
 
     // 한 문제에 연관된 알고리즘을 가져오기, String Parsing 필요
     public List<String> getProblemAlgorithm(int problemNum);
-
-    // 15분마다 문제 갱신 (여기에 해야하나?)
-    public void resetProblems(List<ProblemAndAlgoObjectDomain> list);
-
-
 
 }

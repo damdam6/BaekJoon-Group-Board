@@ -1,4 +1,4 @@
-package com.ssafypjt.bboard.model.domain;
+package com.ssafypjt.bboard.model.domain.parsing;
 
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;

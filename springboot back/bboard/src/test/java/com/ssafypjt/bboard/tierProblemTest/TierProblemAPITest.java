@@ -1,7 +1,6 @@
 package com.ssafypjt.bboard.tierProblemTest;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.ssafypjt.bboard.model.domain.ProblemAndAlgoObjectDomain;
+import com.ssafypjt.bboard.model.domain.parsing.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.repository.UserTierProblemRepository;
