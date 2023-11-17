@@ -1,7 +1,13 @@
 package com.ssafypjt.bboard.model.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafypjt.bboard.model.dto.Problem;
+import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
+import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.util.UtilConfig;
+import io.swagger.v3.core.util.Json;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,16 +17,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.ssafypjt.bboard.model.domain.ProblemAndAlgoObjectDomain;
+import reactor.util.function.Tuples;
 
 @Component
 public class ProblemDomain {
     private final WebClient webClient;
     private List<ProblemAndAlgoObjectDomain> tmpProblemAndAlgoList =  new ArrayList<>();
-    public ProblemDomain(WebClient webClient) {
+    private ProblemDomain(WebClient webClient) {
         this.webClient = webClient;
     }
+    private ObjectMapper mapper = new ObjectMapper();
 
-    public Flux<JsonNode> fetchProblemData(String userName, String pageNum) {
+    public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
+
+
+    //userName & pageNum 으로 Api불러옴
+    public Flux<JsonNode> fetchProblemPageData(String userName, String pageNum) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/v3/search/problem")
@@ -31,15 +43,30 @@ public class ProblemDomain {
                         .build()).retrieve()
                 .bodyToFlux(JsonNode.class);
     }
-    public void processUserList(List<String> userIds, List<String> parametersList) {
-        Flux.fromIterable(userIds)
-                .flatMap(userId ->
-                        Flux.fromIterable(parametersList)
-                                .flatMap(parameter -> fetchProblemData(userId, parameter))
-                )
-                .subscribe(
-                        data -> {
 
+    public Flux<JsonNode> fetchOneQueryData(String pathQuery, String query) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(pathQuery)
+                        .query(query)
+                        .build()).retrieve()
+                .bodyToFlux(JsonNode.class);
+    }
+    public String makeUser100query(User user){
+
+        return "handle="+user.getUserName();
+    }
+
+    public void processUserList(List<User> users) {
+        proAndAlgoList.clear();
+        Flux.fromIterable(users)
+                .flatMap(user -> fetchOneQueryData("/api/v3/user/top_100",makeUser100query(user))
+                                        .map(data -> Tuples.of(data, user))) // User 객체와 함께 튜플 생성
+                .subscribe(
+                        tuple -> {
+                            JsonNode data = tuple.getT1(); // 튜플에서 데이터 추출
+                            User user = tuple.getT2(); // 튜플에서 User 객체 추출
+                            this.makeProblemAndAlgoDomainObject(data, user);
                         },
                         error -> {
                             error.printStackTrace();
@@ -51,32 +78,53 @@ public class ProblemDomain {
                 );
     };
 
+    public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user) {
 
-    public void makeProblemAlgoObject(JsonNode aNode) {
-            JsonNode itemsNode = aNode.path("items");
-            if (itemsNode.isArray()) {
-                for (JsonNode item : itemsNode) {
 
-                    JsonNode tagsNode = item.path("tags");
-                    if (tagsNode.isArray()) {
-                        for (JsonNode tag : tagsNode) {
-                            String key = tag.path("key").asText();
-                            System.out.println(key);
-                        }
-                    }
-                }
-            }
+        JsonNode arrayNode = aNode.path("items");
+        if(!arrayNode.isArray()){
+            return;
+        }
+        for(JsonNode nodeItem: arrayNode) {
+                Problem problem = makeProblemObject(nodeItem, user);
+                ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
+                ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
+                proAndAlgoList.add(problemAndAlgoObjectDomain);
+            System.out.println(problemAndAlgoObjectDomain);
         }
     }
 
 
-    @Scheduled(fixedRate = 5000)
-    public void schedulTask() {
-        System.out.println("test");
-        List<String> list = Arrays.asList("end24", "29tigerhg", "98cline", "ygj9605");
-        List<String> pageN = Arrays.asList("1", "2");
-        this.processUserList(list, pageN);
+    public Problem makeProblemObject(JsonNode nodeItem, User user) {
+        Problem problem = null;
+        try {
+            problem = mapper.treeToValue(nodeItem, Problem.class);
+            problem.setUserId(user.getUserId());
+        } catch (Exception e ) {
+            e.printStackTrace();
+        }
+        return problem;
     }
+
+    public ProblemAlgorithm makeProblemAlgorithmObject(JsonNode nodeItem){
+        StringBuilder algorithms = new StringBuilder();
+        JsonNode tagsNode = nodeItem.path("tags");
+        for (JsonNode tag : tagsNode) {
+            if (algorithms.length() > 0) {
+                algorithms.append(" ");
+            }
+            algorithms.append(tag.path("key").asText());
+        }
+
+        ProblemAlgorithm problemAlgorithm = new ProblemAlgorithm();
+        problemAlgorithm.setProblemNum(nodeItem.path("problemId").asInt());
+        problemAlgorithm.setAlgorithm(algorithms.toString());
+
+        return problemAlgorithm;
+    }
+
+
+
 
 }
 
