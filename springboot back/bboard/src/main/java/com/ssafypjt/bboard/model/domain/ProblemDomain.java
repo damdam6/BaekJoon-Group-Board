@@ -15,95 +15,68 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
 import com.ssafypjt.bboard.model.domain.ProblemAndAlgoObjectDomain;
 import reactor.util.function.Tuples;
 
 @Component
 public class ProblemDomain {
-    private final WebClient webClient;
+
+    @Autowired
     private ObjectMapper mapper;
-    private List<ProblemAndAlgoObjectDomain> tmpProblemAndAlgoList =  new ArrayList<>();
-
-
-    @Autowired
-    ProblemService problemService;
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    private ProblemDomain(WebClient webClient, ObjectMapper mapper) {
-        this.webClient = webClient;
-        this.mapper = mapper;
-    }
 
 
     public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
+    public Map<Integer,List<ProblemAndAlgoObjectDomain>> proAndAlgoMap = new HashMap<>();
 
     //userName & pageNum 으로 Api불러옴
-    public Flux<JsonNode> fetchProblemPageData(String userName, String pageNum) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/v3/search/problem")
-                        .queryParam("query", "@" + userName)
-                        .queryParam("sort", "level")
-                        .queryParam("direction", "desc")
-                        .queryParam("page", pageNum)
-                        .build()).retrieve()
-                .bodyToFlux(JsonNode.class);
-    }
 
-    public Flux<JsonNode> fetchOneQueryData(String pathQuery, String query) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(pathQuery)
-                        .query(query)
-                        .build()).retrieve()
-                .bodyToFlux(JsonNode.class);
-    }
     public String makeUser100query(User user){
 
         return "handle="+user.getUserName();
     }
 
-    synchronized public void processUserList(List<User> users) {
-        proAndAlgoList.clear();
-        Flux.fromIterable(users)
-                .flatMap(user -> fetchOneQueryData("/api/v3/user/top_100",makeUser100query(user))
-                                        .map(data -> Tuples.of(data, user))) // User 객체와 함께 튜플 생성
-                .subscribe(
-                        tuple -> {
-                            JsonNode data = tuple.getT1(); // 튜플에서 데이터 추출
-                            User user = tuple.getT2(); // 튜플에서 User 객체 추출
-                            this.makeProblemAndAlgoDomainObject(data, user);
-                        },
-                        error -> {
-                            error.printStackTrace();
-                        },
-                        () -> {
-                            problemService.resetProblems(proAndAlgoList);
-                        }
+    private void addToList(List<ProblemAndAlgoObjectDomain> tmpList){
+        proAndAlgoList.addAll(tmpList);
+    }
+    private void addToMap(int userId,List<ProblemAndAlgoObjectDomain> problemAndAlgoObjectDomain){
+        proAndAlgoMap.put(userId, problemAndAlgoObjectDomain);
+    }
 
-                );
-    };
+    private void addCase(String enumName, int userId, List<ProblemAndAlgoObjectDomain> tmpList){
+        switch (enumName){
+            case "tierProblem":
+                addToMap(userId, tmpList);
+                break;
+            case "problemAndAlgo":
+                addToList(tmpList);
 
-    public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user) {
-        JsonNode arrayNode = aNode.path("items");
-        if(!arrayNode.isArray()){
-            return;
-        }
-        for(JsonNode nodeItem: arrayNode) {
-                Problem problem = makeProblemObject(nodeItem, user);
-                ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
-                ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
-                proAndAlgoList.add(problemAndAlgoObjectDomain);
         }
     }
 
 
+    //합쳐서 list 만드는 과정임 ->
+    public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user, String enumName) {
+        JsonNode arrayNode = aNode.path("items");
+        if(!arrayNode.isArray()){
+            return;
+        }
+        List<ProblemAndAlgoObjectDomain> tmpList = new ArrayList<>();
+        for(JsonNode nodeItem: arrayNode) {
+                Problem problem = makeProblemObject(nodeItem, user);
+                ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
+                ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
+                tmpList.add(problemAndAlgoObjectDomain);
+        }
+        addCase(enumName, user.getUserId(), tmpList);
+
+    }
+
+
+    //각각 problem & algorithm
     public Problem makeProblemObject(JsonNode nodeItem, User user) {
         Problem problem = null;
         try {
@@ -132,17 +105,6 @@ public class ProblemDomain {
         return problemAlgorithm;
     }
 
-
-    @Scheduled(fixedRate = 50000)
-    public void schedulTask() {
-        long srt = System.nanoTime();
-        // 전체 유저 목록
-        List<User> userList = userRepository.selectAllUser();
-        processUserList(userList);
-        long end = System.nanoTime();
-
-        System.out.println((end-srt)/1_000_000);
-    }
 
 }
 

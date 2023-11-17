@@ -8,5 +8,6 @@ public class UserTier {
     private int userId;
     private int tier;
     private int problemCount;
-    private int pageNo;
+    private int pageNo = 1;
+    private int pageIdx;
 }
