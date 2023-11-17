@@ -2,6 +2,7 @@ package com.ssafypjt.bboard.model.repository;
 
 import com.ssafypjt.bboard.model.dto.Group;
 import com.ssafypjt.bboard.model.dto.User;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -25,9 +26,11 @@ public interface GroupRepository {
     @Delete("DELETE FROM `group` where id = #{id}")
     public int deleteGroup(int id);
 
+    // 사용 안함
     @Update("UPDATE `group` SET group_name = #{newName} WHERE id = #{id}")
     public int updateGroupName(int id, String newName);
 
+    // 사용 안함
     @Update("UPDATE `group` SET password = #{newPassword} WHERE id = #{id}")
     public int updateGroupPassword(@Param("id") int id, @Param("password") String password);
 

@@ -1,5 +1,6 @@
 package com.ssafypjt.bboard.model.repository;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

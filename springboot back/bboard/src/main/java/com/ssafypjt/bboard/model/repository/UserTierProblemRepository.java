@@ -1,6 +1,7 @@
 package com.ssafypjt.bboard.model.repository;
 
 import com.ssafypjt.bboard.model.dto.UserTierProblem;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

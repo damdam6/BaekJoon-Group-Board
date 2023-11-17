@@ -8,13 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ssafypjt.bboard.model.dto.Problem;
-import com.ssafypjt.bboard.model.dto.RecomProblem;
-import com.ssafypjt.bboard.model.dto.User;
-import com.ssafypjt.bboard.model.repository.GroupRepository;
-import com.ssafypjt.bboard.model.repository.ProblemAlgorithmRepository;
-import com.ssafypjt.bboard.model.repository.ProblemRepository;
-import com.ssafypjt.bboard.model.repository.UserRepository;
+import com.ssafypjt.bboard.model.dto.*;
+import com.ssafypjt.bboard.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -31,17 +26,20 @@ public class ProblemServiceImpl implements ProblemService {
     private UserRepository userRepository;
     private GroupRepository groupRepository;
     private ProblemAlgorithmRepository problemAlgorithmRepository;
+    private RecomProblemRepository recomProblemRepository;
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper = new ObjectMapper(); // API 가져올 때 필요한 object Mapper 공통으로 사용
 
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, GroupRepository groupRepository, RestTemplate restTemplate) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, GroupRepository groupRepository, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
+        this.recomProblemRepository = recomProblemRepository;
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -60,10 +58,45 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<RecomProblem> getRecomProblems(int groupId) {
+    public List<UserTier> addUserTiers(List<User> userList) {
         return null;
     }
 
+    @Override
+    public UserTier getUserTier(User user) {
+        return null;
+    }
+
+    @Override
+    public List<UserTierProblem> getUserTierProblems(User user) {
+        return null;
+    }
+
+
+    // 사용자 지정 recomProblem 관련 로직
+    @Override
+    public int addRecomProblem(RecomProblem recomProblem) {
+        if (recomProblemRepository.selectRecomProblem(recomProblem.getUserId(), recomProblem.getGroupId()) == null)
+            return recomProblemRepository.insertRecomProblem(recomProblem);
+        return 0;
+    }
+
+    @Override
+    public RecomProblem getRecomProblem(int userId, int groupId) {
+        return recomProblemRepository.selectRecomProblem(userId, groupId);
+    }
+
+    @Override
+    public List<RecomProblem> getGroupRecomProblems(int groupId) {
+        return recomProblemRepository.selectGroupRecomProblems(groupId);
+    }
+
+    @Override
+    public List<RecomProblem> getAllRecomProblems() {
+        return recomProblemRepository.selectAllRecomProblems();
+    }
+
+    // 알고리즘 관련 로직 (담비 수정 예정)
     @Override
     public List<String> getProblemAlgorithm(int problemNum) {
         return null;
@@ -106,7 +139,7 @@ public class ProblemServiceImpl implements ProblemService {
                     algorithm.append(aNode.get("key").asText()).append(" ");
                 }
                 // 여기까지
-                problemAlgorithmRepository.insertAlgorithm(problem.getProblemNum(), algorithm.toString()); // 알고리즘 테이블 삽입
+//                problemAlgorithmRepository.insertAlgorithm(problem.getProblemNum(), algorithm.toString()); // 알고리즘 테이블 삽입
                 problem.setUserId(user.getUserId());
                 count += problemRepository.insertProblem(problem);
 

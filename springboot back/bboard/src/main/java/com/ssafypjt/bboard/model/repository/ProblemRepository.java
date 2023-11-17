@@ -2,6 +2,7 @@ package com.ssafypjt.bboard.model.repository;
 
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.RecomProblem;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
