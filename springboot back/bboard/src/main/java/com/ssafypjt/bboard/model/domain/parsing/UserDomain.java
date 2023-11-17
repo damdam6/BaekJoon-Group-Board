@@ -26,9 +26,9 @@ public class UserDomain {
         this.webClient = webClient;
     }
 
-    public void makeUserObject(JsonNode aNode) {
+    public User makeUserObject(JsonNode aNode) {
         List<ProblemAndAlgoObjectDomain> tmpList = new ArrayList<>();
-        userList.add(mapper.convertValue(aNode, User.class));
+        return mapper.convertValue(aNode, User.class);
     }
 
 

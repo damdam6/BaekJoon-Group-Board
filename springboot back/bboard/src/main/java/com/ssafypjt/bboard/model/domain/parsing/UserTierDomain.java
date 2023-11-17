@@ -7,15 +7,20 @@ import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.reactive.function.client.WebClient;
 
 public class UserTierDomain {
 
-    @Autowired
     private ObjectMapper mapper;
 
-    public UserTierDomain(ObjectMapper mapper, UserRepository userRepository) {
+    private final WebClient webClient;
+    public UserTierDomain(ObjectMapper mapper, WebClient webClient) {
         this.mapper = mapper;
+        this.webClient = webClient;
     }
+
+
+
 
 //    public Problem makeUserTierObject(JsonNode nodeItem, User user) {
 //        UserTier userTier = null;

@@ -48,16 +48,15 @@ public class ReloadDomain {
         //유저 목록을 사용한 상위 문제 100개 가져오기
         List<User> users = userRepository.selectAllUser();
         processProblem(users);
-
         //유저 정보 모두 받아오기
         processUser(users);
-
         //유저의 티어별 문제 갯수 받아오기
         processUserTier(users);
 
     }
 
     public void processProblem(List<User> users) {
+        synchronized (problemDomain.proAndAlgoList){
         problemDomain.proAndAlgoList.clear();
         Flux.fromIterable(users)
                 .delayElements(Duration.ofMillis(1))
@@ -69,7 +68,7 @@ public class ReloadDomain {
                                 .doOnNext(data ->
                                         problemDomain.makeProblemAndAlgoDomainObject(data, user, "problemAndAlgo")
                                 )
-                )
+                ).then()
                 .subscribe(
                         null, // onNext 처리는 필요 없음
                         Throwable::printStackTrace, // 에러 처리
@@ -77,6 +76,7 @@ public class ReloadDomain {
                             this.resetProblems(problemDomain.proAndAlgoList);
                         } // 완료 처리
                 );
+    }
     }
 
     // 프라블럼 리셋
@@ -102,6 +102,7 @@ public class ReloadDomain {
 
 
     public void processUser(List<User> users){
+        synchronized (userDomain.userList){
         userDomain.userList.clear();
         Flux.fromIterable(users)
                 .delayElements(Duration.ofMillis(1))
@@ -110,28 +111,51 @@ public class ReloadDomain {
                                         SACApiEnum.USER.getPath(),
                                         SACApiEnum.USER.getQuery(user.getUserName())
                                 )
-                                .doOnNext(data ->
-                                        userDomain.makeUserObject(data)
+                                .doOnNext(data ->{
+                                    User newUser = userDomain.makeUserObject(data);
+                                    updateUsers(newUser);
+                                        }
+
                                 )
                 )
                 .subscribe(
                         null, // onNext 처리는 필요 없음
-                        Throwable::printStackTrace, // 에러 처리
-                        () -> {
-                            this.updateUsers(userDomain.userList);
-                        } // 완료 처리
+                        Throwable::printStackTrace // 에러 처리// 완료 처리
                 );
-    };
-
-    public void updateUsers(List<User> userList){
-        for (User user: userList) {
-            userRepository.updateUser(user);
         }
-        System.out.println("user good");
+    }
+
+    public void updateUsers(User user){
+        userRepository.updateUser(user);
     }
 
     public void processUserTier(List<User> users){
+        // 수정
+        synchronized (userDomain.userList){
+            userDomain.userList.clear();
+            Flux.fromIterable(users)
+                    .delayElements(Duration.ofMillis(1))
+                    .flatMap(user ->
+                            fetchDomain.fetchOneQueryData(
+                                            SACApiEnum.USER.getPath(),
+                                            SACApiEnum.USER.getQuery(user.getUserName())
+                                    )
+                                    .doOnNext(data ->{
+                                        User newUser = userDomain.makeUserObject(data);
 
+
+                                            }
+
+                                    )
+                    ).then()
+                    .subscribe(
+                            null, // onNext 처리는 필요 없음
+                            Throwable::printStackTrace, // 에러 처리
+                            () -> {
+
+                            } // 완료 처리
+                    );
+        }
 
 
     };
