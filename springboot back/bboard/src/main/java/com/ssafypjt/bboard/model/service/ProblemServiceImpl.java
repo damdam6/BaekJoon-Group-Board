@@ -31,15 +31,16 @@ public class ProblemServiceImpl implements ProblemService {
     private GroupRepository groupRepository;
 
     private ProblemAlgorithmRepository problemAlgorithmRepository;
-    private ObjectMapper objectMapper = new ObjectMapper(); // API 가져올 때 필요한 object Mapper 공통으로 사용
 
-    private ProblemDomain problemDomain;
+    //private ProblemDomain problemDomain;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, GroupRepository groupRepository) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, GroupRepository groupRepository, ProblemAlgorithmRepository problemAlgorithmRepository) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
+        //this.problemDomain = problemDomain;
+        this.problemAlgorithmRepository = problemAlgorithmRepository;
         //this.restTemplate = restTemplate;
     }
 
@@ -98,42 +99,23 @@ public class ProblemServiceImpl implements ProblemService {
     public List<String> getProblemAlgorithm(int problemNum) {
         return null;
     }
-    @Scheduled(fixedRate = 50000)
-    public void schedulTask() {
-        System.out.println("test");
-        List<String> tmp =  Arrays.asList("end24", "29tigerhg", "98cline", "ygj9605");
-        List<User> list = new ArrayList<>();
-        for(int i = 0; i<4;i++){
-            User user = new User();
-            user.setUserId(i);
-            user.setUserName(tmp.get(i));
-            list.add(user);
-        }
 
-        List<String> pageN = Arrays.asList("1", "2");
-        resetProblems();
-    }
 
 
     // 미완성
     @Override
-    public void resetProblems() {
+    public void resetProblems(List<ProblemAndAlgoObjectDomain> list) {
         // 기존 테이블 삭제
         problemRepository.deleteAll();
         problemRepository.deleteAll();
 
-        // 전체 유저 목록
-        List<User> userList = userRepository.selectAllUser();
-        System.out.println("test");
-        problemDomain.processUserList(userList);
 
-        Collections.sort(problemDomain.proAndAlgoList, Collections.reverseOrder());
 
         for(int i=0;i < 100;i++){
-            ProblemAndAlgoObjectDomain proAndAlgo = problemDomain.proAndAlgoList.get(i);
-            System.out.println(proAndAlgo.toString());
-            problemRepository.insertProblem(proAndAlgo.getProblem());
+            ProblemAndAlgoObjectDomain proAndAlgo = list.get(i);
+//            System.out.println(proAndAlgo.toString());
             problemAlgorithmRepository.insertAlgorithm(proAndAlgo.getProblemAlgorithm());
+            problemRepository.insertProblem(proAndAlgo.getProblem());
         }
     }
 

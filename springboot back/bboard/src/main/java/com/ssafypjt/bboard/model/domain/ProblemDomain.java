@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import com.ssafypjt.bboard.model.dto.User;
+import com.ssafypjt.bboard.model.repository.UserRepository;
+import com.ssafypjt.bboard.model.service.ProblemService;
 import com.ssafypjt.bboard.util.UtilConfig;
 import io.swagger.v3.core.util.Json;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,14 +25,23 @@ import reactor.util.function.Tuples;
 @Component
 public class ProblemDomain {
     private final WebClient webClient;
+    private ObjectMapper mapper;
     private List<ProblemAndAlgoObjectDomain> tmpProblemAndAlgoList =  new ArrayList<>();
-    private ProblemDomain(WebClient webClient) {
+
+
+    @Autowired
+    ProblemService problemService;
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    private ProblemDomain(WebClient webClient, ObjectMapper mapper) {
         this.webClient = webClient;
+        this.mapper = mapper;
     }
-    private ObjectMapper mapper = new ObjectMapper();
+
 
     public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
-
 
     //userName & pageNum 으로 Api불러옴
     public Flux<JsonNode> fetchProblemPageData(String userName, String pageNum) {
@@ -57,7 +69,7 @@ public class ProblemDomain {
         return "handle="+user.getUserName();
     }
 
-    public void processUserList(List<User> users) {
+    synchronized public void processUserList(List<User> users) {
         proAndAlgoList.clear();
         Flux.fromIterable(users)
                 .flatMap(user -> fetchOneQueryData("/api/v3/user/top_100",makeUser100query(user))
@@ -72,15 +84,13 @@ public class ProblemDomain {
                             error.printStackTrace();
                         },
                         () -> {
-
+                            problemService.resetProblems(proAndAlgoList);
                         }
 
                 );
     };
 
     public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user) {
-
-
         JsonNode arrayNode = aNode.path("items");
         if(!arrayNode.isArray()){
             return;
@@ -90,7 +100,6 @@ public class ProblemDomain {
                 ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
                 ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
                 proAndAlgoList.add(problemAndAlgoObjectDomain);
-            System.out.println(problemAndAlgoObjectDomain);
         }
     }
 
@@ -124,7 +133,16 @@ public class ProblemDomain {
     }
 
 
+    @Scheduled(fixedRate = 50000)
+    public void schedulTask() {
+        long srt = System.nanoTime();
+        // 전체 유저 목록
+        List<User> userList = userRepository.selectAllUser();
+        processUserList(userList);
+        long end = System.nanoTime();
 
+        System.out.println((end-srt)/1_000_000);
+    }
 
 }
 
