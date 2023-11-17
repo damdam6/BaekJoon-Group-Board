@@ -1,4 +1,5 @@
 CREATE SCHEMA bboard;
+
 USE bboard;
 
 CREATE TABLE `users` (
@@ -13,7 +14,8 @@ CREATE TABLE `tier_problem` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `user_id` integer NOT NULL,
   `tier` integer NOT NULL,
-  `problem_count` integer NOT NULL
+  `problem_count` integer NOT NULL,
+  `page_no` integer NOT NULL
 );
 
 CREATE TABLE `user_group` (
@@ -78,3 +80,7 @@ ALTER TABLE `user_tier_problem` ADD FOREIGN KEY (`problem_num`) REFERENCES `prob
 
 ALTER TABLE `group`
 ADD CONSTRAINT unique_group_name UNIQUE (`group_name`);
+
+ALTER TABLE `problem`
+ADD CONSTRAINT unique_group_name UNIQUE (`group_name`);
+
