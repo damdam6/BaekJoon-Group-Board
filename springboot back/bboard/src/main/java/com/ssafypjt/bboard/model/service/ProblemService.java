@@ -28,7 +28,7 @@ public interface ProblemService {
     public UserTier getUserTier(User user);
 
     // 한 유저에게 추천할 유저-티어-문제들을 가져오기
-    public List<UserTierProblem> getUserTierProblems(User user);
+    public List<Problem> getUserTierProblems(User user);
 
 
 

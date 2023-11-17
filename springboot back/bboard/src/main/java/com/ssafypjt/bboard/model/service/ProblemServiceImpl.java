@@ -75,7 +75,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<UserTierProblem> getUserTierProblems(User user) {
+    public List<Problem> getUserTierProblems(User user) {
         return null;
     }
 
@@ -106,24 +106,23 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 1000000)
     public void schedulTask() {
-
         //유저 목록을 사용한 상위 문제 100개 가져오기
         List<User> userList = userRepository.selectAllUser();
         processProblemList(userList);
 
         //유저 정보 모두 받아오기
 
+
         //유저의 티어별 문제 갯수 받아오기
 
 
     }
 
-    //지금 바꾼 코드임 -> tuple 안쓰려구
-    public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
+
     public void processProblemList(List<User> users) {
-        proAndAlgoList.clear();
+        problemDomain.proAndAlgoList.clear();
         Flux.fromIterable(users)
                 .delayElements(Duration.ofMillis(1))
                 .flatMap(user ->
@@ -151,17 +150,17 @@ public class ProblemServiceImpl implements ProblemService {
         problemRepository.deleteAll();
         problemAlgorithmRepository.deleteAll();
 
-        int count = 0;
         int idx = 0;
-        while(count < 100){
+        Set<Integer> set = new HashSet<>();
+        while(set.size() < 100){
             if(idx >= list.size())break;
             ProblemAndAlgoObjectDomain proAndAlgo = list.get(idx++);
             try{
+                if (set.add(proAndAlgo.getProblem().getProblemNum()) && set.size() > 100) break;
                 problemAlgorithmRepository.insertAlgorithm(proAndAlgo.getProblemAlgorithm());
-                count += problemRepository.insertProblem(proAndAlgo.getProblem());
+                problemRepository.insertProblem(proAndAlgo.getProblem());
             }catch (DuplicateKeyException e){
             }
-
         }
         System.out.println("good");
     }
