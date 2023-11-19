@@ -40,7 +40,7 @@ public enum SACApiEnum{
         return query[0] + param;
     }
 
-    public String getQuery(String param1, String param2){
+    public String getQuery(String param1, int param2){
         return query[0] + param1 + query[1] + param2;
     }
 
