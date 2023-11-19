@@ -13,22 +13,16 @@ public interface ProblemService {
     // 문제 가져오기
     public Problem getProblem(int id);
 
-    // 특정 그룹에서 특정 티어의 문제 선정하여 가져오기, 일단 모든 리스트를 반환하는데 랜덤으로 1개만 반환하도록 해도 됨
-    public List<Problem> getTierProblems(int tier, int groupId);
-
-
     // user-tier, user-tier problem 로직
 
-    // 등록된 유저들의 유저-티어 정보를 가져오기
-    public List<UserTier> addUserTiers(List<User> userList);
+    // 등록된 유저들의 유저-티어 정보를 가져오기 (필요한가?)
+    public List<UserTier> getAllUserTiers();
 
     // 유저 1명의 유저-티어정보 가져오기
-    public UserTier getUserTier(User user);
+    public List<UserTier> getUserTiers(User user);
 
-    // 한 유저에게 추천할 유저-티어-문제들을 가져오기
-    public List<Problem> getUserTierProblems(User user);
-
-
+    // 한 유저(로그인 한 유저)에게 추천할 유저-티어-문제들을 가져오기
+    public List<Problem> getUserTierProblems(int userId);
 
     // recom_problem 로직
     public int addRecomProblem(RecomProblem recomProblem);

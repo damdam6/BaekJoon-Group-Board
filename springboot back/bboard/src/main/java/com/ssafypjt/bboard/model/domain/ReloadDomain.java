@@ -1,8 +1,5 @@
 package com.ssafypjt.bboard.model.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafypjt.bboard.model.domain.parsing.*;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.User;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -32,9 +28,10 @@ public class ReloadDomain {
     private final UserTierProblemRepository userTierProblemRepository;
     private final TierProblemRepository tierProblemRepository;
     private final UserTierProblemDomain userTierProblemDomain;
+    private final RecomProblemRepository recomProblemRepository;
 
     @Autowired
-    public ReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain) {
+    public ReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain, RecomProblemRepository recomProblemRepository) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
@@ -45,6 +42,7 @@ public class ReloadDomain {
         this.userTierProblemRepository = userTierProblemRepository;
         this.tierProblemRepository = tierProblemRepository;
         this.userTierProblemDomain = userTierProblemDomain;
+        this.recomProblemRepository = recomProblemRepository;
     }
 
 
@@ -57,8 +55,14 @@ public class ReloadDomain {
         processUser(users);
         //유저의 티어별 문제 갯수 받아오기
         processUserTier(users);
-
     }
+
+    @Scheduled(cron = "0 0 0 * * MON") // 월요일 자정에 전부 삭제하도록만 코드 작성
+    // 문제마다 등록 시간을 정하여 scheduledTask에서 일정 시간이 넘어가면 삭제하도록 코드를 구성해도 된다!
+    public void scheduledTaskPerWeek(){
+        processRecomProblem();
+    }
+
 
     public void processProblem(List<User> users) {
         synchronized (problemDomain.proAndAlgoList) {
@@ -195,6 +199,10 @@ public class ReloadDomain {
         for (Problem problem:totalProblemList) {
             userTierProblemRepository.insertTierProblem(problem);
         }
+    }
+
+    public void processRecomProblem(){
+        recomProblemRepository.deleteAll();
     }
 
 }
