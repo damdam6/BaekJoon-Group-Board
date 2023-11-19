@@ -50,10 +50,17 @@ public class ReloadDomain {
     public void schedulTask() {
         //유저 목록을 사용한 상위 문제 100개 가져오기
         List<User> users = userRepository.selectAllUser();
+        for (User user : users){
+            System.out.println(user);
+        }
         processProblem(users);
+        for (User user : users){
+            System.out.println(user);
+        }
         //유저 정보 모두 받아오기
         processUser(users);
-        //유저의 티어별 문제 갯수 받아오기
+
+//        //유저의 티어별 문제 갯수 받아오기
         processUserTier(users);
     }
 
@@ -160,6 +167,7 @@ public class ReloadDomain {
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
                                 resetUserTier(totalMap);
+//                                System.out.println(totalMap.get("bmike0413"));
                                 processUserTierProblem(users, totalMap);
                             } // 완료 처리
                     );

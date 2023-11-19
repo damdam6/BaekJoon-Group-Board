@@ -2,6 +2,7 @@ package com.ssafypjt.bboard.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -16,5 +17,8 @@ public class UserTier {
     private int problemCount;
     private int pageNo = 1;
     private int pageIdx;
+
+    public UserTier(){
+    }
 }
 
