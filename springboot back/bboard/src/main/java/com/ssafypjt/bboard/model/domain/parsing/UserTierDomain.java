@@ -9,12 +9,14 @@ import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.repository.UserRepository;
 import com.ssafypjt.bboard.model.repository.UserTierProblemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Component
 public class UserTierDomain {
 
     private ObjectMapper mapper;

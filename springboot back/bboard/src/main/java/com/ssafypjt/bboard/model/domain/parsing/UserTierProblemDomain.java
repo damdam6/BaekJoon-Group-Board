@@ -7,10 +7,13 @@ import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.enums.SACApiEnum;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+@Component
 
 public class UserTierProblemDomain {
     private ObjectMapper mapper;
@@ -24,7 +27,7 @@ public class UserTierProblemDomain {
     // 동기적으로 아이템 가져오기 (restTemplate 사용)
     public List<Problem> syncMakeUserTierProblem(UserTier uSerTier, User user){
         List<Problem> problemList = new ArrayList<>();
-        String url = SACApiEnum.USERTIERPROBLEM.getPath() + SACApiEnum.USERTIERPROBLEM.getQuery(user.getUserName(), uSerTier.getPageNo());
+        String url = SACApiEnum.USERTIERPROBLEM.getPath() + "?"+ SACApiEnum.USERTIERPROBLEM.getQuery(user.getUserName(), uSerTier.getPageNo());
         JsonNode jsonNode = restTemplate.getForObject(url, JsonNode.class);
         for(JsonNode aNode : jsonNode.get("items")){
             try {
