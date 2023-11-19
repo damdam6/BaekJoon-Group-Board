@@ -1,5 +1,8 @@
 package com.ssafypjt.bboard.model.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafypjt.bboard.model.domain.parsing.*;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.User;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -18,19 +22,18 @@ import java.util.*;
 @Component
 public class ReloadDomain {
 
-    private ProblemRepository problemRepository;
-    private UserRepository userRepository;
-    private ProblemAlgorithmRepository problemAlgorithmRepository;
-    private ProblemDomain problemDomain;
-    private UserDomain userDomain;
-    private FetchDomain fetchDomain;
-    private UserTierDomain userTierDomain;
-    private UserTierProblemRepository userTierProblemRepository;
-    private TierProblemRepository tierProblemRepository;
-    private UserTierProblemDomain userTierProblemDomain;
+    private final ProblemRepository problemRepository;
+    private final UserRepository userRepository;
+    private final ProblemAlgorithmRepository problemAlgorithmRepository;
+    private final ProblemDomain problemDomain;
+    private final UserDomain userDomain;
+    private final FetchDomain fetchDomain;
+    private final UserTierDomain userTierDomain;
+    private final UserTierProblemRepository userTierProblemRepository;
+    private final TierProblemRepository tierProblemRepository;
+    private final UserTierProblemDomain userTierProblemDomain;
 
-    private final int MAX_TIER = 30;
-
+    @Autowired
     public ReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
@@ -43,8 +46,6 @@ public class ReloadDomain {
         this.tierProblemRepository = tierProblemRepository;
         this.userTierProblemDomain = userTierProblemDomain;
     }
-
-    @Autowired
 
 
     @Scheduled(fixedRate = 1000000)
@@ -154,14 +155,15 @@ public class ReloadDomain {
                             null, // onNext 처리는 필요 없음
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
-                                insertUserTier(totalMap);
+                                resetUserTier(totalMap);
                                 processUserTierProblem(users, totalMap);
                             } // 완료 처리
                     );
         }
     }
 
-    public void insertUserTier(Map<String, List<UserTier>> totalMap) {
+    public void resetUserTier(Map<String, List<UserTier>> totalMap) {
+        tierProblemRepository.deleteAll();
         for (List<UserTier> userTierList : totalMap.values()) {
             for (UserTier userTier : userTierList) {
                 tierProblemRepository.insertUserTier(userTier);
@@ -169,40 +171,30 @@ public class ReloadDomain {
         }
     }
 
-    // 여기는 동기화해서 짜는 로직이 필요할 듯, UserTierProblem 관련 코드 미완성
+    // 동기적으로 작동하는 코드
     public void processUserTierProblem(List<User> users, Map<String, List<UserTier>> totalMap) {
-        // 수정
-
         List<Problem> totalProblemList = new ArrayList<>();
-
-        synchronized (totalProblemList) {
-            Flux.fromIterable(users)
-                    .delayElements(Duration.ofMillis(1))
-                    .flatMap(user ->
-                            fetchDomain.fetchOneQueryData(
-                                            SACApiEnum.USERTIERPROBLEM.getPath(),
-                                            SACApiEnum.USERTIERPROBLEM.getQuery(user.getUserName())
-                                    )
-                                    .doOnNext(data -> {
-                                        totalProblemList.addAll(userTierProblemDomain.makeUserTierProblemObject(data, user, totalMap.get(user.getUserName())));
-                                            }
-
-                                    )
-                    ).then()
-                    .subscribe(
-                            null, // onNext 처리는 필요 없음
-                            Throwable::printStackTrace, // 에러 처리
-                            () -> {
-                                resetUserTierProblems(totalProblemList);
-                            } // 완료 처리
-                    );
+        for (User user: users) {
+            List<UserTier> userTierList = totalMap.get(user.getUserName());
+            int prevPage = 0;
+            List<Problem> problemListByPage = null;
+            for (UserTier userTier:userTierList) {
+                if(prevPage != userTier.getPageNo()){ // 새로 요청해야할 때만 요청하여 갱신
+                    // 해당 유저의 페이지당 문제 정보 동기적으로 가져오기
+                    problemListByPage = userTierProblemDomain.syncMakeUserTierProblem(userTier, user);
+                    prevPage = userTier.getPageNo();
+                }
+                totalProblemList.add(problemListByPage.get(userTier.getPageIdx()));
+            }
         }
+        resetUserTierProblems(totalProblemList);
 
     }
-
-
     public void resetUserTierProblems(List<Problem> totalProblemList) {
         userTierProblemRepository.deleteAll();
-
+        for (Problem problem:totalProblemList) {
+            userTierProblemRepository.insertTierProblem(problem);
+        }
     }
+
 }
