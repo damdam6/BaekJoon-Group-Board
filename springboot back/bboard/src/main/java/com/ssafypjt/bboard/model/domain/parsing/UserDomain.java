@@ -26,7 +26,9 @@ public class UserDomain {
 
     public User makeUserObject(JsonNode aNode) {
         List<ProblemAndAlgoObjectDomain> tmpList = new ArrayList<>();
-        return mapper.convertValue(aNode, User.class);
+        User user = mapper.convertValue(aNode, User.class);
+        if (user.getImgUrl() == null) user.setImgUrl("");
+        return user;
     }
 
 }
