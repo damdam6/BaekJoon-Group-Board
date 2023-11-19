@@ -15,21 +15,18 @@ import java.util.List;
 @Component
 public class UserDomain {
 
-    @Autowired
     private ObjectMapper mapper;
-
-    private final WebClient webClient;
 
     public List<User> userList = new ArrayList<>();
 
-    public UserDomain(WebClient webClient) {
-        this.webClient = webClient;
+    @Autowired
+    public UserDomain(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
     public User makeUserObject(JsonNode aNode) {
         List<ProblemAndAlgoObjectDomain> tmpList = new ArrayList<>();
         return mapper.convertValue(aNode, User.class);
     }
-
 
 }

@@ -18,18 +18,14 @@ import java.util.List;
 public class UserTierDomain {
 
     private ObjectMapper mapper;
-
-    private final WebClient webClient;
-
     private UserTierProblemRepository userTierProblemRepository;
 
     final int MAX_TIER = 30;
     final int NUMBER_OF_PAGES = 50;
 
     @Autowired
-    public UserTierDomain(ObjectMapper mapper, WebClient webClient, UserTierProblemRepository userTierProblemRepository) {
+    public UserTierDomain(ObjectMapper mapper, UserTierProblemRepository userTierProblemRepository) {
         this.mapper = mapper;
-        this.webClient = webClient;
         this.userTierProblemRepository = userTierProblemRepository;
     }
 
@@ -126,15 +122,4 @@ public class UserTierDomain {
     }
 
 
-
-//    public Problem makeUserTierObject(JsonNode nodeItem, User user) {
-//        UserTier userTier = null;
-//        try {
-//            userTier = mapper.treeToValue(nodeItem, UserTier.class);
-//            problem.setUserId(user.getUserId());
-//        } catch (Exception e ) {
-//            e.printStackTrace();
-//        }
-//        return problem;
-//    }
 }

@@ -13,9 +13,12 @@ import java.util.*;
 @Component
 public class ProblemDomain {
 
-    @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    public ProblemDomain(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
     public Map<Integer,List<ProblemAndAlgoObjectDomain>> proAndAlgoMap = new HashMap<>();
