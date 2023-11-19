@@ -1,7 +1,9 @@
 package com.ssafypjt.bboard.controller;
 
+import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.RecomProblem;
 import com.ssafypjt.bboard.model.dto.User;
+import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.service.ProblemService;
 import com.ssafypjt.bboard.model.service.UserService;
 import io.swagger.annotations.Api;
@@ -22,11 +24,26 @@ public class ProblemController {
         this.problemService = problemService;
     }
 
-    @GetMapping("/problem/reset")
-    public ResponseEntity<?> reset(){
-        System.out.println("에잇");
-        //int result = problemService.resetProblems();
-        return new ResponseEntity<Integer>(0, HttpStatus.OK);
+    @GetMapping("/problem")
+    public ResponseEntity<?> getProblems(){
+        List<Problem> problemList = problemService.getAllProblems();
+        if (problemList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
+    }
+
+    @GetMapping("/problem/tier")
+    public ResponseEntity<?> getTiers(){
+        List<UserTier> userTierList = problemService.getAllUserTiers();
+        if (userTierList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<List<UserTier>>(userTierList, HttpStatus.OK);
+    }
+
+    @GetMapping("/problem/tier-problem/{userId}")
+    public ResponseEntity<?> getTierProblems(@PathVariable int userId){
+
+        List<Problem> problemList = problemService.getUserTierProblems(userId);
+        if (problemList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
     }
 
     @GetMapping("/problem/recomproblem/{groupId}")
@@ -44,8 +61,5 @@ public class ProblemController {
         return new ResponseEntity<Integer>(result, HttpStatus.OK);
     }
 
-
-
-    
 
 }
