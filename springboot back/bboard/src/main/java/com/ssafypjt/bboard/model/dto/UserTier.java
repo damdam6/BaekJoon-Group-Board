@@ -1,22 +1,24 @@
 package com.ssafypjt.bboard.model.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
 
+public class UserTier {
+    private int id;
     private int userId;
-    @JsonProperty("handle")
-    private String userName;
-    @JsonProperty("tier")
+    @JsonProperty("level")
     private int tier;
-    @JsonProperty("rank")
-    private int solvedRank;
-    @JsonProperty("profileImageUrl")
-    private String imgUrl;
+    @JsonProperty("solved")
+    private int problemCount;
+    private int pageNo = 1;
+    private int pageIdx;
+
+    public UserTier(){
+    }
 }
 

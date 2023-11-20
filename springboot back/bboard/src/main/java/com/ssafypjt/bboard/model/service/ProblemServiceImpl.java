@@ -1,155 +1,120 @@
 package com.ssafypjt.bboard.model.service;
 
-import ch.qos.logback.core.subst.Node;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ssafypjt.bboard.model.dto.Problem;
-import com.ssafypjt.bboard.model.dto.RecomProblem;
-import com.ssafypjt.bboard.model.dto.User;
-import com.ssafypjt.bboard.model.repository.GroupRepository;
-import com.ssafypjt.bboard.model.repository.ProblemRepository;
-import com.ssafypjt.bboard.model.repository.UserRepository;
+import com.ssafypjt.bboard.model.dto.*;
+import com.ssafypjt.bboard.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProblemServiceImpl implements ProblemService {
 
     private ProblemRepository problemRepository;
-    private UserRepository userRepository;
-    private GroupRepository groupRepository;
-    private RestTemplate restTemplate;
-    private ObjectMapper objectMapper = new ObjectMapper(); // API 가져올 때 필요한 object Mapper 공통으로 사용
+    private GroupService groupService;
 
+    private ProblemAlgorithmRepository problemAlgorithmRepository;
+
+    private RecomProblemRepository recomProblemRepository;
+    private TierProblemRepository tierProblemRepository;
+    private UserTierProblemRepository userTierProblemRepository;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, GroupRepository groupRepository, RestTemplate restTemplate) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, GroupService groupService, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemRepository userTierProblemRepository) {
         this.problemRepository = problemRepository;
-        this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
-        this.restTemplate = restTemplate;
+        this.groupService = groupService;
+        this.problemAlgorithmRepository = problemAlgorithmRepository;
+        this.recomProblemRepository = recomProblemRepository;
+        this.tierProblemRepository = tierProblemRepository;
+        this.userTierProblemRepository = userTierProblemRepository;
     }
 
     @Override
     public List<Problem> getAllProblems() {
-        return null;
+        return problemRepository.selectAllProblems();
     }
 
     @Override
     public Problem getProblem(int id) {
-        return null;
+        return problemRepository.selectProblem(id);
     }
 
     @Override
-    public List<Problem> getTierProblems(int tier, int groupId) {
-        return null;
+    public List<UserTier> getAllUserTiers() {
+        return tierProblemRepository.selectAllUserTiers();
     }
 
     @Override
-    public List<RecomProblem> getRecomProblems(int groupId) {
-        return null;
+    public List<UserTier> getUserTiers(User user) {
+        return tierProblemRepository.selectUserTiers(user.getUserId());
+    }
+
+
+    @Override
+    public List<Problem> getUserTierProblems(int userId) {
+        return userTierProblemRepository.selectTierProblems(userId);
     }
 
     @Override
-    public List<String> getProblemAlgorithm(int problemNum) {
-        return null;
+    public int addRecomProblem(RecomProblem recomProblem) { // 그룹별로 10개가 초과되면 id가 빠른 순 (등록이 빠른 순) 으로 삭제된다.
+        if (recomProblemRepository.selectGroupRecomProblems(recomProblem.getGroupId()).size() >= 10){
+            recomProblemRepository.deleteFirstRecomProblem();
+        }
+        return recomProblemRepository.insertRecomProblem(recomProblem);
     }
 
-    // 미완성
     @Override
-    public int resetProblems() {
-        // 기존 테이블 삭제
-        problemRepository.deleteAllProblems();
-        problemRepository.deleteAllAlgorithms();
+    public RecomProblem getRecomProblem(int userId, int groupId) {
+        return recomProblemRepository.selectRecomProblem(userId, groupId);
+    }
 
-        // 전체 유저 목록
-        List<User> userList = userRepository.selectAllUser();
-        int count = 0; // 변경된 라인 수
-        for (User user : userList) {
-            try {
-                ArrayNode itemsNode = getUserProblemByAPI(user);
-                for (JsonNode itemNode: itemsNode) {
-                    for (JsonNode node: itemNode) {
-                        count += getAlgorithmFromJson(node, user);
-                    }
-                }
-            } catch (Exception e) {
-//                e.printStackTrace();
+    @Override
+    public List<RecomProblem> getGroupRecomProblems(int groupId) {
+        return recomProblemRepository.selectGroupRecomProblems(groupId);
+    }
+
+    @Override
+    public List<RecomProblem> getAllRecomProblems() {
+        return recomProblemRepository.selectAllRecomProblems();
+    }
+
+    @Override
+    public List<ProblemAlgorithm> getAllAlgorithm() {
+        return problemAlgorithmRepository.selectAllAlgorithm();
+    }
+
+    @Override
+    public ProblemAlgorithm getProblemAlgorithm(int problemNum) {
+        return problemAlgorithmRepository.selectAlgorithm(problemNum);
+    }
+
+    @Override
+    public List<Problem> getGroupProblems(int groupId) {
+        List<User> userList = groupService.getUsers(groupId);
+        List<Problem> problemList = problemRepository.selectGroupProblem(userList);
+        List<Problem> returnList = new ArrayList<>();
+
+        // 100개 선정 로직
+        Set<Integer> set = new HashSet<>();
+        int idx = 0;
+        while (set.size() <= 100) {
+            if (idx >= problemList.size()) break;
+            Problem problem = problemList.get(idx++);
+            if (set.add(problem.getProblemNum())) {
+                if (set.size() > 100) break;
             }
+            returnList.add(problem);
         }
-        return count;
+
+        return returnList;
     }
 
 
-    private int getAlgorithmFromJson(JsonNode itemNode, User user){
-        int count = 0;
-        try {
-                Problem problem = objectMapper.convertValue(itemNode, Problem.class);
-                // 알고리즘 가져오는 코드 (따로 빼자)
-                JsonNode algorithmNode = itemNode.get("tags");
-                StringBuilder algorithm = new StringBuilder();
-                for (JsonNode aNode : algorithmNode) {
-                    algorithm.append(aNode.get("key").asText()).append(" ");
-                }
-                // 여기까지
-                problemRepository.insertAlgorithm(problem.getProblemNum(), algorithm.toString()); // 알고리즘 테이블 삽입
-                problem.setUserId(user.getUserId());
-                count += problemRepository.insertProblem(problem);
-
-        } catch (Exception e) {
-//            e.printStackTrace();
-            System.out.println("알고리즘을 가져오는 과정에서 에러가 발생하였습니다.");
-        }
-        return count;
+    @Override
+    public List<Problem> getGroupUserTierProblems(int groupId) {
+        List<User> userList = groupService.getUsers(groupId);
+        return userTierProblemRepository.selectGroupTierProblem(userList);
     }
 
-
-    private ArrayNode getUserProblemByAPI(User user){
-        ObjectMapper objectMapper = new ObjectMapper();
-        ArrayNode itemsNode = objectMapper.createArrayNode();
-        itemsNode.add(getProblemJsonByAPIWithPage(user, 1));
-        itemsNode.add(getProblemJsonByAPIWithPage(user, 2));
-        return itemsNode;
-    }
-
-    private JsonNode getProblemJsonByAPIWithPage(User user, int page){
-        String url = getProblemJsonUrl(user, page);
-        System.out.println(url);
-        return getJsonByAPI(url);
-    }
-
-    private String getProblemJsonUrl(User user, int page){
-        return "https://solved.ac/api/v3/search/problem?query=@" + user.getUserName() + "&sort=level&direction=desc&page="+page;
-    }
-
-    // 공통, util로 따로 뺄까?
-    private JsonNode getJsonByAPI(String url){
-        // Request Header 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        ObjectNode requestBody = objectMapper.createObjectNode();
-
-        HttpEntity entity = new HttpEntity(requestBody.toString(), headers);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        JsonNode itemsNode = null;
-        try {
-            itemsNode = objectMapper.readTree(response.getBody()).get("items");
-        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-            System.out.println("제이슨 데이터를 가져오는데 에러가 발생하였습니다.");
-        }
-        return itemsNode;
-    }
 
 }
