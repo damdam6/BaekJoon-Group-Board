@@ -52,7 +52,7 @@ public class MainController {
         responseJson.set("userTierProblems", mapper.valueToTree((userTierProblemList)));
         responseJson.set("recomProblems", mapper.valueToTree(recomProblemList));
         responseJson.set("algorithms", mapper.valueToTree(algorithmList));
-
+ 
         return new ResponseEntity<ObjectNode>(responseJson, HttpStatus.OK);
     }
 
