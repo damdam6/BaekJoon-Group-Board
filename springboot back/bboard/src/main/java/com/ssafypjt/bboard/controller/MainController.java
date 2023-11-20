@@ -35,12 +35,15 @@ public class MainController {
     }
 
     // 추가 구현 필요
+    // 유저 정보 받아와서 그 유저에 해당하는 값만 가져오기
     @GetMapping("/group/{groupId}")
     public ResponseEntity<ObjectNode> getGroupInfo(@PathVariable int groupId){ // ObjectNode (JSON DATA)로 전송
         List<User> userList = groupService.getUsers(groupId); // 그룹 해당 유저 정보
         List<Problem> top100ProblemList = problemService.getGroupProblems(groupId); // 그룹별 top 100개 문제 정보
+        // 여기 로그인된 유저에 해당하는 값만 가져오도록 수정
         List<Problem> userTierProblemList = problemService.getGroupUserTierProblems(groupId); // 그룹별 userTierProblem 정보
         List<RecomProblem> recomProblemList = problemService.getGroupRecomProblems(groupId); // 그룹별 recomProblem 정보
+        // 알고리즘 필요한거만 뽑아보자..
         List<ProblemAlgorithm> algorithmList = problemService.getAllAlgorithm(); // 모든 알고리즘 (나눠서 주려니 로직이 복잡하네 일단 보류)
 
         ObjectNode responseJson = JsonNodeFactory.instance.objectNode();
