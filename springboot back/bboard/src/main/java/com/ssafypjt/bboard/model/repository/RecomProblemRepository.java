@@ -23,7 +23,10 @@ public interface RecomProblemRepository {
     public int insertRecomProblem(RecomProblem recomProblem);
 
     @Delete("DELETE FROM recom_problem WHERE group_id = #{groupId}")
-    public int deleteGroupRecomProblem(@Param("groupId") int groupId);
+    public int deleteRecomProblemByGroupId(@Param("groupId") int groupId);
+
+    @Delete("DELETE FROM recom_problem ORDER BY id LIMIT 1;")
+    public int deleteFirstRecomProblem();
 
     @Delete("DELETE FROM recom_problem")
     public int deleteAll();

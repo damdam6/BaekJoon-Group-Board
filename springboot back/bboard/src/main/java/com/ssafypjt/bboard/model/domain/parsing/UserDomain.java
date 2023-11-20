@@ -15,21 +15,20 @@ import java.util.List;
 @Component
 public class UserDomain {
 
-    @Autowired
     private ObjectMapper mapper;
-
-    private final WebClient webClient;
 
     public List<User> userList = new ArrayList<>();
 
-    public UserDomain(WebClient webClient) {
-        this.webClient = webClient;
+    @Autowired
+    public UserDomain(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
-    public void makeUserObject(JsonNode aNode) {
+    public User makeUserObject(JsonNode aNode) {
         List<ProblemAndAlgoObjectDomain> tmpList = new ArrayList<>();
-        userList.add(mapper.convertValue(aNode, User.class));
+        User user = mapper.convertValue(aNode, User.class);
+        if (user.getImgUrl() == null) user.setImgUrl("");
+        return user;
     }
-
 
 }

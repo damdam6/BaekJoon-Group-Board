@@ -8,7 +8,7 @@ import com.ssafypjt.bboard.model.dto.UserTier;
 public enum SACApiEnum{
     USER("user", "/api/v3/user/show", new String[] {"handle="}, User.class),
     TIER("tier", "/api/v3/user/problem_stats", new String[] {"handle="},UserTier.class),
-    USERTIERPROBLEM("tierProblem", "/api/v3/search/problem", new String[] {"query=","&sort=level&direction=desc&page="}, Problem.class),
+    USERTIERPROBLEM("tierProblem", "/api/v3/search/problem", new String[] {"query=@","&sort=level&direction=desc&page="}, Problem.class),
     PROBLEMANDALGO("problemAndAlgo", "/api/v3/user/top_100", new String[] {"handle="} ,ProblemAndAlgoObjectDomain.class);
 
     private final String name;
@@ -40,7 +40,7 @@ public enum SACApiEnum{
         return query[0] + param;
     }
 
-    public String getQuery(String param1, String param2){
+    public String getQuery(String param1, int param2){
         return query[0] + param1 + query[1] + param2;
     }
 

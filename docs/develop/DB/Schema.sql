@@ -15,7 +15,8 @@ CREATE TABLE `tier_problem` (
   `user_id` integer NOT NULL,
   `tier` integer NOT NULL,
   `problem_count` integer NOT NULL,
-  `page_no` integer NOT NULL
+  `page_no` integer NOT NULL,
+  `page_idx` integer NOT NULL
 );
 
 CREATE TABLE `user_group` (
@@ -77,10 +78,4 @@ ALTER TABLE `recom_problem` ADD FOREIGN KEY (`problem_num`) REFERENCES `problem_
 ALTER TABLE `user_tier_problem` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `user_tier_problem` ADD FOREIGN KEY (`problem_num`) REFERENCES `problem_algorithm` (`problem_num`);
-
-ALTER TABLE `group`
-ADD CONSTRAINT unique_group_name UNIQUE (`group_name`);
-
-ALTER TABLE `problem`
-ADD CONSTRAINT unique_group_name UNIQUE (`group_name`);
 

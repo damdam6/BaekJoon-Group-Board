@@ -1,98 +1,119 @@
 package com.ssafypjt.bboard.model.service;
 
-import com.ssafypjt.bboard.model.domain.parsing.FetchDomain;
-import com.ssafypjt.bboard.model.domain.parsing.ProblemAndAlgoObjectDomain;
-import com.ssafypjt.bboard.model.domain.parsing.ProblemDomain;
 import com.ssafypjt.bboard.model.dto.*;
-import com.ssafypjt.bboard.model.repository.GroupRepository;
-import com.ssafypjt.bboard.model.repository.ProblemAlgorithmRepository;
-import com.ssafypjt.bboard.model.repository.ProblemRepository;
-import com.ssafypjt.bboard.model.repository.UserRepository;
+import com.ssafypjt.bboard.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
-import java.time.Duration;
 import java.util.*;
 
 @Service
 public class ProblemServiceImpl implements ProblemService {
 
     private ProblemRepository problemRepository;
-    private UserRepository userRepository;
-    private GroupRepository groupRepository;
+    private GroupService groupService;
 
     private ProblemAlgorithmRepository problemAlgorithmRepository;
 
-    private ProblemDomain problemDomain;
-    private FetchDomain fetchDomain;
+    private RecomProblemRepository recomProblemRepository;
+    private TierProblemRepository tierProblemRepository;
+    private UserTierProblemRepository userTierProblemRepository;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, UserRepository userRepository, GroupRepository groupRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, FetchDomain fetchDomain) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, GroupService groupService, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemRepository userTierProblemRepository) {
         this.problemRepository = problemRepository;
-        this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
+        this.groupService = groupService;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
-        this.problemDomain = problemDomain;
-        this.fetchDomain = fetchDomain;
+        this.recomProblemRepository = recomProblemRepository;
+        this.tierProblemRepository = tierProblemRepository;
+        this.userTierProblemRepository = userTierProblemRepository;
     }
 
     @Override
     public List<Problem> getAllProblems() {
-        return null;
+        return problemRepository.selectAllProblems();
     }
 
     @Override
     public Problem getProblem(int id) {
-        return null;
+        return problemRepository.selectProblem(id);
     }
 
     @Override
-    public List<Problem> getTierProblems(int tier, int groupId) {
-        return null;
+    public List<UserTier> getAllUserTiers() {
+        return tierProblemRepository.selectAllUserTiers();
     }
 
     @Override
-    public List<UserTier> addUserTiers(List<User> userList) {
-        return null;
+    public List<UserTier> getUserTiers(User user) {
+        return tierProblemRepository.selectUserTiers(user.getUserId());
+    }
+
+
+    @Override
+    public List<Problem> getUserTierProblems(int userId) {
+        return userTierProblemRepository.selectTierProblems(userId);
     }
 
     @Override
-    public UserTier getUserTier(User user) {
-        return null;
-    }
-
-    @Override
-    public List<Problem> getUserTierProblems(User user) {
-        return null;
-    }
-
-    @Override
-    public int addRecomProblem(RecomProblem recomProblem) {
-        return 0;
+    public int addRecomProblem(RecomProblem recomProblem) { // 그룹별로 10개가 초과되면 id가 빠른 순 (등록이 빠른 순) 으로 삭제된다.
+        if (recomProblemRepository.selectGroupRecomProblems(recomProblem.getGroupId()).size() >= 10){
+            recomProblemRepository.deleteFirstRecomProblem();
+        }
+        return recomProblemRepository.insertRecomProblem(recomProblem);
     }
 
     @Override
     public RecomProblem getRecomProblem(int userId, int groupId) {
-        return null;
+        return recomProblemRepository.selectRecomProblem(userId, groupId);
     }
 
     @Override
     public List<RecomProblem> getGroupRecomProblems(int groupId) {
-        return null;
+        return recomProblemRepository.selectGroupRecomProblems(groupId);
     }
 
     @Override
     public List<RecomProblem> getAllRecomProblems() {
-        return null;
+        return recomProblemRepository.selectAllRecomProblems();
+    }
+
+    @Override
+    public List<ProblemAlgorithm> getAllAlgorithm() {
+        return problemAlgorithmRepository.selectAllAlgorithm();
+    }
+
+    @Override
+    public ProblemAlgorithm getProblemAlgorithm(int problemNum) {
+        return problemAlgorithmRepository.selectAlgorithm(problemNum);
+    }
+
+    @Override
+    public List<Problem> getGroupProblems(int groupId) {
+        List<User> userList = groupService.getUsers(groupId);
+        List<Problem> problemList = problemRepository.selectGroupProblem(userList);
+        List<Problem> returnList = new ArrayList<>();
+
+        // 100개 선정 로직
+        Set<Integer> set = new HashSet<>();
+        int idx = 0;
+        while (set.size() <= 100) {
+            if (idx >= problemList.size()) break;
+            Problem problem = problemList.get(idx++);
+            if (set.add(problem.getProblemNum())) {
+                if (set.size() > 100) break;
+            }
+            returnList.add(problem);
+        }
+
+        return returnList;
     }
 
 
     @Override
-    public List<String> getProblemAlgorithm(int problemNum) {
-        return null;
+    public List<Problem> getGroupUserTierProblems(int groupId) {
+        List<User> userList = groupService.getUsers(groupId);
+        return userTierProblemRepository.selectGroupTierProblem(userList);
     }
 
 

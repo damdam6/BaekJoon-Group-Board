@@ -5,15 +5,19 @@ import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import lombok.Data;
 
 @Data
-public class ProblemAndAlgoObjectDomain implements Comparable<ProblemAndAlgoObjectDomain>{
+public class ProblemAndAlgoObjectDomain implements Comparable<ProblemAndAlgoObjectDomain> {
 
-Problem problem;
-ProblemAlgorithm problemAlgorithm;
+    private Problem problem;
+    private ProblemAlgorithm problemAlgorithm;
 
-ProblemAndAlgoObjectDomain(Problem problem, ProblemAlgorithm problemAlgorithm){
-    this.problem = problem;
-    this.problemAlgorithm = problemAlgorithm;
-}
+    ProblemAndAlgoObjectDomain() {
+
+    }
+
+    ProblemAndAlgoObjectDomain(Problem problem, ProblemAlgorithm problemAlgorithm) {
+        this.problem = problem;
+        this.problemAlgorithm = problemAlgorithm;
+    }
 
     public Problem getProblem() {
         return problem;
@@ -22,11 +26,12 @@ ProblemAndAlgoObjectDomain(Problem problem, ProblemAlgorithm problemAlgorithm){
     public ProblemAlgorithm getProblemAlgorithm() {
         return problemAlgorithm;
     }
+
     @Override
     public int compareTo(ProblemAndAlgoObjectDomain o) {
-        if(this.problem.getTier() > o.problem.getTier()){
+        if (this.problem.getTier() > o.problem.getTier()) {
             return 1;
-        }else if(this.problem.getTier() < o.problem.getTier()){
+        } else if (this.problem.getTier() < o.problem.getTier()) {
             return -1;
         }
         return 0;
@@ -34,6 +39,6 @@ ProblemAndAlgoObjectDomain(Problem problem, ProblemAlgorithm problemAlgorithm){
 
     @Override
     public String toString() {
-        return problem.toString()+"\n"+problemAlgorithm.toString();
+        return problem.toString() + "\n" + problemAlgorithm.toString();
     }
 }
