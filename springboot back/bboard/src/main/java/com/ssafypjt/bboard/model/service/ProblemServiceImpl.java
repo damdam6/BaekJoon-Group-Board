@@ -1,8 +1,5 @@
 package com.ssafypjt.bboard.model.service;
 
-import com.ssafypjt.bboard.model.domain.ReloadDomain;
-import com.ssafypjt.bboard.model.domain.parsing.FetchDomain;
-import com.ssafypjt.bboard.model.domain.parsing.ProblemDomain;
 import com.ssafypjt.bboard.model.dto.*;
 import com.ssafypjt.bboard.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,7 @@ import java.util.*;
 public class ProblemServiceImpl implements ProblemService {
 
     private ProblemRepository problemRepository;
+    private GroupService groupService;
 
     private ProblemAlgorithmRepository problemAlgorithmRepository;
 
@@ -22,8 +20,9 @@ public class ProblemServiceImpl implements ProblemService {
     private UserTierProblemRepository userTierProblemRepository;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemRepository userTierProblemRepository) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, GroupService groupService, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemRepository userTierProblemRepository) {
         this.problemRepository = problemRepository;
+        this.groupService = groupService;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
         this.recomProblemRepository = recomProblemRepository;
         this.tierProblemRepository = tierProblemRepository;
@@ -57,7 +56,10 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public int addRecomProblem(RecomProblem recomProblem) {
+    public int addRecomProblem(RecomProblem recomProblem) { // 그룹별로 10개가 초과되면 id가 빠른 순 (등록이 빠른 순) 으로 삭제된다.
+        if (recomProblemRepository.selectGroupRecomProblems(recomProblem.getGroupId()).size() >= 10){
+            recomProblemRepository.deleteFirstRecomProblem();
+        }
         return recomProblemRepository.insertRecomProblem(recomProblem);
     }
 
@@ -77,12 +79,42 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<String> getProblemAlgorithm(int problemNum) {
-        ProblemAlgorithm problemAlgorithm = problemAlgorithmRepository.selectAlgorithm(problemNum);
-        if (problemAlgorithm == null) return null;
-        return Arrays.asList(problemAlgorithm.getAlgorithm().split(" "));
+    public List<ProblemAlgorithm> getAllAlgorithm() {
+        return problemAlgorithmRepository.selectAllAlgorithm();
     }
 
+    @Override
+    public ProblemAlgorithm getProblemAlgorithm(int problemNum) {
+        return problemAlgorithmRepository.selectAlgorithm(problemNum);
+    }
+
+    @Override
+    public List<Problem> getGroupProblems(int groupId) {
+        List<User> userList = groupService.getUsers(groupId);
+        List<Problem> problemList = problemRepository.selectGroupProblem(userList);
+        List<Problem> returnList = new ArrayList<>();
+
+        // 100개 선정 로직
+        Set<Integer> set = new HashSet<>();
+        int idx = 0;
+        while (set.size() <= 100) {
+            if (idx >= problemList.size()) break;
+            Problem problem = problemList.get(idx++);
+            if (set.add(problem.getProblemNum())) {
+                if (set.size() > 100) break;
+            }
+            returnList.add(problem);
+        }
+
+        return returnList;
+    }
+
+
+    @Override
+    public List<Problem> getGroupUserTierProblems(int groupId) {
+        List<User> userList = groupService.getUsers(groupId);
+        return userTierProblemRepository.selectGroupTierProblem(userList);
+    }
 
 
 }

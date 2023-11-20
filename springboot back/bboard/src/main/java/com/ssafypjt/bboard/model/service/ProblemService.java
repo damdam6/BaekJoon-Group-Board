@@ -33,7 +33,13 @@ public interface ProblemService {
 
     public List<RecomProblem> getAllRecomProblems();
 
-    // 한 문제에 연관된 알고리즘을 가져오기, String Parsing 필요
-    public List<String> getProblemAlgorithm(int problemNum);
+    // front 단에서 String Parsing 필요
+    public List<ProblemAlgorithm> getAllAlgorithm();
 
+    // 한 문제에 연관된 알고리즘을 가져오기, front 단에서 String Parsing 필요
+    public ProblemAlgorithm getProblemAlgorithm(int problemNum);
+
+    List<Problem> getGroupProblems(int groupId);
+
+    List<Problem> getGroupUserTierProblems(int groupId);
 }
