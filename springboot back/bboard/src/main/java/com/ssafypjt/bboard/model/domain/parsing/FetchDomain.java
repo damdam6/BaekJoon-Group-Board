@@ -1,6 +1,8 @@
 package com.ssafypjt.bboard.model.domain.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.ssafypjt.bboard.model.dto.UserTier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -32,6 +34,15 @@ public class FetchDomain {
                         .query(query)
                         .build()).retrieve()
                 .bodyToFlux(JsonNode.class);
+    }
+
+    public Flux<UserTier> fetchOneQueryDataUserTIer(String pathQuery, String query) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(pathQuery)
+                        .query(query)
+                        .build()).retrieve()
+                .bodyToFlux(UserTier.class);
     }
 
 }

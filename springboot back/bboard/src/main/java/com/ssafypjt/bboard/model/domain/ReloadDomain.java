@@ -1,5 +1,6 @@
 package com.ssafypjt.bboard.model.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ssafypjt.bboard.model.domain.parsing.*;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.User;
@@ -45,28 +46,20 @@ public class ReloadDomain {
         this.recomProblemRepository = recomProblemRepository;
     }
 
-
     @Scheduled(fixedRate = 1000000)
     public void schedulTask() {
         //유저 목록을 사용한 상위 문제 100개 가져오기
         List<User> users = userRepository.selectAllUser();
-        for (User user : users){
-            System.out.println(user);
-        }
         processProblem(users);
-        for (User user : users){
-            System.out.println(user);
-        }
         //유저 정보 모두 받아오기
         processUser(users);
-
-//        //유저의 티어별 문제 갯수 받아오기
+        //유저의 티어별 문제 갯수 받아오기
         processUserTier(users);
     }
 
     @Scheduled(cron = "0 0 0 * * MON") // 월요일 자정에 전부 삭제하도록만 코드 작성
     // 문제마다 등록 시간을 정하여 scheduledTask에서 일정 시간이 넘어가면 삭제하도록 코드를 구성해도 된다!
-    public void scheduledTaskPerWeek(){
+    public void scheduledTaskPerWeek() {
         processRecomProblem();
     }
 
@@ -89,7 +82,7 @@ public class ReloadDomain {
                             null, // onNext 처리는 필요 없음
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
-                                this.resetProblems(problemDomain.proAndAlgoList);
+                                resetProblems(problemDomain.proAndAlgoList);
                             } // 완료 처리
                     );
         }
@@ -99,7 +92,10 @@ public class ReloadDomain {
     public void resetProblems(List<ProblemAndAlgoObjectDomain> list) {
         // 기존 테이블 삭제
         problemRepository.deleteAll();
+        userTierProblemRepository.deleteAll(); // 티어별 문제도 삭제해야 알고리즘 삭제 가능
         problemAlgorithmRepository.deleteAll();
+
+        Collections.sort(list);
 
         int idx = 0;
         Set<Integer> set = new HashSet<>();
@@ -107,7 +103,9 @@ public class ReloadDomain {
             if (idx >= list.size()) break;
             ProblemAndAlgoObjectDomain proAndAlgo = list.get(idx++);
             try {
-                if (set.add(proAndAlgo.getProblem().getProblemNum()) && set.size() > 100) break;
+                if (set.add(proAndAlgo.getProblem().getProblemNum())) {
+                    if (set.size() > 100) break;
+                }
                 problemAlgorithmRepository.insertAlgorithm(proAndAlgo.getProblemAlgorithm());
                 problemRepository.insertProblem(proAndAlgo.getProblem());
             } catch (DuplicateKeyException e) {
@@ -147,34 +145,43 @@ public class ReloadDomain {
     }
 
     public void processUserTier(List<User> users) {
-        Map<String, List<UserTier>> totalMap = new HashMap<>();
+        Map<Integer, List<UserTier>> totalMap = new HashMap<>();
+        for (User user : users) {
+            totalMap.put(user.getUserId(), new ArrayList<>());
+        }
         // 수정
         synchronized (totalMap) {
             Flux.fromIterable(users)
                     .delayElements(Duration.ofMillis(1))
                     .flatMap(user ->
-                            fetchDomain.fetchOneQueryData(
+                            fetchDomain.fetchOneQueryDataUserTIer(
                                             SACApiEnum.TIER.getPath(),
                                             SACApiEnum.TIER.getQuery(user.getUserName())
                                     )
                                     .doOnNext(data -> {
-                                                totalMap.putIfAbsent(user.getUserName(), userTierDomain.makeUserTierObject(data, user));
+                                                data.setUserId(user.getUserId());
                                             }
                                     )
-                    ).then()
+                    )
                     .subscribe(
-                            null, // onNext 처리는 필요 없음
+                            data -> {
+                                totalMap.get(data.getUserId()).add(data);
+                            }, // onNext 처리는 필요 없음
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
+                                for (Integer userId : totalMap.keySet()) {
+                                    List<UserTier> userTierList = totalMap.get(userId);
+                                    userTierDomain.makeUserTierObject(userTierList, userId);
+                                }
                                 resetUserTier(totalMap);
-//                                System.out.println(totalMap.get("bmike0413"));
                                 processUserTierProblem(users, totalMap);
+                                System.out.println("tier good");
                             } // 완료 처리
                     );
         }
     }
 
-    public void resetUserTier(Map<String, List<UserTier>> totalMap) {
+    public void resetUserTier(Map<Integer, List<UserTier>> totalMap) {
         tierProblemRepository.deleteAll();
         for (List<UserTier> userTierList : totalMap.values()) {
             for (UserTier userTier : userTierList) {
@@ -183,33 +190,53 @@ public class ReloadDomain {
         }
     }
 
-    // 동기적으로 작동하는 코드
-    public void processUserTierProblem(List<User> users, Map<String, List<UserTier>> totalMap) {
-        List<Problem> totalProblemList = new ArrayList<>();
-        for (User user: users) {
-            List<UserTier> userTierList = totalMap.get(user.getUserName());
-            int prevPage = 0;
-            List<Problem> problemListByPage = null;
-            for (UserTier userTier:userTierList) {
-                if(prevPage != userTier.getPageNo()){ // 새로 요청해야할 때만 요청하여 갱신
-                    // 해당 유저의 페이지당 문제 정보 동기적으로 가져오기
-                    problemListByPage = userTierProblemDomain.syncMakeUserTierProblem(userTier, user);
-                    prevPage = userTier.getPageNo();
-                }
-                totalProblemList.add(problemListByPage.get(userTier.getPageIdx()));
-            }
-        }
-        resetUserTierProblems(totalProblemList);
-
+    // 동기적으로 작동하는 코드 > 비동기로 바꿔야
+    // problemDomain 코드 재시용
+    public void processUserTierProblem(List<User> users, Map<Integer, List<UserTier>> totalMap) {
+        List<UserPageNoObjectDomain> userPageNoObjectDomainList = userTierProblemDomain.makeUserPageNoObjectDomainList(users, totalMap);
+        Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap = new HashMap<>();
+        Flux.fromIterable(userPageNoObjectDomainList)
+                .delayElements(Duration.ofMillis(1))
+                .flatMap(userPageNoObjectDomain ->
+                        fetchDomain.fetchOneQueryData(
+                                        SACApiEnum.USERTIERPROBLEM.getPath(),
+                                        SACApiEnum.USERTIERPROBLEM.getQuery(userPageNoObjectDomain.getUser().getUserName(), userPageNoObjectDomain.getPageNo())
+                                )
+                                .doOnNext(data -> {
+                                            User user = userPageNoObjectDomain.getUser();
+                                            int pageNo = userPageNoObjectDomain.getPageNo();
+                                            List<ProblemAndAlgoObjectDomain> list = problemDomain.makeProblemAndAlgoDomainList(data.path("items"), userPageNoObjectDomain.getUser());
+                                            synchronized (memoMap) {
+                                                memoMap.putIfAbsent(user, new HashMap<>());
+                                                memoMap.get(user).putIfAbsent(pageNo, list);
+                                            }
+                                        }
+                                )
+                )
+                .subscribe(
+                        null, // onNext 처리는 필요 없음
+                        Throwable::printStackTrace, // 에러 처리
+                        () -> {
+                            List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
+                            resetUserTierProblems(totalProblemAndAlgoList);
+                            System.out.println("tier problem good");
+                        } // 완료 처리
+                );
     }
-    public void resetUserTierProblems(List<Problem> totalProblemList) {
+
+
+
+    public void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList) {
         userTierProblemRepository.deleteAll();
-        for (Problem problem:totalProblemList) {
-            userTierProblemRepository.insertTierProblem(problem);
+        for (ProblemAndAlgoObjectDomain problemAndAlgo : totalProblemAndAlgoList) {
+            problemAlgorithmRepository.insertAlgorithm(problemAndAlgo.getProblemAlgorithm());
+        }
+        for (ProblemAndAlgoObjectDomain problemAndAlgo : totalProblemAndAlgoList) {
+            userTierProblemRepository.insertTierProblem(problemAndAlgo.getProblem());
         }
     }
 
-    public void processRecomProblem(){
+    public void processRecomProblem() {
         recomProblemRepository.deleteAll();
     }
 

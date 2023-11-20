@@ -45,21 +45,26 @@ public class ProblemDomain {
     }
 
 
+    // 코드 재활용을 위해 코드 분기
     //합쳐서 list 만드는 과정임 ->
     public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user, String enumName) {
         JsonNode arrayNode = aNode.path("items");
         if(!arrayNode.isArray()){
             return;
         }
+        addCase(enumName, user.getUserId(), makeProblemAndAlgoDomainList(arrayNode, user));
+
+    }
+
+    public List<ProblemAndAlgoObjectDomain> makeProblemAndAlgoDomainList(JsonNode arrayNode, User user){
         List<ProblemAndAlgoObjectDomain> tmpList = new ArrayList<>();
         for(JsonNode nodeItem: arrayNode) {
-                Problem problem = makeProblemObject(nodeItem, user);
-                ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
-                ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
-                tmpList.add(problemAndAlgoObjectDomain);
+            Problem problem = makeProblemObject(nodeItem, user);
+            ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
+            ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
+            tmpList.add(problemAndAlgoObjectDomain);
         }
-        addCase(enumName, user.getUserId(), tmpList);
-
+        return tmpList;
     }
 
 

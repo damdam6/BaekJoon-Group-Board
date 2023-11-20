@@ -1,7 +1,9 @@
 package com.ssafypjt.bboard.model.domain.parsing;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import com.ssafypjt.bboard.model.dto.User;
@@ -14,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -31,97 +34,40 @@ public class UserTierDomain {
         this.userTierProblemRepository = userTierProblemRepository;
     }
 
-    public List<UserTier> makeUserTierObject(JsonNode aNode, User user){
-
-        List<UserTier> list = new ArrayList<>();
-        for(JsonNode tierNode: aNode) {
-            UserTier userTier = mapper.convertValue(tierNode, UserTier.class);
-            userTier.setUserId(user.getUserId());
-        }
+    public List<UserTier> makeUserTierObject(List<UserTier> userTierList, Integer userId){
 
         // User 1개 당
         // 0 ~ 30 까지 총 31개의 Tier가 존재 가능한 것으로 보임
         int[] problemPrefixSum = new int[MAX_TIER+2];
         for (int i = MAX_TIER; i >= 0; i--) {
-            UserTier now = list.get(i);
+            UserTier now = userTierList.get(i);
             problemPrefixSum[i] = now.getProblemCount() +  problemPrefixSum[i+1];
             if (problemPrefixSum[i+1] == 0) continue;
-            now.setPageNo(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? problemPrefixSum[i+1] / NUMBER_OF_PAGES + 2 : problemPrefixSum[i+1] / NUMBER_OF_PAGES + 1);
-            now.setPageIdx(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? NUMBER_OF_PAGES : problemPrefixSum[i+1] % NUMBER_OF_PAGES);
+            now.setPageNo(problemPrefixSum[i+1] / NUMBER_OF_PAGES + 1);
+            now.setPageIdx(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? 0 : problemPrefixSum[i+1] % NUMBER_OF_PAGES);
+
+        }
+        for (UserTier userTier: userTierList){
+            System.out.println(userTier);
         }
 
         System.out.println(Arrays.toString(problemPrefixSum));
-        for (UserTier now : list){
-            System.out.println(now);
-        }
-
-        return list;
+        return userTierList;
     }
 
 
-
-    public void test(){
-        // 아래 모든 로직은 유저별로 반복적으로 돌려야함
-        // 아래 코드들은 1명의 유저들을 대상으로 user_tier_problem을 구하는 코드
-
-        final int MAX_TIER = 30;
-        final int NUMBER_OF_PAGES = 50;
-
-        // test용 UserTier 만들기
-        // 실제로는 api로 받아오면 됨
-        List<UserTier> list = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j <= MAX_TIER; j++) {
-                UserTier tier = new UserTier();
-                tier.setUserId(i);
-                tier.setTier(j);
-                tier.setProblemCount((int) (Math.random() * 100));
-                list.add(tier);
+    // JsonNode를 List<T>로 변환하는 메서드
+    private <T> List<T> convertJsonNodeToList(JsonNode jsonNode, Class<T> valueType) {
+        List<T> resultList = new ArrayList<>();
+        if (jsonNode.isArray()) {
+            Iterator<JsonNode> elements = jsonNode.elements();
+            while (elements.hasNext()) {
+                JsonNode element = elements.next();
+                T convertedValue = mapper.convertValue(element, valueType);
+                resultList.add(convertedValue);
             }
         }
-        list.get(30).setProblemCount(0);
-        list.get(29).setProblemCount(0);
-        list.get(28).setProblemCount(0);
-
-        for (UserTier now : list){
-            System.out.println(now);
-        }
-
-        // User 1개 당
-        // 0 ~ 30 까지 총 31개의 Tier가 존재 가능한 것으로 보임
-        int[] problemPrefixSum = new int[MAX_TIER+2];
-        for (int i = MAX_TIER; i >= 0; i--) {
-            UserTier now = list.get(i);
-            problemPrefixSum[i] = now.getProblemCount() +  problemPrefixSum[i+1];
-            if (problemPrefixSum[i+1] == 0) continue;
-            now.setPageNo(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? problemPrefixSum[i+1] / NUMBER_OF_PAGES + 2 : problemPrefixSum[i+1] / NUMBER_OF_PAGES + 1);
-            now.setPageIdx(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? NUMBER_OF_PAGES : problemPrefixSum[i+1] % NUMBER_OF_PAGES);
-        }
-
-        System.out.println(Arrays.toString(problemPrefixSum));
-        for (UserTier now : list){
-            System.out.println(now);
-        }
-
-        // UserTierProblem 생성하여 user_tier_problem 테이블에 넣는 로직
-        userTierProblemRepository.deleteAll();
-        int currPage = 0;
-        // 맵으로 수정
-        List<ProblemAndAlgoObjectDomain> problemAndAlgoObjectDomainList = null;
-        for (int i = MAX_TIER; i >=0; i--) {
-            UserTier now = list.get(i);
-            if (now.getPageNo() != currPage){ // 페이지를 안가져온 경우에만 API 호출
-                currPage = now.getPageNo();
-                // problemAndAlgoObjectDomainList = 페이지를 가져오는 API
-            }
-            // problemList.get(now.getPageIdx()) 로 문제를 가져올 것 (맨 앞 문제임, random 로직 추가 구현 가능)
-            //
-            Problem problem = new Problem(); // 선택된 problem 예시
-            userTierProblemRepository.insertTierProblem(problem);
-        }
-
-
+        return resultList;
     }
-
 
 }
