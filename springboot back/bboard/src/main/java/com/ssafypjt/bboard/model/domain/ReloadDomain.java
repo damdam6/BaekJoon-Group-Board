@@ -48,21 +48,17 @@ public class ReloadDomain {
 
     @Scheduled(fixedRate = 1000000)
     public void schedulTask() {
-        //유저 목록을 사용한 상위 문제 100개 가져오기
+        //유저 정보 업데이트
         List<User> users = userRepository.selectAllUser();
-        processProblem(users);
-        //유저 정보 모두 받아오기
         processUser(users);
+
+        //유저 목록을 사용한 상위 문제 100개 가져오기
+        users = userRepository.selectAllUser();
+        processProblem(users);
+
         //유저의 티어별 문제 갯수 받아오기
         processUserTier(users);
     }
-
-    @Scheduled(cron = "0 0 0 * * MON") // 월요일 자정에 전부 삭제하도록만 코드 작성
-    // 문제마다 등록 시간을 정하여 scheduledTask에서 일정 시간이 넘어가면 삭제하도록 코드를 구성해도 된다!
-    public void scheduledTaskPerWeek() {
-        processRecomProblem();
-    }
-
 
     public void processProblem(List<User> users) {
         synchronized (problemDomain.proAndAlgoList) {
@@ -98,14 +94,9 @@ public class ReloadDomain {
         Collections.sort(list);
 
         int idx = 0;
-        Set<Integer> set = new HashSet<>();
-        while (set.size() < 100) {
-            if (idx >= list.size()) break;
+        while (idx < list.size()) {
             ProblemAndAlgoObjectDomain proAndAlgo = list.get(idx++);
             try {
-                if (set.add(proAndAlgo.getProblem().getProblemNum())) {
-                    if (set.size() > 100) break;
-                }
                 problemAlgorithmRepository.insertAlgorithm(proAndAlgo.getProblemAlgorithm());
                 problemRepository.insertProblem(proAndAlgo.getProblem());
             } catch (DuplicateKeyException e) {
