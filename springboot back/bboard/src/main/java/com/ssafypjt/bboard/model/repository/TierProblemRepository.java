@@ -18,7 +18,7 @@ public interface TierProblemRepository {
     @Select("SELECT id, user_id as userId, tier, problem_count as problemCount FROM tier_problem WHERE user_id = #{userId}")
     public List<UserTier> selectUserTiers(int userId);
 
-    @Insert("INSERT INTO tier_problem (user_id, tier, problem_count, page_no) VALUES (userId, tier, problemCount, pageNo)")
+    @Insert("INSERT INTO tier_problem (user_id, tier, problem_count, page_no, page_idx) VALUES (#{userId}, #{tier}, #{problemCount}, #{pageNo}, #{pageIdx})")
     public int insertUserTier(UserTier userTier);
 
 
