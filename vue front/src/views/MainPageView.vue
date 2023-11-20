@@ -7,23 +7,14 @@
          <div id="main-content" class="relative w-full h-full overflow-y-auto bg-black">
             <main>
                <div class="px-4 pt-6">
-                  <div class="grid w-full grid-cols-1 gap-4 border border-white xl:grid-cols-2 2xl:grid-cols-3 ">
-                     <div class="p-4 bg-gray-900 border border-yellow-700 rounded-lg shadow sm:p-6 xl:p-8 2xl:col-span-2">
-                        <div class="flex items-center justify-between mb-4">
-                           <GroupUserView />
-                           <CompareView />
-
+                  <div class="grid w-full grid-cols-1 gap-4 border border-pink-600 2xl:grid-cols-7 ">
+                     <div class="p-4 bg-gray-900 border border-yellow-700 rounded-lg shadow sm:p-6 2xl:col-span-5">
+                        <div class="flex items-center justify-between mb-4 gap-x-4">
+                           <GroupUserView class="border border-sky-500 xl:col-span-2" />
+                           <CompareView class="border border-red-600" />
                         </div>
-                        <div class="text-white">
-                           테스트임; <br>
-                           테스트임; <br>
-                           테스트임; <br>
-                           테스트임; <br>
-                        </div>
-                        <BoxViewTemp class="border border-white" />
-                        <div id="main-chart"></div>
                      </div>
-                     <div class="p-4 bg-gray-900 rounded-lg shadow sm:p-6 xl:p-8 ">
+                     <div class="p-4 bg-gray-900 rounded-lg shadow sm:p-6 xl:p-8 2xl:col-span-2 ">
                         <div class="flex items-center justify-between mb-4">
                            <div>
                               <h3 class="mb-2 text-xl font-bold text-gray-900">Latest Transactions</h3>
@@ -165,7 +156,7 @@
 
 <script>
 import NavigationHeader from '../components/header/NavigationHeader.vue';
-import GroupUserView from '../components/GroupUserView.vue';
+import GroupUserView from '../components/group_user/GroupUserView.vue';
 import CompareView from '../components/CompareView.vue';
 import BoxViewTemp from '../components/BoxViewTemp.vue';
 
