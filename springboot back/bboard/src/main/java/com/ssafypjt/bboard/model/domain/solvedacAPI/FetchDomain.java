@@ -1,7 +1,6 @@
-package com.ssafypjt.bboard.model.domain.parsing;
+package com.ssafypjt.bboard.model.domain.solvedacAPI;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

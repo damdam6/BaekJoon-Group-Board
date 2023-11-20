@@ -1,20 +1,12 @@
-package com.ssafypjt.bboard.model.domain.parsing;
+package com.ssafypjt.bboard.model.domain.solvedacAPI;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafypjt.bboard.model.dto.Problem;
-import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
-import com.ssafypjt.bboard.model.enums.SACApiEnum;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
 @Component
-
 public class UserTierProblemDomain {
 
     public UserTierProblemDomain() {
@@ -34,9 +26,7 @@ public class UserTierProblemDomain {
 
     }
 
-    // 동기적으로 아이템 가져오기 (restTemplate 사용, 수정 필요)
     // problemDomain 코드 이용함
-
     public List<ProblemAndAlgoObjectDomain> makeTotalProblemAndAlgoList(Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap, Map<Integer, List<UserTier>> userTierMap){
 
         List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = new ArrayList<>();

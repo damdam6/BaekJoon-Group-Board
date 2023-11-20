@@ -1,4 +1,4 @@
-package com.ssafypjt.bboard.model.domain.parsing;
+package com.ssafypjt.bboard.model.domain.solvedacAPI;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +59,7 @@ public class ProblemDomain {
         for(JsonNode nodeItem: arrayNode) {
             Problem problem = makeProblemObject(nodeItem, user);
             ProblemAlgorithm problemAlgorithm = makeProblemAlgorithmObject(nodeItem);
-            ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem,problemAlgorithm);
+            ProblemAndAlgoObjectDomain problemAndAlgoObjectDomain = new ProblemAndAlgoObjectDomain(problem, problemAlgorithm);
             tmpList.add(problemAndAlgoObjectDomain);
         }
         return tmpList;

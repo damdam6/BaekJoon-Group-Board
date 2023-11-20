@@ -1,8 +1,6 @@
 package com.ssafypjt.bboard.model.domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.ssafypjt.bboard.model.domain.parsing.*;
-import com.ssafypjt.bboard.model.dto.Problem;
+import com.ssafypjt.bboard.model.domain.solvedacAPI.*;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.enums.SACApiEnum;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -47,6 +46,7 @@ public class ReloadDomain {
     }
 
     @Scheduled(fixedRate = 1000000)
+    @Transactional
     public void schedulTask() {
         //유저 정보 업데이트
         List<User> users = userRepository.selectAllUser();
