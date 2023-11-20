@@ -16,16 +16,9 @@ import java.util.*;
 @Component
 
 public class UserTierProblemDomain {
-    private ObjectMapper mapper;
-    private final RestTemplate restTemplate;
-    private final ProblemDomain problemDomain;
 
-    public UserTierProblemDomain(RestTemplate restTemplate, ObjectMapper mapper, ProblemDomain problemDomain) {
-        this.restTemplate = restTemplate;
-        this.mapper = mapper;
-        this.problemDomain = problemDomain;
+    public UserTierProblemDomain() {
     }
-
 
     public List<UserPageNoObjectDomain> makeUserPageNoObjectDomainList (List<User> users, Map<Integer, List<UserTier>> totalMap){
         Set<String> set = new HashSet<>();

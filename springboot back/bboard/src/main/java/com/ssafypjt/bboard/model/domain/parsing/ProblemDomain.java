@@ -23,8 +23,6 @@ public class ProblemDomain {
     public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
     public Map<Integer,List<ProblemAndAlgoObjectDomain>> proAndAlgoMap = new HashMap<>();
 
-    //userName & pageNum 으로 Api불러옴
-
 
     private void addToList(List<ProblemAndAlgoObjectDomain> tmpList){
         proAndAlgoList.addAll(tmpList);

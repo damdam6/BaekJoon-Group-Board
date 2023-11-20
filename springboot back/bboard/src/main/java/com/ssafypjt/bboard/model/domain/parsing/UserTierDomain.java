@@ -23,15 +23,13 @@ import java.util.List;
 public class UserTierDomain {
 
     private ObjectMapper mapper;
-    private UserTierProblemRepository userTierProblemRepository;
 
     final int MAX_TIER = 30;
     final int NUMBER_OF_PAGES = 50;
 
     @Autowired
-    public UserTierDomain(ObjectMapper mapper, UserTierProblemRepository userTierProblemRepository) {
+    public UserTierDomain(ObjectMapper mapper) {
         this.mapper = mapper;
-        this.userTierProblemRepository = userTierProblemRepository;
     }
 
     public List<UserTier> makeUserTierObject(List<UserTier> userTierList, Integer userId){
