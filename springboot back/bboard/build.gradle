@@ -31,8 +31,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'
-	implementation 'io.springfox:springfox-boot-starter:3.0.0' // swagger 안쓰면 필요 없음
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2' // swagger 안쓰면 필요 없음
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0' // 최신 버전으로 업데이트 가능
+
 }
 
 tasks.named('bootBuildImage') {
