@@ -1,5 +1,6 @@
 package com.ssafypjt.bboard.model.repository;
 
+import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.RecomProblem;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.ibatis.annotations.*;
@@ -19,8 +20,8 @@ public interface RecomProblemRepository {
     @Select("SELECT id, user_id as userId, group_id as groupId, problem_num as problemNum, tier, title FROM recom_problem")
     public List<RecomProblem> selectAllRecomProblems();
 
-    @Insert("INSERT INTO recom_problem (user_id, group_id, problem_num, tier, title) VALUES (#{userId}, #{groupId}, #{problemNum}, #{tier}, #{title})")
-    public int insertRecomProblem(RecomProblem recomProblem);
+    @Insert("INSERT INTO recom_problem (user_id, group_id, problem_num, tier, title) VALUES (#{p.userId}, #{groupId}, #{p.problemNum}, #{p.tier}, #{p.title})")
+    public int insertRecomProblem(@Param("p") Problem problem, @Param("groupId") int groupId);
 
     @Delete("DELETE FROM recom_problem WHERE group_id = #{groupId}")
     public int deleteRecomProblemByGroupId(@Param("groupId") int groupId);

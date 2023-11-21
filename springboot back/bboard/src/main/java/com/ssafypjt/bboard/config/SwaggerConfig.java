@@ -9,13 +9,13 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 
 
-// 안쓸듯
 @Configuration
 @OpenAPIDefinition(
-		info = @Info(title = "User-Service API 명세서",
-				description = "사용자 어플 서비스 API 명세서",
+		info = @Info(title = "BBOARD API 명세서",
+				description = "bboard controller API 명세서",
 				version = "v1"))
 public class SwaggerConfig {
 

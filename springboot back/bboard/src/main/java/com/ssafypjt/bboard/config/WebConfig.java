@@ -16,7 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
 
 	}
 
-
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		//  인터셉터를 사용..해야할까?
@@ -24,11 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
 //		registry.addInterceptor(customInterceptor).addPathPatterns("/**");
 	}
 
-	// 잘 안되면 *로 해버리자
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("https://solved.ac/api/v3");
-	
+		registry.addMapping("/**").allowedOrigins("https://solved.ac/api/v3", "http://localhost:5173");
+
 	}
 	
 	

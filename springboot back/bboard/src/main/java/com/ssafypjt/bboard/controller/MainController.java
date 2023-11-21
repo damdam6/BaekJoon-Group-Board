@@ -9,6 +9,9 @@ import com.ssafypjt.bboard.model.dto.*;
 import com.ssafypjt.bboard.model.service.GroupService;
 import com.ssafypjt.bboard.model.service.ProblemService;
 import com.ssafypjt.bboard.model.service.UserService;
+import com.ssafypjt.bboard.session.SessionManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/main")
@@ -27,22 +29,25 @@ public class MainController {
     private final GroupService groupService;
     private final ObjectMapper mapper;
     private final GroupDomain groupDomain;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public MainController(UserService userService, ProblemService problemService, GroupService groupService, ObjectMapper mapper, GroupDomain groupDomain){
+    public MainController(UserService userService, ProblemService problemService, GroupService groupService, ObjectMapper mapper, GroupDomain groupDomain, SessionManager sessionManager){
         this.userService = userService;
         this.problemService = problemService;
         this.groupService = groupService;
         this.mapper = mapper;
         this.groupDomain = groupDomain;
+        this.sessionManager = sessionManager;
     }
 
     // 그룹 page에서 Main page 진입시 그룹 정보 반환
-    @PostMapping("/group")
+    @GetMapping("/group")
     @Transactional
-    public ResponseEntity<ObjectNode> getGroupInfo(@RequestBody Map<String, Object> requestMap){ // ObjectNode (JSON DATA)로 전송
-        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
-        User user = userService.getUser(mapper.convertValue(requestMap.get("user"), Integer.class));
+    public ResponseEntity<ObjectNode> getGroupInfo(@PathVariable int groupId, HttpServletRequest request){ // ObjectNode (JSON DATA)로 전송
+        Group group = groupService.getGroup(groupId);
+        User user = userService.getUser((Integer) sessionManager.getSession(request));
+
         UserAndGroupObjectDomain userAndGroup = new UserAndGroupObjectDomain(user, group);
         List<User> userList = groupDomain.getUsers(userAndGroup); // 그룹 해당 유저 정보
         List<Problem> top100problemList = groupDomain.getProblems(userAndGroup, userList); // 그룹별 top 100개 문제 정보

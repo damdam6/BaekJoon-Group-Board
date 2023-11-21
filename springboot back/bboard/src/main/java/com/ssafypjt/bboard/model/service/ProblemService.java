@@ -12,6 +12,8 @@ public interface ProblemService {
     // 문제 가져오기
     public Problem getProblem(int id);
 
+    public Problem getProblemByNum(int problemNum);
+
     // user-tier, user-tier problem 로직
 
     // 등록된 유저들의 유저-티어 정보를 가져오기 (필요한가?)
@@ -24,7 +26,7 @@ public interface ProblemService {
     public List<Problem> getUserTierProblems(int userId);
 
     // recom_problem 로직
-    public int addRecomProblem(RecomProblem recomProblem);
+    public int addRecomProblem(Problem problem, int groupId);
 
     public RecomProblem getRecomProblem(int userId, int groupId);
 
