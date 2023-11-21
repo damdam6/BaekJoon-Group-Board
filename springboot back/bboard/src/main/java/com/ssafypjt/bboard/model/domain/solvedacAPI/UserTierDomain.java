@@ -37,11 +37,6 @@ public class UserTierDomain {
             now.setPageIdx(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? 0 : problemPrefixSum[i+1] % NUMBER_OF_PAGES);
 
         }
-        for (UserTier userTier: userTierList){
-            System.out.println(userTier);
-        }
-
-        System.out.println(Arrays.toString(problemPrefixSum));
         return userTierList;
     }
 
