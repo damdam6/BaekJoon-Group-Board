@@ -63,10 +63,12 @@ public class GroupDomain {
     }
 
     // 로그인된 유저와 관련된 문제만 선정
+    // 로그인된 유저 레벨과 5차이나는 문제 가져오기
+    // 다 주고 프론트에서 랜덤으로 추천해주는 것도 좋을듯?!
     public List<Problem> getUserTierProblems(UserAndGroupObjectDomain userAndGroup, List<User> userList){
         List<Problem> returnList = new ArrayList<>();
         for (Problem problem: userTierProblemRepository.selectGroupTierProblem(userList)) {
-            if (problem.getTier() == userAndGroup.getUser().getTier()) returnList.add(problem);
+            if (Math.abs(problem.getTier() - userAndGroup.getUser().getTier()) <= 5) returnList.add(problem);
         }
         return returnList;
     }
@@ -77,8 +79,7 @@ public class GroupDomain {
 
     // 그룹의 모든 문제의 알고리즘 정보 선정
     // user_group과 problem_algorithm 테이블을 연동하기 위해서는 join을 3번해야해서 모든 알고리즘을 가져오고 이진 탐색을 사용하였다.
-
-    public List<ProblemAlgorithm> getAlgorithms(List<Problem> problemList, List<RecomProblem> recomProblemList){
+    public List<ProblemAlgorithm> getAlgorithms(List<Problem> top100problemList, List<RecomProblem> recomProblemList){
         List<ProblemAlgorithm> algorithms = problemAlgorithmRepository.selectAllAlgorithm(); // ASC
         int[] algoProblemNum = new int[algorithms.size()];
         for (int i = 0; i< algorithms.size(); i++){
@@ -87,7 +88,7 @@ public class GroupDomain {
 
         // BinarySearch
         List<ProblemAlgorithm> returnList = new ArrayList<>();
-        for (Problem problem : problemList){
+        for (Problem problem : top100problemList){
             returnList.add(algorithms.get(Arrays.binarySearch(algoProblemNum, problem.getProblemNum())));
         }
         for (RecomProblem recomProblem : recomProblemList){

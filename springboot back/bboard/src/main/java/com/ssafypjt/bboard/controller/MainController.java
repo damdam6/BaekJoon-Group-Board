@@ -45,14 +45,14 @@ public class MainController {
         User user = mapper.convertValue(requestMap.get("user"), User.class);
         UserAndGroupObjectDomain userAndGroup = new UserAndGroupObjectDomain(user, group);
         List<User> userList = groupDomain.getUsers(userAndGroup); // 그룹 해당 유저 정보
-        List<Problem> problemList = groupDomain.getProblems(userAndGroup, userList); // 그룹별 top 100개 문제 정보
+        List<Problem> top100problemList = groupDomain.getProblems(userAndGroup, userList); // 그룹별 top 100개 문제 정보
         List<Problem> userTierProblemList = groupDomain.getUserTierProblems(userAndGroup, userList); // 그룹별 로그인된 유저에 해당하는 userTierProblem 정보
         List<RecomProblem> recomProblemList = groupDomain.getRecomProblems(userAndGroup); // 그룹별 recomProblem 정보
-        List<ProblemAlgorithm> algorithmList = groupDomain.getAlgorithms(problemList, recomProblemList); // 그룹의 모든 문제의 알고리즘 정보
+        List<ProblemAlgorithm> algorithmList = groupDomain.getAlgorithms(top100problemList, recomProblemList); // 그룹의 모든 문제의 알고리즘 정보
 
         ObjectNode responseJson = JsonNodeFactory.instance.objectNode();
         responseJson.set("users", mapper.valueToTree(userList));
-        responseJson.set("problems", mapper.valueToTree(problemList));
+        responseJson.set("top100problems", mapper.valueToTree(top100problemList));
         responseJson.set("userTierProblems", mapper.valueToTree((userTierProblemList)));
         responseJson.set("recomProblems", mapper.valueToTree(recomProblemList));
         responseJson.set("algorithms", mapper.valueToTree(algorithmList));
