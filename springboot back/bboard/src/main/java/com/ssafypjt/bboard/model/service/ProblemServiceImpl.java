@@ -40,6 +40,11 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    public Problem getProblemByNum(int problemNum) {
+        return problemRepository.selectProblemByNum(problemNum);
+    }
+
+    @Override
     public List<UserTier> getAllUserTiers() {
         return tierProblemRepository.selectAllUserTiers();
     }
@@ -56,11 +61,13 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public int addRecomProblem(RecomProblem recomProblem) { // 그룹별로 10개가 초과되면 id가 빠른 순 (등록이 빠른 순) 으로 삭제된다.
-        if (recomProblemRepository.selectGroupRecomProblems(recomProblem.getGroupId()).size() >= 10){
+    public int addRecomProblem(Problem problem, int groupId) { // 그룹별로 10개가 초과되면 id가 빠른 순 (등록이 빠른 순) 으로 삭제된다.
+        if (recomProblemRepository.selectGroupRecomProblems(groupId).size() >= 10){
             recomProblemRepository.deleteFirstRecomProblem();
         }
-        return recomProblemRepository.insertRecomProblem(recomProblem);
+        // 이미 등록된 문제가 있는지 확인 필요
+
+        return recomProblemRepository.insertRecomProblem(problem, groupId);
     }
 
     @Override

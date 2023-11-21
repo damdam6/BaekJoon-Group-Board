@@ -18,6 +18,9 @@ public interface ProblemRepository {
     @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM problem WHERE id = #{id}") // * 수정
     public Problem selectProblem(int id);
 
+    @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM problem WHERE problem_num = #{problemNum}") // * 수정
+    public Problem selectProblemByNum(int problemNum);
+
     @Select({
             "<script>",
             "SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM problem",
