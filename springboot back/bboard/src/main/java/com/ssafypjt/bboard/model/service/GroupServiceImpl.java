@@ -75,7 +75,7 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public int addUser(Group group, int userId) { // 유저 등록 & 유저-그룹 관계 등록
         int groupId = group.getId();
-        if (groupId == 0) { // 새로운 그룹
+        if (groupId == 0) { // 새로운 그룹이라면
             groupId = groupRepository.selectGroupByName(group.getGroupName()).getId();
         }
         System.out.println(groupId);

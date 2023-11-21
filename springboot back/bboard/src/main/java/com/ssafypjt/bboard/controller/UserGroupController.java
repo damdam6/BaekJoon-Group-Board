@@ -153,7 +153,7 @@ public class UserGroupController {
     // 정상 작동시 등록된 유저 정보 반환
     // 유저 삭제 비정상 작동시 BAD_REQUEST
     @PostMapping("/group/add-user")
-    public ResponseEntity<?> addUser(@RequestBody Map<String, Object> requestMap){
+    public ResponseEntity<?> addUserIntoGroup(@RequestBody Map<String, Object> requestMap){
         Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
         User user = objectMapper.convertValue(requestMap.get("user"), User.class);
         int result = groupService.addUser(group, user.getUserId());

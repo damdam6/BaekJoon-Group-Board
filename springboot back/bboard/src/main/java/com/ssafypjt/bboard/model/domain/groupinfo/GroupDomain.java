@@ -23,6 +23,9 @@ public class GroupDomain {
     private final UserRepository userRepository;
     private final UserTierProblemRepository userTierProblemRepository;
 
+    private final int TIER_DIFF_UPPERBOUND = 5;
+    private final int TIER_DIFF_LOWERBOUND = -2;
+
     @Autowired
     public GroupDomain(GroupRepository groupRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemRepository problemRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserGroupRepository userGroupRepository, UserRepository userRepository, UserTierProblemRepository userTierProblemRepository) {
         this.groupRepository = groupRepository;
@@ -43,8 +46,13 @@ public class GroupDomain {
         return userList;
     }
 
+    // 반출 순서는 1. 티어 내림차순 2. 문제수 오름차순 (2번 조건을 안주면 userId가별로 오름차순되어서 userId가 낮을 수록 유리해진다)
     public List<Problem> getProblems(UserAndGroupObjectDomain userAndGroup, List<User> userList){
         List<Problem> problemList = problemRepository.selectGroupProblem(userList);
+        Collections.sort(problemList, (o1, o2) -> {
+            if (o2.getTier() == o1.getTier()) return o1.getProblemNum() - o2.getProblemNum();
+            return o2.getTier() - o1.getTier();
+        });
         List<Problem> returnList = new ArrayList<>();
         // 100개 선정 로직
         Set<Integer> set = new HashSet<>();
@@ -63,13 +71,25 @@ public class GroupDomain {
     }
 
     // 로그인된 유저와 관련된 문제만 선정
-    // 로그인된 유저 레벨과 5차이나는 문제 가져오기
-    // 다 주고 프론트에서 랜덤으로 추천해주는 것도 좋을듯?!
+    // 로그인된 유저 레벨과 아래로 2, 위로 5차이나는 문제 가져오기
+    // 다 주고 프론트에서 랜덤으로 추천해주는 것도 좋을듯?! -> 안좋음, 백에서 다 정리해서 주자
     public List<Problem> getUserTierProblems(UserAndGroupObjectDomain userAndGroup, List<User> userList){
         List<Problem> returnList = new ArrayList<>();
+        Map<Integer, Problem> map = new HashMap<>();
+        User user = userAndGroup.getUser();
+
         for (Problem problem: userTierProblemRepository.selectGroupTierProblem(userList)) {
-            if (Math.abs(problem.getTier() - userAndGroup.getUser().getTier()) <= 5) returnList.add(problem);
+            int tierDiff = problem.getTier() - user.getTier();
+            if (TIER_DIFF_LOWERBOUND <= tierDiff && tierDiff <= TIER_DIFF_UPPERBOUND) {
+                map.putIfAbsent(problem.getUserId(), problem);
+                int mapTierDiff = map.get(problem.getUserId()).getTier() - user.getTier();
+                if (Math.abs(tierDiff) < Math.abs(mapTierDiff)){
+                    map.put(problem.getUserId(), problem);
+                }
+            }
         }
+
+        returnList.addAll(map.values());
         return returnList;
     }
 
