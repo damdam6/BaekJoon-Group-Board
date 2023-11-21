@@ -3,8 +3,9 @@
    <!-- This is an example component -->
    <div>
       <NavigationHeader />
+      <div>{{ fullObject.value }}</div>
       <div class="flex w-full pt-16 overflow-hidden bg-black">
-         <div id="main-content" class="relative w-full min-h-screen overflow-y-auto bg-black">
+         <div id="main-content" class="relative w-full min-h-screen overflow-y-auto ">
             <main>
                <div class="px-20 pt-10">
                   <div class="grid w-full h-full grid-cols-1 gap-4 2xl:grid-cols-7 ">
@@ -151,20 +152,33 @@
 
 <script>
 import NavigationHeader from '../components/header/NavigationHeader.vue';
-
-
+import { defineStore } from 'pinia';
 import LeftChangeBox from '../components/mainpage/LeftChangeBox.vue';
+import { dbStore } from '../stores/db';
 
 export default {
-   mounted() {
-      let script = document.createElement("script");
-      script.async = true;
-      script.defer = true;
-      script.src = "https://buttons.github.io/buttons.js";
-      document.head.appendChild(script);
+
+   setup() {
+      const dbStoreInst = dbStore();
+      const error = ref(null);
+
+      const fetchData = async () => {
+         try {
+            const response = await axios.post('주소필요', user_id-- - 이거 로그인한 유저 아이디 줌, group_id--이거 로그인한 유저가 선택한 그룹 id 줌);
+            dbStore.fullObject.value = response.data;
+         } catch (err) {
+            error.value = err.message;
+         }
+      };
+      onMounted(() => {
+         fetchData();
+      });
+
+      return {}
    },
+
    components: { NavigationHeader, LeftChangeBox }
-}
+};
 </script>
 
 
