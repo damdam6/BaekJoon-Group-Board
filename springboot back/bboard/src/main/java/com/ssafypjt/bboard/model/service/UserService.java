@@ -10,6 +10,8 @@ public interface UserService {
     // 유저 가져오기
     public User getUser(int id);
 
+    public User getUserByName(String userName);
+
     // 유저 전부 가져오기
     public List<User> getAllUser();
 

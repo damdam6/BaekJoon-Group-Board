@@ -41,6 +41,7 @@ public class ProblemController {
         return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
     }
 
+
     @GetMapping("/tier")
     public ResponseEntity<?> getTiers(){
         List<UserTier> userTierList = problemService.getAllUserTiers();
@@ -55,6 +56,7 @@ public class ProblemController {
         if (problemList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
     }
+    //5e8267f0-958e-49a2-ba4d-df0efffcbf45
 
     // 유저 id, group id, problem num 필요
     @PostMapping("/recomproblem")

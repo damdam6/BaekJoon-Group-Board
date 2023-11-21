@@ -50,10 +50,11 @@ public class UserAddReloadDomain {
     }
 
     @Transactional
-    public void userAddTask(User user) {
+    public void userAddTask(String userName) {
         //유저 정보 추가, 유저 1명만
         // 유저가 성공적으로 등록되어야만
-        if (processUser(user)) {
+        User user = processUser(userName); // 이게 비동기라 돌아가나..?
+        if (user != null) {
             //유저 목록을 사용한 상위 문제 100개 가져오기
             List<User> users = userRepository.selectAllUser();
             reloadDomain.processProblem(users); // 코드 재사용
@@ -63,12 +64,12 @@ public class UserAddReloadDomain {
     }
 
 
-    private boolean processUser(User user) {
+    private User processUser(String userName) {
         Map<String, User> map = new HashMap<>();
         Mono.fromCallable(() ->
                         fetchDomain.fetchOneQueryData(
                                         SACApiEnum.USER.getPath(),
-                                        SACApiEnum.USER.getQuery(user.getUserName())
+                                        SACApiEnum.USER.getQuery(userName)
                                 )
                                 .doOnNext(data -> {
                                             map.putIfAbsent("user", userDomain.makeUserObject(data));
@@ -85,7 +86,7 @@ public class UserAddReloadDomain {
                             }
                         }
                 );
-        return map.get("user") != null;
+        return map.get("user");
     }
 
     private void insertUser(User user) {
