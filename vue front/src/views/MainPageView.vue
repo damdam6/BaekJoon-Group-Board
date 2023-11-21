@@ -3,17 +3,13 @@
    <!-- This is an example component -->
    <div>
       <NavigationHeader />
+      <div>{{ fullObject.value }}</div>
       <div class="flex w-full pt-16 overflow-hidden bg-black">
-         <div id="main-content" class="relative w-full h-full overflow-y-auto bg-black">
+         <div id="main-content" class="relative w-full min-h-screen overflow-y-auto ">
             <main>
-               <div class="px-4 pt-6">
-                  <div class="grid w-full grid-cols-1 gap-4 border border-pink-600 2xl:grid-cols-7 ">
-                     <div class="p-4 bg-gray-900 border border-yellow-700 rounded-lg shadow sm:p-6 2xl:col-span-5">
-                        <div class="flex items-center justify-between mb-4 gap-x-4">
-                           <GroupUserView class="border border-sky-500 xl:col-span-2" />
-                           <CompareView class="border border-red-600" />
-                        </div>
-                     </div>
+               <div class="px-20 pt-10">
+                  <div class="grid w-full h-full grid-cols-1 gap-4 2xl:grid-cols-7 ">
+                     <LeftChangeBox />
                      <div class="p-4 bg-gray-900 rounded-lg shadow sm:p-6 xl:p-8 2xl:col-span-2 ">
                         <div class="flex items-center justify-between mb-4">
                            <div>
@@ -155,21 +151,38 @@
 </template>
 
 <script>
+import { onMounted } from 'vue';
+import { ref } from 'vue';
 import NavigationHeader from '../components/header/NavigationHeader.vue';
-import GroupUserView from '../components/group_user/GroupUserView.vue';
-import CompareView from '../components/CompareView.vue';
-import BoxViewTemp from '../components/BoxViewTemp.vue';
+import LeftChangeBox from '../components/mainpage/LeftChangeBox.vue';
+import { dbStore } from '../stores/db';
+import axios from 'axios';
 
 export default {
-   mounted() {
-      let script = document.createElement("script");
-      script.async = true;
-      script.defer = true;
-      script.src = "https://buttons.github.io/buttons.js";
-      document.head.appendChild(script);
+
+   setup() {
+      const dbStoreInst = dbStore();
+      const error = ref(null);
+
+      const fetchData = async () => {
+         try {
+            const response = await axios.post('http://localhost:8080/api/main/group', { user_id: 1, group_id: 1 });
+            console.log(response);
+            dbStoreInst.fullObject.value = response.data;
+         } catch (err) {
+            error.value = err.message;
+            console.log(error.value.message)
+         }
+      };
+      onMounted(() => {
+         fetchData();
+      });
+
+      return {}
    },
-   components: { NavigationHeader, GroupUserView, CompareView, BoxViewTemp }
-}
+
+   components: { NavigationHeader, LeftChangeBox }
+};
 </script>
 
 
