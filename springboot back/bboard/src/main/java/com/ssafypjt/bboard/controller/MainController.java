@@ -41,8 +41,8 @@ public class MainController {
     @PostMapping("/group")
     @Transactional
     public ResponseEntity<ObjectNode> getGroupInfo(@RequestBody Map<String, Object> requestMap){ // ObjectNode (JSON DATA)로 전송
-        Group group = mapper.convertValue(requestMap.get("group"), Group.class);
-        User user = mapper.convertValue(requestMap.get("user"), User.class);
+        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
+        User user = userService.getUser(mapper.convertValue(requestMap.get("user"), Integer.class));
         UserAndGroupObjectDomain userAndGroup = new UserAndGroupObjectDomain(user, group);
         List<User> userList = groupDomain.getUsers(userAndGroup); // 그룹 해당 유저 정보
         List<Problem> top100problemList = groupDomain.getProblems(userAndGroup, userList); // 그룹별 top 100개 문제 정보
