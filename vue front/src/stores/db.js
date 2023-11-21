@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 
 export const dbStore = defineStore('allData', () => {
 
-  const fullObject = ref({})  
+  const fullObject = ref({null:null})  
 
   const userList = computed(() => fullObject.value.users)
   const userMap = computed(() => {

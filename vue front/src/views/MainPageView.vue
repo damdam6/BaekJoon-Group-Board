@@ -151,10 +151,12 @@
 </template>
 
 <script>
+import { onMounted } from 'vue';
+import { ref } from 'vue';
 import NavigationHeader from '../components/header/NavigationHeader.vue';
-import { defineStore } from 'pinia';
 import LeftChangeBox from '../components/mainpage/LeftChangeBox.vue';
 import { dbStore } from '../stores/db';
+import axios from 'axios';
 
 export default {
 
@@ -164,10 +166,12 @@ export default {
 
       const fetchData = async () => {
          try {
-            const response = await axios.post('주소필요', user_id-- - 이거 로그인한 유저 아이디 줌, group_id--이거 로그인한 유저가 선택한 그룹 id 줌);
-            dbStore.fullObject.value = response.data;
+            const response = await axios.post('http://localhost:8080/api/main/group', { user_id: 1, group_id: 1 });
+            console.log(response);
+            dbStoreInst.fullObject.value = response.data;
          } catch (err) {
             error.value = err.message;
+            console.log(error.value.message)
          }
       };
       onMounted(() => {

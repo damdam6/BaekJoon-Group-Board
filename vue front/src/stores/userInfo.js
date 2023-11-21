@@ -13,8 +13,7 @@ export const selectedUserStore= defineStore('pickUser', () => {
     proTitle : ref(null),
     proAlgo :ref([])
   }
-  const selectUser = computed((userId) => {
-  })
+
 
   return { userName, userTier, userRank, userSolvedCnt, userRecomPro }
 })
