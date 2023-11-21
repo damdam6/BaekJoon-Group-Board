@@ -69,11 +69,6 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<RecomProblem> getGroupRecomProblems(int groupId) {
-        return recomProblemRepository.selectGroupRecomProblems(groupId);
-    }
-
-    @Override
     public List<RecomProblem> getAllRecomProblems() {
         return recomProblemRepository.selectAllRecomProblems();
     }
@@ -88,33 +83,6 @@ public class ProblemServiceImpl implements ProblemService {
         return problemAlgorithmRepository.selectAlgorithm(problemNum);
     }
 
-    @Override
-    public List<Problem> getGroupProblems(int groupId) {
-        List<User> userList = groupService.getUsers(groupId);
-        List<Problem> problemList = problemRepository.selectGroupProblem(userList);
-        List<Problem> returnList = new ArrayList<>();
-
-        // 100개 선정 로직
-        Set<Integer> set = new HashSet<>();
-        int idx = 0;
-        while (set.size() <= 100) {
-            if (idx >= problemList.size()) break;
-            Problem problem = problemList.get(idx++);
-            if (set.add(problem.getProblemNum())) {
-                if (set.size() > 100) break;
-            }
-            returnList.add(problem);
-        }
-
-        return returnList;
-    }
-
-
-    @Override
-    public List<Problem> getGroupUserTierProblems(int groupId) {
-        List<User> userList = groupService.getUsers(groupId);
-        return userTierProblemRepository.selectGroupTierProblem(userList);
-    }
 
 
 }

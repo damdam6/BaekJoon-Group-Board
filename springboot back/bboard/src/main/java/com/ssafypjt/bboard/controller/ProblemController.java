@@ -6,7 +6,6 @@ import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.service.ProblemService;
 import com.ssafypjt.bboard.model.service.UserService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api-problem")
+@RequestMapping("/api/problem")
 public class ProblemController {
 
     private ProblemService problemService;
@@ -24,21 +23,21 @@ public class ProblemController {
         this.problemService = problemService;
     }
 
-    @GetMapping("/problem")
+    @GetMapping("")
     public ResponseEntity<?> getProblems(){
         List<Problem> problemList = problemService.getAllProblems();
         if (problemList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
     }
 
-    @GetMapping("/problem/tier")
+    @GetMapping("/tier")
     public ResponseEntity<?> getTiers(){
         List<UserTier> userTierList = problemService.getAllUserTiers();
         if (userTierList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<List<UserTier>>(userTierList, HttpStatus.OK);
     }
 
-    @GetMapping("/problem/tier-problem/{userId}")
+    @GetMapping("/tier-problem/{userId}")
     public ResponseEntity<?> getTierProblems(@PathVariable int userId){
 
         List<Problem> problemList = problemService.getUserTierProblems(userId);
@@ -46,14 +45,7 @@ public class ProblemController {
         return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
     }
 
-    @GetMapping("/problem/recomproblem/{groupId}")
-    public ResponseEntity<?> getGroupRecomProblems(@PathVariable int groupId){
-        List<RecomProblem> recomProblemList = problemService.getGroupRecomProblems(groupId);
-        if (recomProblemList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-        return new ResponseEntity<List<RecomProblem>>(recomProblemList, HttpStatus.OK);
-    }
-
-    @PostMapping("/problem/recomproblem")
+    @PostMapping("/recomproblem")
     public ResponseEntity<?> addRecomProblem(@RequestBody RecomProblem recomProblem){
         int result = problemService.addRecomProblem(recomProblem);
         if (result == 0)

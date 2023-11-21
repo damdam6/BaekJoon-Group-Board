@@ -1,4 +1,4 @@
-package com.ssafypjt.bboard.model.domain.parsing;
+package com.ssafypjt.bboard.model.domain.solvedacAPI;
 
 import com.ssafypjt.bboard.model.dto.User;
 import lombok.Data;

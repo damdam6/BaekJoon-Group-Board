@@ -1,4 +1,4 @@
-package com.ssafypjt.bboard.model.domain.parsing;
+package com.ssafypjt.bboard.model.domain.solvedacAPI;
 
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
@@ -14,17 +14,9 @@ public class ProblemAndAlgoObjectDomain implements Comparable<ProblemAndAlgoObje
 
     }
 
-    ProblemAndAlgoObjectDomain(Problem problem, ProblemAlgorithm problemAlgorithm) {
+    public ProblemAndAlgoObjectDomain(Problem problem, ProblemAlgorithm problemAlgorithm) {
         this.problem = problem;
         this.problemAlgorithm = problemAlgorithm;
-    }
-
-    public Problem getProblem() {
-        return problem;
-    }
-
-    public ProblemAlgorithm getProblemAlgorithm() {
-        return problemAlgorithm;
     }
 
     @Override
@@ -37,8 +29,4 @@ public class ProblemAndAlgoObjectDomain implements Comparable<ProblemAndAlgoObje
         return 0;
     }
 
-    @Override
-    public String toString() {
-        return problem.toString() + "\n" + problemAlgorithm.toString();
-    }
 }

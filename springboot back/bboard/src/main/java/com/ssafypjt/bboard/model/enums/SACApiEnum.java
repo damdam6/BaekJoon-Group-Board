@@ -1,6 +1,6 @@
 package com.ssafypjt.bboard.model.enums;
 
-import com.ssafypjt.bboard.model.domain.parsing.ProblemAndAlgoObjectDomain;
+import com.ssafypjt.bboard.model.domain.solvedacAPI.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
