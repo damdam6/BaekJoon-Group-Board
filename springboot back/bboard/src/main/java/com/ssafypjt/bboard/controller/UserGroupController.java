@@ -5,7 +5,6 @@ import com.ssafypjt.bboard.model.dto.Group;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.service.GroupService;
 import com.ssafypjt.bboard.model.service.UserService;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,13 @@ public class UserGroupController {
 
     private UserService userService;
     private GroupService groupService;
-    private ObjectMapper objectMapper = new ObjectMapper(); // 이거 나중에 util에서 bean 등록해서 사용할 것
+    private ObjectMapper mapper;
 
     @Autowired
-    private UserGroupController(UserService userService, GroupService groupService) {
+    private UserGroupController(UserService userService, GroupService groupService, ObjectMapper mapper) {
         this.userService = userService;
         this.groupService = groupService;
+        this.mapper = mapper;
     }
 
     // 유저 입력 페이지
@@ -80,8 +80,8 @@ public class UserGroupController {
     // 해당 유저에가 이미 3개의 그룹에 가입되어있으면 FORBIDDEN
     @PostMapping("/group")
     public ResponseEntity<?> addGroup(@RequestBody Map<String, Object> requestMap){
-        Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
-        User user = objectMapper.convertValue(requestMap.get("user"), User.class);
+        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
+        User user = userService.getUser(mapper.convertValue(requestMap.get("user"), Integer.class));
 
         if (group.getPassword().length() < 4) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 
@@ -102,8 +102,8 @@ public class UserGroupController {
     // 그룹 탈퇴로 인해 그룹 삭제시 OK, -1 리턴;
     @PostMapping("/group/leave") // 그룹 탈퇴
     public ResponseEntity<?> leaveGroup(@RequestBody Map<String, Object> requestMap){
-        Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
-        User user = objectMapper.convertValue(requestMap.get("user"), User.class);
+        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
+        User user = userService.getUser(mapper.convertValue(requestMap.get("user"), Integer.class));
         int result = groupService.removeUser(group.getId(), user.getUserId());
         if(result == 0) new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 
@@ -123,8 +123,8 @@ public class UserGroupController {
     // login 여부 boolean 반환
     @PostMapping("/group/admin")
     public ResponseEntity<Boolean> adminLogin(@RequestBody Map<String, Object> requestMap){
-        Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
-        String inputPassword = objectMapper.convertValue(requestMap.get("password"), String.class);
+        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
+        String inputPassword = mapper.convertValue(requestMap.get("password"), String.class);
 
         if (groupService.adminValid(group.getId(), inputPassword)){
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -154,8 +154,8 @@ public class UserGroupController {
     // 유저 삭제 비정상 작동시 BAD_REQUEST
     @PostMapping("/group/add-user")
     public ResponseEntity<?> addUserIntoGroup(@RequestBody Map<String, Object> requestMap){
-        Group group = objectMapper.convertValue(requestMap.get("group"), Group.class);
-        User user = objectMapper.convertValue(requestMap.get("user"), User.class);
+        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
+        User user = userService.getUser(mapper.convertValue(requestMap.get("user"), Integer.class));
         int result = groupService.addUser(group, user.getUserId());
 
         if (result == 0) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
@@ -168,8 +168,8 @@ public class UserGroupController {
     // 유저 삭제 비정상 작동시 BAD_REQUEST
     @PostMapping("/group/remove-user")
     public ResponseEntity<?> removeUser(@RequestBody Map<String, Object> requestMap){
-        Group group = objectMapper.convertValue(requestMap.get("groupId"), Group.class);
-        User user = objectMapper.convertValue(requestMap.get("userId"), User.class);
+        Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
+        User user = userService.getUser(mapper.convertValue(requestMap.get("user"), Integer.class));
         int result = groupService.removeUser(group.getId(), user.getUserId());
         if (result == 0) return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<User>(user, HttpStatus.OK);
