@@ -23,7 +23,17 @@ public class UserTierProblemDomain {
             }
         }
         return userPageNoObjectDomainList;
+    }
 
+    public List<UserPageNoObjectDomain> makeUserPageNoObjectDomainList(User user, List<UserTier> userTiers){
+        Set<String> set = new HashSet<>();
+        List<UserPageNoObjectDomain> userPageNoObjectDomainList = new ArrayList<>();
+            for(UserTier userTier : userTiers) {
+                if (set.add(userTier.getUserId() + " " + userTier.getPageNo())) {
+                    userPageNoObjectDomainList.add(new UserPageNoObjectDomain(user, userTier.getPageNo()));
+                }
+            }
+        return userPageNoObjectDomainList;
     }
 
     // problemDomain 코드 이용함
@@ -35,8 +45,7 @@ public class UserTierProblemDomain {
             int prevPage = 0;
             List<ProblemAndAlgoObjectDomain> problemListByPage = null;
             for (UserTier userTier : userTierList) {
-                if(prevPage != userTier.getPageNo()){ // 새로 요청해야할 때만 요청하여 갱신
-                    // 해당 유저의 페이지당 문제 정보 동기적으로 가져오기
+                if(prevPage != userTier.getPageNo()){
                     problemListByPage = memoMap.get(user).get(userTier.getPageNo());
                     prevPage = userTier.getPageNo();
                 }
@@ -47,8 +56,10 @@ public class UserTierProblemDomain {
                 }
             }
         }
+
         return totalProblemAndAlgoList;
     }
+
 
 
 }

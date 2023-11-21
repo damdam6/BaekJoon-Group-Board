@@ -51,7 +51,6 @@ public class ProblemDomain {
             return;
         }
         addCase(enumName, user.getUserId(), makeProblemAndAlgoDomainList(arrayNode, user));
-
     }
 
     public List<ProblemAndAlgoObjectDomain> makeProblemAndAlgoDomainList(JsonNode arrayNode, User user){
