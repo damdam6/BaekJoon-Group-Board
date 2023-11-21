@@ -11,11 +11,10 @@ import org.springframework.context.annotation.Configuration;
 
 
 
-// 안쓸듯
 @Configuration
 @OpenAPIDefinition(
-		info = @Info(title = "User-Service API 명세서",
-				description = "사용자 어플 서비스 API 명세서",
+		info = @Info(title = "BBOARD API 명세서",
+				description = "bboard controller API 명세서",
 				version = "v1"))
 public class SwaggerConfig {
 
