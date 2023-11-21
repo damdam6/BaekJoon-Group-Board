@@ -6,7 +6,6 @@ import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.service.ProblemService;
 import com.ssafypjt.bboard.model.service.UserService;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

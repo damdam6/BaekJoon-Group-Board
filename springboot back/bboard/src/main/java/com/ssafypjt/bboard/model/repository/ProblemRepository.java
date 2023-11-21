@@ -29,6 +29,9 @@ public interface ProblemRepository {
     })
     public List<Problem> selectGroupProblem(@Param("users") List<User> user);
 
+    @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM problem WHERE user_id = #{userId}")
+    public List<Problem> selectUserProblem(int userId);
+
     @Select("SELECT id, user_id as userId, problem_num as problemNum, tier, title FROM tier_problem") // * 수정
     public List<Problem> selectAllTierProblems(int tier, int groupId);
 

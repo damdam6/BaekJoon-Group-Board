@@ -118,6 +118,9 @@ public class GroupDomain {
         return returnList;
     }
 
+    public List<Problem> getUserProblems(UserAndGroupObjectDomain userAndGroup){
+        return problemRepository.selectUserProblem(userAndGroup.getUser().getUserId());
+    }
 
 
 }

@@ -6,6 +6,7 @@ import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.enums.SACApiEnum;
 import com.ssafypjt.bboard.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class UserAddReloadDomain {
 
     private final ProblemRepository problemRepository;
@@ -61,7 +63,7 @@ public class UserAddReloadDomain {
     }
 
 
-    public boolean processUser(User user) {
+    private boolean processUser(User user) {
         Map<String, User> map = new HashMap<>();
         Mono.fromCallable(() ->
                         fetchDomain.fetchOneQueryData(
@@ -86,11 +88,11 @@ public class UserAddReloadDomain {
         return map.get("user") != null;
     }
 
-    public void insertUser(User user) {
+    private void insertUser(User user) {
         userRepository.insertUser(user);
     }
 
-    public void processUserTier(User user) {
+    private void processUserTier(User user) {
         Map<Integer, List<UserTier>> totalMap = new HashMap<>();
         totalMap.put(user.getUserId(), new ArrayList<>());
         Mono.fromCallable(() ->
@@ -116,11 +118,11 @@ public class UserAddReloadDomain {
 
     }
 
-    public void resetUserTier(List<UserTier> list){
+    private void resetUserTier(List<UserTier> list){
         tierProblemRepository.insertUserTiers(list);
     }
 
-    public void processUserTierProblem(User user, Map<Integer, List<UserTier>> totalMap){
+    private void processUserTierProblem(User user, Map<Integer, List<UserTier>> totalMap){
         Long cur = System.currentTimeMillis();
         List<UserPageNoObjectDomain> userPageNoObjectDomainList = userTierProblemDomain.makeUserPageNoObjectDomainList(user, totalMap.get(user.getUserId()));
         Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap = new HashMap<>();
@@ -156,7 +158,7 @@ public class UserAddReloadDomain {
                 );
     }
 
-    public void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> list){
+    private void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> list){
         problemAlgorithmRepository.insertAlgorithms(list);
         userTierProblemRepository.insertTierProblems(list);
     }

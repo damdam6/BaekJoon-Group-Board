@@ -49,6 +49,7 @@ public class MainController {
         List<Problem> userTierProblemList = groupDomain.getUserTierProblems(userAndGroup, userList); // 그룹별 로그인된 유저에 해당하는 userTierProblem 정보
         List<RecomProblem> recomProblemList = groupDomain.getRecomProblems(userAndGroup); // 그룹별 recomProblem 정보
         List<ProblemAlgorithm> algorithmList = groupDomain.getAlgorithms(top100problemList, recomProblemList); // 그룹의 모든 문제의 알고리즘 정보
+        List<Problem> userTop100ProblemList = groupDomain.getUserProblems(userAndGroup); // 유저의 top 100개 문제 정보 (Recomproblem 등록 위해)
 
         ObjectNode responseJson = JsonNodeFactory.instance.objectNode();
         responseJson.set("users", mapper.valueToTree(userList));
@@ -56,6 +57,8 @@ public class MainController {
         responseJson.set("userTierProblems", mapper.valueToTree((userTierProblemList)));
         responseJson.set("recomProblems", mapper.valueToTree(recomProblemList));
         responseJson.set("algorithms", mapper.valueToTree(algorithmList));
+        responseJson.set("userTop100problems", mapper.valueToTree(userTop100ProblemList));
+        System.out.println(userTop100ProblemList.size());
  
         return new ResponseEntity<ObjectNode>(responseJson, HttpStatus.OK);
     }
