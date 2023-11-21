@@ -12,8 +12,8 @@ public interface GroupRepository {
     @Select("SELECT id, group_name as groupName, password FROM `group` WHERE id = #{id}")
     public Group selectGroup(int id);
 
-    @Select("SELECT id FROM `group` WHERE group_name = #{groupName}")
-    public int selectGroupByName(String groupName);
+    @Select("SELECT id, group_name as groupName, password FROM `group` WHERE group_name = #{groupName}")
+    public Group selectGroupByName(String groupName);
 
     // getting adminValidation
     @Select("SELECT id, group_name as groupName, password FROM `group` WHERE id = #{id} AND password = #{password}") // 비번 권한 확인용

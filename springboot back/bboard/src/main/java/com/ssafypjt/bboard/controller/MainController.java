@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-//@Api(tags = {"개쩔고 멋진 죄다 짬뽕해놓은 좋지 않은 컨트롤러"})
 @RequestMapping("/api/main")
 public class MainController {
 
@@ -38,7 +37,8 @@ public class MainController {
         this.groupDomain = groupDomain;
     }
 
-    @PostMapping("/group/")
+    // 그룹 page에서 Main page 진입시 그룹 정보 반환
+    @PostMapping("/group")
     @Transactional
     public ResponseEntity<ObjectNode> getGroupInfo(@RequestBody Map<String, Object> requestMap){ // ObjectNode (JSON DATA)로 전송
         Group group = mapper.convertValue(requestMap.get("group"), Group.class);
