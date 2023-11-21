@@ -1,6 +1,7 @@
 package com.ssafypjt.bboard.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafypjt.bboard.model.domain.UserAddReloadDomain;
 import com.ssafypjt.bboard.model.dto.Group;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.service.GroupService;
@@ -20,12 +21,14 @@ public class UserGroupController {
     private UserService userService;
     private GroupService groupService;
     private ObjectMapper mapper;
+    private UserAddReloadDomain userAddReloadDomain;
 
     @Autowired
-    private UserGroupController(UserService userService, GroupService groupService, ObjectMapper mapper) {
+    private UserGroupController(UserService userService, GroupService groupService, ObjectMapper mapper, UserAddReloadDomain userAddReloadDomain) {
         this.userService = userService;
         this.groupService = groupService;
         this.mapper = mapper;
+        this.userAddReloadDomain = userAddReloadDomain;
     }
 
     // 유저 입력 페이지
@@ -48,6 +51,7 @@ public class UserGroupController {
     // 구현할 내용이 많음.. Domain으로 넘겨야
     @PostMapping("/user")
     public ResponseEntity<?> addUser(@RequestBody User user){
+        userAddReloadDomain.userAddTask(user);
         int result = userService.addUser(user);
         // 유저가 실제 solved.ac 에 존재하는지 확인하는 로직 구현 필요
 
