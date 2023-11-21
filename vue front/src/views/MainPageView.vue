@@ -2,8 +2,9 @@
    <!-- component -->
    <!-- This is an example component -->
    <div>
+
       <NavigationHeader />
-      <div>{{ fullObject.value }}</div>
+      <div v-if="dbStoreInt.userList" class="text-white">{{ dbStoreInt.userList.data }}</div>
       <div class="flex w-full pt-16 overflow-hidden bg-black">
          <div id="main-content" class="relative w-full min-h-screen overflow-y-auto ">
             <main>
@@ -165,20 +166,30 @@ export default {
       const error = ref(null);
 
       const fetchData = async () => {
+         console.log('test')
          try {
-            const response = await axios.post('http://localhost:8080/api/main/group', { user_id: 1, group_id: 1 });
-            console.log(response);
+            const response = await axios.post('http://localhost:8080/api/main/group', {
+               user: 1,
+               group: 1
+            }
+            );
             dbStoreInst.fullObject.value = response.data;
          } catch (err) {
             error.value = err.message;
-            console.log(error.value.message)
+         } finally {
+            //임시 테스트용 
+
+            console.log(dbStoreInst.fullObject.value.users)
+            console.log('User List:', dbStoreInst.userList);
          }
       };
       onMounted(() => {
+         //[수정]user_id -> 임시로 세션에 저장
+         sessionStorage.setItem('user_id', '1');
          fetchData();
       });
 
-      return {}
+      return { dbStoreInst }
    },
 
    components: { NavigationHeader, LeftChangeBox }
