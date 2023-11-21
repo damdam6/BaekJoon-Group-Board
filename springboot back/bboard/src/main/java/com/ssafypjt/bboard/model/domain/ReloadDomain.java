@@ -1,6 +1,9 @@
 package com.ssafypjt.bboard.model.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ssafypjt.bboard.model.domain.solvedacAPI.*;
+import com.ssafypjt.bboard.model.dto.Problem;
+import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.enums.SACApiEnum;
@@ -90,22 +93,15 @@ public class ReloadDomain {
         problemRepository.deleteAll();
         userTierProblemRepository.deleteAll(); // 티어별 문제도 삭제해야 알고리즘 삭제 가능
         problemAlgorithmRepository.deleteAll();
-
         Collections.sort(list);
+        problemAlgorithmRepository.insertAlgorithms(list);
+        problemRepository.insertProblems(list);
 
-        int idx = 0;
-        while (idx < list.size()) {
-            ProblemAndAlgoObjectDomain proAndAlgo = list.get(idx++);
-            try {
-                problemAlgorithmRepository.insertAlgorithm(proAndAlgo.getProblemAlgorithm());
-                problemRepository.insertProblem(proAndAlgo.getProblem());
-            } catch (DuplicateKeyException e) {
-            }
-        }
         System.out.println("problem good");
     }
 
 
+    // 유저 정보 업데이트
     public void processUser(List<User> users) {
         synchronized (userDomain.userList) {
             userDomain.userList.clear();
@@ -157,7 +153,7 @@ public class ReloadDomain {
                     .subscribe(
                             data -> {
                                 totalMap.get(data.getUserId()).add(data);
-                            }, // onNext 처리는 필요 없음
+                            },
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
                                 for (Integer userId : totalMap.keySet()) {
@@ -165,8 +161,8 @@ public class ReloadDomain {
                                     userTierDomain.makeUserTierObject(userTierList, userId);
                                 }
                                 resetUserTier(totalMap);
-                                processUserTierProblem(users, totalMap);
                                 System.out.println("tier good");
+                                processUserTierProblem(users, totalMap);
                             } // 완료 처리
                     );
         }
@@ -175,60 +171,60 @@ public class ReloadDomain {
     public void resetUserTier(Map<Integer, List<UserTier>> totalMap) {
         tierProblemRepository.deleteAll();
         for (List<UserTier> userTierList : totalMap.values()) {
-            for (UserTier userTier : userTierList) {
-                tierProblemRepository.insertUserTier(userTier);
-            }
+            tierProblemRepository.insertUserTiers(userTierList);
         }
     }
 
     // 동기적으로 작동하는 코드 > 비동기로 바꿔야
     // problemDomain 코드 재시용
     public void processUserTierProblem(List<User> users, Map<Integer, List<UserTier>> totalMap) {
+        Long cur = System.currentTimeMillis();
         List<UserPageNoObjectDomain> userPageNoObjectDomainList = userTierProblemDomain.makeUserPageNoObjectDomainList(users, totalMap);
         Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap = new HashMap<>();
+        Integer a = 0;
+
         Flux.fromIterable(userPageNoObjectDomainList)
                 .delayElements(Duration.ofMillis(1))
                 .flatMap(userPageNoObjectDomain ->
-                        fetchDomain.fetchOneQueryData(
-                                        SACApiEnum.USERTIERPROBLEM.getPath(),
-                                        SACApiEnum.USERTIERPROBLEM.getQuery(userPageNoObjectDomain.getUser().getUserName(), userPageNoObjectDomain.getPageNo())
-                                )
-                                .doOnNext(data -> {
-                                            User user = userPageNoObjectDomain.getUser();
-                                            int pageNo = userPageNoObjectDomain.getPageNo();
-                                            List<ProblemAndAlgoObjectDomain> list = problemDomain.makeProblemAndAlgoDomainList(data.path("items"), userPageNoObjectDomain.getUser());
-                                            synchronized (memoMap) {
-                                                memoMap.putIfAbsent(user, new HashMap<>());
-                                                memoMap.get(user).putIfAbsent(pageNo, list);
-                                            }
+                    fetchDomain.fetchOneQueryData(
+                                    SACApiEnum.USERTIERPROBLEM.getPath(),
+                                    SACApiEnum.USERTIERPROBLEM.getQuery(userPageNoObjectDomain.getUser().getUserName(), userPageNoObjectDomain.getPageNo())
+                            )
+                            .doOnNext(data -> {
+                                        User user = userPageNoObjectDomain.getUser();
+                                        int pageNo = userPageNoObjectDomain.getPageNo();
+                                        List<ProblemAndAlgoObjectDomain> list = problemDomain.makeProblemAndAlgoDomainList(data.path("items"), userPageNoObjectDomain.getUser());
+                                        synchronized (memoMap) {
+                                            memoMap.putIfAbsent(user, new HashMap<>());
+                                            memoMap.get(user).putIfAbsent(pageNo, list);
                                         }
-                                )
+                                    }
+                            )
+
                 )
                 .subscribe(
-                        null, // onNext 처리는 필요 없음
+                        (data) -> {test(data);}, // onNext 처리는 필요 없음
                         Throwable::printStackTrace, // 에러 처리
                         () -> {
                             List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
+                            Long cur2 = System.currentTimeMillis();
+                            System.out.println(cur2 - cur);
                             resetUserTierProblems(totalProblemAndAlgoList);
                             System.out.println("tier problem good");
                         } // 완료 처리
                 );
     }
 
-
-
-    public void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList) {
-        userTierProblemRepository.deleteAll();
-        for (ProblemAndAlgoObjectDomain problemAndAlgo : totalProblemAndAlgoList) {
-            problemAlgorithmRepository.insertAlgorithm(problemAndAlgo.getProblemAlgorithm());
-        }
-        for (ProblemAndAlgoObjectDomain problemAndAlgo : totalProblemAndAlgoList) {
-            userTierProblemRepository.insertTierProblem(problemAndAlgo.getProblem());
-        }
+    public void test(JsonNode a){
+//        System.out.println(a);
     }
 
-    public void processRecomProblem() {
-        recomProblemRepository.deleteAll();
+
+
+    public void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> list) {
+        userTierProblemRepository.deleteAll();
+        problemAlgorithmRepository.insertAlgorithms(list);
+        userTierProblemRepository.insertTierProblems(list);
     }
 
 }

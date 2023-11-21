@@ -1,5 +1,6 @@
 package com.ssafypjt.bboard.model.repository;
 
+import com.ssafypjt.bboard.model.domain.solvedacAPI.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.RecomProblem;
 import com.ssafypjt.bboard.model.dto.User;
@@ -42,5 +43,15 @@ public interface ProblemRepository {
 
     @Insert("INSERT INTO problem (id, user_id, problem_num, tier, title) VALUES (#{id}, #{userId}, #{problemNum}, #{tier}, #{title})")
     public int insertProblem(Problem problem);
+
+    @Insert({
+            "<script>",
+            "INSERT INTO problem (user_id, tier, problem_num, title) VALUES ",
+            "<foreach item='item' collection='list' separator=','>",
+            "(#{item.problem.userId}, #{item.problem.tier}, #{item.problem.problemNum}, #{item.problem.title})",
+            "</foreach>",
+            "</script>"
+    })
+    public int insertProblems(List<ProblemAndAlgoObjectDomain> list);
 
 }
