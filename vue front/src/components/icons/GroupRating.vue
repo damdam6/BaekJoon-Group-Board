@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row justify-between w-full">
+    <div class="flex flex-row justify-between w-full bg-gray-800">
         <RatingProfile v-for="ranker in users" :key="ranker.userId" :ranker="ranker" />
     </div>
 </template>
