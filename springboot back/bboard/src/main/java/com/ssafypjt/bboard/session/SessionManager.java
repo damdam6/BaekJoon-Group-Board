@@ -39,7 +39,6 @@ public class SessionManager {
         if (sessionCookie == null) {
             return null;
         }
-        System.out.println(sessionCookie.getValue());
         return sessionStore.get(sessionCookie.getValue());
     }
 
