@@ -31,6 +31,14 @@ export const selectedUserStore= defineStore('pickUser', () => {
     return user ? user.solvedCnt : 0;
   });
 
-  return { userId, userName, userTier, userRank, userSolvedCnt };
+  const userProfileImg = computed(() => {
+    const user = getUserMap.value;
+
+    return user ? user.profileImageUrl : 0;
+  });
+
+
+
+  return { userProfileImg, userId, userName, userTier, userRank, userSolvedCnt };
 
 })

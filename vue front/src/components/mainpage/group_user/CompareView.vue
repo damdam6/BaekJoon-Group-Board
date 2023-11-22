@@ -2,9 +2,9 @@
     <div class="p-4 text-gray-200 bg-gray-800 rounded-lg shadow sm:p-6 xl:p-8">
         <div class="flex items-center justify-between mb-10">
             <div class="flex items-center gap-4">
-                <div class="w-20 h-20 bg-gray-600 rounded-full">Image 1</div>
+                <CircleImg :src="`${userInfoInst.userProfileImg}`" />
                 <span class="text-xl font-bold">VS</span>
-                <div class="w-20 h-20 bg-gray-600 rounded-full">Image 2</div>
+                <CircleImg :src="`${userInfoInst.userProfileImg}`" />
             </div>
         </div>
         <div class="block w-full overflow-x-auto">
@@ -37,10 +37,10 @@ import { ref } from 'vue';
 import TableRowComponent from './TableRowComponent.vue';
 import { selectedUserStore } from '@/stores/userInfo';
 import { mainApiStore } from '../../../stores/main-api';
-
+import CircleImg from '../../items/CircleImg.vue';
 
 export default {
-    components: { TableRowComponent },
+    components: { TableRowComponent, CircleImg },
     setup() {
         const mainApiStoreInst = mainApiStore();
         const userInfoInst = selectedUserStore();
@@ -60,7 +60,7 @@ export default {
             userInfoInst,
             tableData,
             metrics,
-            mainApiStoreInst
+            mainApiStoreInst,
         };
     }
 }
