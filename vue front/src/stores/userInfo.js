@@ -8,22 +8,29 @@ export const selectedUserStore= defineStore('pickUser', () => {
   const mainApiStoreInst = mainApiStore()
   const userId = ref(0);
 
+  const getUserMap = computed(() => 
+  mainApiStoreInst.userMap.get(userId.value));
+
   const userName = computed(() => {
-    return mainApiStoreInst.userMap.get(userId)[userName]
-  })
+    const user = getUserMap.value;
+    return user ? user.userName : '';
+  });
 
   const userTier = computed(() => {
-    console.log('test')
-    console.log(mainApiStoreInst.userMap)
-    if(!mainApiStoreInst.userMap)return ''
-    
-    return mainApiStoreInst.userMap.get(userId)[userName]
-  }
+    const user = getUserMap.value;
+    return user ? user.tier : '';
+  });
 
-  )
-  const userRank = ref(0)
-  const userSolvedCnt = ref(0)
+  const userRank = computed(() => {
+    const user = getUserMap.value;
+    return user ? user.rank : 0;
+  });
 
+  const userSolvedCnt = computed(() => {
+    const user = getUserMap.value;
+    return user ? user.solvedCnt : 0;
+  });
 
-  return { userId, userName, userTier, userRank, userSolvedCnt}
+  return { userId, userName, userTier, userRank, userSolvedCnt };
+
 })

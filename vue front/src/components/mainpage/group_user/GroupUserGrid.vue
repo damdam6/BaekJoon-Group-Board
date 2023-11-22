@@ -2,7 +2,7 @@
     <div class="flex grid items-center justify-center grid-cols-10 gap-3">
         <UserTile v-for="user in mainApiStoreInst.userList" :key="user.userId"
             :src="user.profileImageUrl || 'https://static.solved.ac/misc/360x360/default_profile.png'"
-            :alt="user.userName || 'Default Name'" @onTileClick="handleTileClick(user.userId)" :userNum="user.userId" />
+            :alt="user.userName || 'Default Name'" @onTileClick="handleTileClick(user.userId)" />
     </div>
 </template>
 
@@ -22,7 +22,6 @@ export default {
         const userInfoInst = selectedUserStore();
 
         const handleTileClick = (userId) => {
-            console.log(userId)
             userInfoInst.userId = userId;
         };
 

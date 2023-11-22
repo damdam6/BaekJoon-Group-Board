@@ -7,7 +7,6 @@
                 <div class="w-20 h-20 bg-gray-600 rounded-full">Image 2</div>
             </div>
         </div>
-
         <div class="block w-full overflow-x-auto">
             <table class="min-w-full bg-gray-700 border-collapse">
                 <thead>
@@ -28,6 +27,7 @@
                         :userData1="tableData[0][metric.key]" :userData2="tableData[1][metric.key]" />
                 </tbody>
             </table>
+
         </div>
     </div>
 </template>
@@ -35,12 +35,17 @@
 <script>
 import { ref } from 'vue';
 import TableRowComponent from './TableRowComponent.vue';
+import { selectedUserStore } from '@/stores/userInfo';
+import { mainApiStore } from '../../../stores/main-api';
+
 
 export default {
     components: { TableRowComponent },
     setup() {
+        const mainApiStoreInst = mainApiStore();
+        const userInfoInst = selectedUserStore();
         const tableData = ref([
-            { tier: 1, top100Solved: 50, allSolved: 100, rank: 10 },
+            { tier: userInfoInst.userTier, top100Solved: 50, allSolved: 100, rank: 10 },
             { tier: 2, top100Solved: 40, allSolved: 90, rank: 20 }
         ]);
 
@@ -52,8 +57,10 @@ export default {
         ]);
 
         return {
+            userInfoInst,
             tableData,
-            metrics
+            metrics,
+            mainApiStoreInst
         };
     }
 }
