@@ -102,7 +102,7 @@ public class GroupDomain {
             algoProblemNum[i] = algorithms.get(i).getProblemNum();
         }
 
-        // BinarySearch
+        // BinarySearch / 이분탐색
         List<ProblemAlgorithm> returnList = new ArrayList<>();
         for (Problem problem : top100problemList){
             returnList.add(algorithms.get(Arrays.binarySearch(algoProblemNum, problem.getProblemNum())));
