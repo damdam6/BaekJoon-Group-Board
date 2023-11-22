@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		//  인터셉터를 사용..해야할까?
+		//  인터셉터 사용 안함
 		// 내가 원하는 customInterceptor를 만들어서 등록하면 됨
 //		registry.addInterceptor(customInterceptor).addPathPatterns("/**");
 	}

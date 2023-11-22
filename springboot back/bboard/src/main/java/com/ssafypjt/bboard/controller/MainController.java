@@ -42,11 +42,16 @@ public class MainController {
     }
 
     // 그룹 page에서 Main page 진입시 그룹 정보 반환
+    // 만약 로그인된 유저가 해당 그룹에 등록되지 않았으면 BAD_REQUEST
     @GetMapping("/group/{groupId}")
     @Transactional
-    public ResponseEntity<ObjectNode> getGroupInfo(@PathVariable int groupId, HttpServletRequest request){ // ObjectNode (JSON DATA)로 전송
+    public ResponseEntity<?> getGroupInfo(@PathVariable int groupId, HttpServletRequest request){ // ObjectNode (JSON DATA)로 전송
         Group group = groupService.getGroup(groupId);
         User user = userService.getUser((Integer) sessionManager.getSession(request));
+
+        if (!userService.getGroupIdByUser(user.getUserId()).contains(groupId)){
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+        }
 
         UserAndGroupObjectDomain userAndGroup = new UserAndGroupObjectDomain(user, group);
         List<User> userList = groupDomain.getUsers(userAndGroup); // 그룹 해당 유저 정보
