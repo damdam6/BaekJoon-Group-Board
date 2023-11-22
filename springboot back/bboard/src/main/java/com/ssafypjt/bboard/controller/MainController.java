@@ -42,7 +42,7 @@ public class MainController {
     }
 
     // 그룹 page에서 Main page 진입시 그룹 정보 반환
-    @GetMapping("/group")
+    @GetMapping("/group/{groupId}")
     @Transactional
     public ResponseEntity<ObjectNode> getGroupInfo(@PathVariable int groupId, HttpServletRequest request){ // ObjectNode (JSON DATA)로 전송
         Group group = groupService.getGroup(groupId);
@@ -63,8 +63,7 @@ public class MainController {
         responseJson.set("recomProblems", mapper.valueToTree(recomProblemList));
         responseJson.set("algorithms", mapper.valueToTree(algorithmList));
         responseJson.set("userTop100problems", mapper.valueToTree(userTop100ProblemList));
-        System.out.println(userTop100ProblemList.size());
- 
+
         return new ResponseEntity<ObjectNode>(responseJson, HttpStatus.OK);
     }
 
