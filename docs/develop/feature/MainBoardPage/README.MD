@@ -18,5 +18,4 @@
 - [ ] user_id => 100개 중 푼 문제
 - [ ] user Info -> tier, rank, solvedCnt, 100개 중 푼 문제
 - [ ] user tier Pro Info -> 티어 추천 문제를 위한 리스트
-- [ ]
     
