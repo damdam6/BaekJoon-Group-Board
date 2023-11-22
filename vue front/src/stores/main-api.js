@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios';
 
-export const dbStore = defineStore('allData', () => {
+export const mainApiStore = defineStore('allData', () => {
   const fullObject = ref({'key':'value'}) 
 
   const fetchData = async () => {
@@ -14,6 +14,7 @@ export const dbStore = defineStore('allData', () => {
           withCredentials: true,
        }).then((response) => {
           fullObject.value = response.data;
+          console.log(fullObject.value)
        });
     } catch (err) {
       console.log(err.message);
