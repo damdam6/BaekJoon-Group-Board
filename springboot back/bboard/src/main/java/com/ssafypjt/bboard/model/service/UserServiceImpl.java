@@ -16,13 +16,11 @@ public class UserServiceImpl implements UserService{
 
     private UserRepository userRepository;
     private UserGroupRepository userGroupRepository;
-    private TierProblemRepository tierProblemRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, TierProblemRepository tierProblemRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
-        this.tierProblemRepository = tierProblemRepository;
     }
 
     @Override
@@ -40,24 +38,10 @@ public class UserServiceImpl implements UserService{
         return userRepository.selectAllUser();
     }
 
-    @Override
-    public int addUser(User user) {
-        if (userRepository.selectUserByName(user.getUserName()) == null){
-            return userRepository.insertUser(user);
-        }
-        return 0;
-    }
 
     @Override
     public List<Integer> getGroupIdByUser(int userId) {
         return userGroupRepository.selectGroupId(userId);
     }
-
-    // 유저 티어 정보 로직 구성 필요
-    @Override
-    public List<UserTier> getUserTier(int userId) {
-        return tierProblemRepository.selectUserTiers(userId);
-    }
-
 
 }

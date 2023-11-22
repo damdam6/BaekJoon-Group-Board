@@ -22,28 +22,24 @@ public class UserAddReloadDomain {
     private final ProblemAlgorithmRepository problemAlgorithmRepository;
     private final ProblemDomain problemDomain;
     private final UserDomain userDomain;
-    private final ReloadDomain reloadDomain;
     private final FetchDomain fetchDomain;
     private final UserTierDomain userTierDomain;
     private final UserTierProblemRepository userTierProblemRepository;
     private final TierProblemRepository tierProblemRepository;
     private final UserTierProblemDomain userTierProblemDomain;
-    private final RecomProblemRepository recomProblemRepository;
 
     @Autowired
-    public UserAddReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, ReloadDomain reloadDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain, RecomProblemRepository recomProblemRepository) {
+    public UserAddReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
         this.problemDomain = problemDomain;
         this.userDomain = userDomain;
-        this.reloadDomain = reloadDomain;
         this.fetchDomain = fetchDomain;
         this.userTierDomain = userTierDomain;
         this.userTierProblemRepository = userTierProblemRepository;
         this.tierProblemRepository = tierProblemRepository;
         this.userTierProblemDomain = userTierProblemDomain;
-        this.recomProblemRepository = recomProblemRepository;
     }
 
         public void userAddTask(String userName) {
@@ -135,7 +131,7 @@ public class UserAddReloadDomain {
                         totalMap.get(data.getUserId()).add(data);
                     }, Throwable::printStackTrace,
                     () -> {
-                        userTierDomain.makeUserTierObject(totalMap.get(user.getUserId()), user.getUserId());
+                        userTierDomain.makeUserTierObject(totalMap.get(user.getUserId()));
                         resetUserTier(totalMap.get(user.getUserId()));
                         System.out.println("ADD tier good");
                         processUserTierProblem(user, totalMap);

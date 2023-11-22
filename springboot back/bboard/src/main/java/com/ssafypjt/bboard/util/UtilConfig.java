@@ -12,20 +12,13 @@ import reactor.core.publisher.Flux;
 @Configuration
 public class UtilConfig {
 
-
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
         return builder.baseUrl("https://solved.ac").build();
     }
-
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
-    }
-
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
     }
 
 }

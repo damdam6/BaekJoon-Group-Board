@@ -10,10 +10,8 @@ import java.util.List;
 @Mapper
 public interface UserTierProblemRepository {
 
-    // user_tier_problem에서 갱신을 어떻게 할 거지, 다 지우고 새로 받아올껀가 아니면 변경된 애들만?
     @Select("SELECT id, user_id as userId, tier, problem_num as problemTitle, title FROM user_tier_problem WHERE tier = #{tier}")
     public List<Problem> selectTierProblems(@Param("userId") int userId);
-
 
     @Select({
             "<script>",
@@ -38,6 +36,7 @@ public interface UserTierProblemRepository {
             "</script>"
     })
     public int insertTierProblems(List<ProblemAndAlgoObjectDomain> list);
+
     @Delete("DELETE FROM user_tier_problem")
     public int deleteAll();
 
