@@ -76,7 +76,11 @@ public class UserGroupController {
 
     // 유저 등록
     @GetMapping("/user/add/{userName}")
-    public ResponseEntity<?> addUser(@RequestParam String userName){
+    public ResponseEntity<?> addUser(@PathVariable String userName){
+
+        if (userService.getUserByName(userName) != null)
+            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+
         userAddReloadDomain.userAddTask(userName);
         User user = userService.getUserByName(userName);
         if (user != null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
