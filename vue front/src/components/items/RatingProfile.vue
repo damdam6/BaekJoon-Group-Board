@@ -3,7 +3,8 @@
         <div class="mb-[-20px] flex justify-center" style="z-index: 2;">
             <div class="flex flex-row">
                 <img class="mr-[-15px] inline-block shrink-0 rounded-lg w-[50px] h-[50px]"
-                    :src="ranker.profileImageUrl || 'https://static.solved.ac/tier_small/1.svg'" alt="avatar image">
+                    :src="ranker.profileImageUrl || 'https://static.solved.ac/misc/360x360/default_profile.png'"
+                    alt="avatar image">
                 <img class="inline-block w-[25px] h-[25px]" :src="`https://static.solved.ac/tier_small/${ranker.tier}.svg`"
                     alt="tier image">
             </div>
