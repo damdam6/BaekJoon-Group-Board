@@ -33,7 +33,6 @@ import { ref } from 'vue';
 import NavigationHeader from '../components/header/NavigationHeader.vue';
 import LeftChangeBox from '../components/mainpage/LeftChangeBox.vue';
 import RightFixedBox from '@/components/mainpage/RightFixedBox.vue';
-import ProblemCard from '../components/icons/ProblemCard.vue';
 import { mainApiStore } from '@/stores/main-api';
 
 

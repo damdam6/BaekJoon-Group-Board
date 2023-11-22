@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import RatingProfile from '@/components/icons/RatingProfile.vue';
+import RatingProfile from '@/components/items/RatingProfile.vue';
 import { fixedBoxStore } from '@/stores/fixedbox-db';
 
 export default {
@@ -15,7 +15,6 @@ export default {
     setup() {
         const fixedBoxInst = fixedBoxStore();
         const users = fixedBoxInst.rankTop3;
-        console.log(users)
         return { users };
     }
 }

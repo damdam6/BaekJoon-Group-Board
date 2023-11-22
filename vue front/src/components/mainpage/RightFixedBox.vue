@@ -6,7 +6,7 @@
             <div class="inline-block min-w-full align-middle">
                 <div class="overflow-hidden shadow sm:rounded-lg">
                     <GroupRating class="bg-gray-900 rounded-lg shadow md-4 sm:p-6 xl:p-8" />
-                    <ProblemCard class="m-10" />
+                    <RecoPro class="m-10" />
                 </div>
             </div>
         </div>
@@ -15,12 +15,12 @@
   
 
 <script>
-import ProblemCard from '@/components/icons/ProblemCard.vue';
-import GroupRating from '@/components/icons/GroupRating.vue';
+import GroupRating from '@/components/items/GroupRating.vue';
+import RecoPro from './right_fixed/RecoPro.vue';
 export default {
     setup() {
     },
 
-    components: { ProblemCard, GroupRating }
+    components: { GroupRating, RecoPro }
 };
 </script>
