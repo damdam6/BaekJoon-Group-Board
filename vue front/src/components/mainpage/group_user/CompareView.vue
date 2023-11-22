@@ -4,7 +4,7 @@
             <div class="flex items-center gap-4">
                 <CircleImg :src="`${userInfoInst.userProfileImg}`" />
                 <span class="text-xl font-bold">VS</span>
-                <CircleImg :src="`${userInfoInst.userProfileImg}`" />
+                <CircleImg src="https://static.solved.ac/misc/360x360/default_profile.png" />
             </div>
         </div>
         <div class="block w-full overflow-x-auto">
@@ -23,7 +23,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-gray-800">
-                    <TableRowComponent v-for="metric in metrics" :key="metric.name" :metricName="metric.name"
+                    <TableRowComponent v-for="metric in     metrics" :key="metric.name" :metricName="metric.name"
                         :userData1="tableData[0][metric.key]" :userData2="tableData[1][metric.key]" />
                 </tbody>
             </table>

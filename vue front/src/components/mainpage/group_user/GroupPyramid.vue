@@ -2,8 +2,10 @@
     <div class="flex flex-col items-center mt-8">
         <div v-for="level in 14" :key="level" class="flex justify-center mb-2 space-x-2">
             <div v-for="box in level" :key="level + '-' + box">
-                <div :class="[getBoxClass(level, box), getBoxSize(level)]">
-                </div>
+                <a :href="getBoxLink(level, box)" target="_blank">
+                    <div :class="[getBoxClass(level, box), getBoxSize(level)]">
+                    </div>
+                </a>
             </div>
         </div>
     </div>
@@ -39,7 +41,13 @@ export default {
             }
         }
 
-        return { mainApiStoreInst, userInfoInst, getBoxClass, getBoxSize };
+        function getBoxLink(level, box) {
+            const idx = level * (level - 1) / 2 + box - 1;
+            const problemNum = mainApiStoreInst.top100problemList[idx].problemId;
+            return `https://www.acmicpc.net/problem/${problemNum}`
+        }
+
+        return { mainApiStoreInst, userInfoInst, getBoxClass, getBoxSize, getBoxLink };
     }
 };
 </script>
