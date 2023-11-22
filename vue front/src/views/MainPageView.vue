@@ -1,8 +1,10 @@
 <template>
    <!-- component -->
+   <div v-if="mainApiStoreInst.isLoading">
+      로딩중
+   </div>
    <!-- This is an example component -->
-   <div>
-
+   <div v-else>
       <NavigationHeader />
       <div class="flex w-full pt-16 overflow-hidden bg-black">
          <div id="main-content" class="relative w-full min-h-screen overflow-y-auto ">
