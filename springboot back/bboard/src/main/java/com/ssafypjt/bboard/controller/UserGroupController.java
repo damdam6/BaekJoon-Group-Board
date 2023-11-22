@@ -53,6 +53,13 @@ public class UserGroupController {
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
+    @GetMapping("logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request){
+        sessionManager.expire(request);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+
     // 유저 id 입력하여 유저 반환
     @GetMapping("/user/{userId}")
     public ResponseEntity<User> getUser(@PathVariable int userId){
