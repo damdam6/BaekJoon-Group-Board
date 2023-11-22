@@ -18,8 +18,15 @@ public interface TierProblemRepository {
     @Select("SELECT id, user_id as userId, tier, problem_count as problemCount FROM tier_problem WHERE user_id = #{userId}")
     public List<UserTier> selectUserTiers(int userId);
 
-    @Insert("INSERT INTO tier_problem (user_id, tier, problem_count, page_no, page_idx) VALUES (#{userId}, #{tier}, #{problemCount}, #{pageNo}, #{pageIdx})")
-    public int insertUserTier(UserTier userTier);
+    @Insert({
+            "<script>",
+            "INSERT INTO tier_problem (user_id, tier, problem_count, page_no, page_idx) VALUES ",
+            "<foreach item='item' collection='list' separator=','>",
+            "(#{item.userId}, #{item.tier}, #{item.problemCount}, #{item.pageNo}, #{item.pageIdx})",
+            "</foreach>",
+            "</script>"
+    })
+    public int insertUserTiers(List<UserTier> userTierList);
 
 
     @Delete("DELETE from tier_problem")

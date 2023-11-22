@@ -1,20 +1,12 @@
-package com.ssafypjt.bboard.model.domain.parsing;
+package com.ssafypjt.bboard.model.domain.solvedacAPI;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafypjt.bboard.model.dto.Problem;
-import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
-import com.ssafypjt.bboard.model.enums.SACApiEnum;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
 @Component
-
 public class UserTierProblemDomain {
 
     public UserTierProblemDomain() {
@@ -31,12 +23,20 @@ public class UserTierProblemDomain {
             }
         }
         return userPageNoObjectDomainList;
-
     }
 
-    // 동기적으로 아이템 가져오기 (restTemplate 사용, 수정 필요)
-    // problemDomain 코드 이용함
+    public List<UserPageNoObjectDomain> makeUserPageNoObjectDomainList(User user, List<UserTier> userTiers){
+        Set<String> set = new HashSet<>();
+        List<UserPageNoObjectDomain> userPageNoObjectDomainList = new ArrayList<>();
+            for(UserTier userTier : userTiers) {
+                if (set.add(userTier.getUserId() + " " + userTier.getPageNo())) {
+                    userPageNoObjectDomainList.add(new UserPageNoObjectDomain(user, userTier.getPageNo()));
+                }
+            }
+        return userPageNoObjectDomainList;
+    }
 
+    // problemDomain 코드 이용함
     public List<ProblemAndAlgoObjectDomain> makeTotalProblemAndAlgoList(Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap, Map<Integer, List<UserTier>> userTierMap){
 
         List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = new ArrayList<>();
@@ -45,8 +45,7 @@ public class UserTierProblemDomain {
             int prevPage = 0;
             List<ProblemAndAlgoObjectDomain> problemListByPage = null;
             for (UserTier userTier : userTierList) {
-                if(prevPage != userTier.getPageNo()){ // 새로 요청해야할 때만 요청하여 갱신
-                    // 해당 유저의 페이지당 문제 정보 동기적으로 가져오기
+                if(prevPage != userTier.getPageNo()){
                     problemListByPage = memoMap.get(user).get(userTier.getPageNo());
                     prevPage = userTier.getPageNo();
                 }
@@ -57,8 +56,10 @@ public class UserTierProblemDomain {
                 }
             }
         }
+
         return totalProblemAndAlgoList;
     }
+
 
 
 }

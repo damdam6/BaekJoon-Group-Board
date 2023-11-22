@@ -1,6 +1,5 @@
 package com.ssafypjt.bboard.model.service;
 
-import com.ssafypjt.bboard.model.domain.parsing.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.*;
 
 import java.util.List;
@@ -12,6 +11,8 @@ public interface ProblemService {
 
     // 문제 가져오기
     public Problem getProblem(int id);
+
+    public Problem getProblemByNum(int problemNum);
 
     // user-tier, user-tier problem 로직
 
@@ -25,11 +26,9 @@ public interface ProblemService {
     public List<Problem> getUserTierProblems(int userId);
 
     // recom_problem 로직
-    public int addRecomProblem(RecomProblem recomProblem);
+    public int addRecomProblem(Problem problem, int groupId);
 
     public RecomProblem getRecomProblem(int userId, int groupId);
-
-    public List<RecomProblem> getGroupRecomProblems(int groupId);
 
     public List<RecomProblem> getAllRecomProblems();
 
@@ -39,7 +38,4 @@ public interface ProblemService {
     // 한 문제에 연관된 알고리즘을 가져오기, front 단에서 String Parsing 필요
     public ProblemAlgorithm getProblemAlgorithm(int problemNum);
 
-    List<Problem> getGroupProblems(int groupId);
-
-    List<Problem> getGroupUserTierProblems(int groupId);
 }
