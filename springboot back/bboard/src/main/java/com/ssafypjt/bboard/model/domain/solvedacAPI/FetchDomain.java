@@ -5,6 +5,7 @@ import com.ssafypjt.bboard.model.dto.UserTier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 public class FetchDomain {
@@ -35,13 +36,31 @@ public class FetchDomain {
                 .bodyToFlux(JsonNode.class);
     }
 
-    public Flux<UserTier> fetchOneQueryDataUserTIer(String pathQuery, String query) {
+    public Mono<JsonNode> fetchOneQueryDataMono(String pathQuery, String query) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(pathQuery)
+                        .query(query)
+                        .build()).retrieve()
+                .bodyToMono(JsonNode.class);
+    }
+
+    public Flux<UserTier> fetchOneQueryDataUserTier(String pathQuery, String query) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(pathQuery)
                         .query(query)
                         .build()).retrieve()
                 .bodyToFlux(UserTier.class);
+    }
+
+    public Mono<UserTier> fetchOneQueryDataUserTierMono(String pathQuery, String query) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(pathQuery)
+                        .query(query)
+                        .build()).retrieve()
+                .bodyToMono(UserTier.class);
     }
 
 }

@@ -74,7 +74,7 @@ public class ReloadDomain {
                                             SACApiEnum.PROBLEMANDALGO.getQuery(user.getUserName())
                                     )
                                     .doOnNext(data ->
-                                            problemDomain.makeProblemAndAlgoDomainObject(data, user, "problemAndAlgo")
+                                            problemDomain.makeProblemAndAlgoDomainObject(data, user)
                                     )
                     ).then()
                     .subscribe(
@@ -141,7 +141,7 @@ public class ReloadDomain {
             Flux.fromIterable(users)
                     .delayElements(Duration.ofMillis(1))
                     .flatMap(user ->
-                            fetchDomain.fetchOneQueryDataUserTIer(
+                            fetchDomain.fetchOneQueryDataUserTier(
                                             SACApiEnum.TIER.getPath(),
                                             SACApiEnum.TIER.getQuery(user.getUserName())
                                     )
@@ -203,7 +203,7 @@ public class ReloadDomain {
 
                 )
                 .subscribe(
-                        (data) -> {test(data);}, // onNext 처리는 필요 없음
+                        null, // onNext 처리는 필요 없음
                         Throwable::printStackTrace, // 에러 처리
                         () -> {
                             List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
@@ -214,11 +214,6 @@ public class ReloadDomain {
                         } // 완료 처리
                 );
     }
-
-    public void test(JsonNode a){
-//        System.out.println(a);
-    }
-
 
 
     public void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> list) {

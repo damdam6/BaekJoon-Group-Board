@@ -12,10 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class UserAddReloadDomain {
@@ -49,55 +46,83 @@ public class UserAddReloadDomain {
         this.recomProblemRepository = recomProblemRepository;
     }
 
-    @Transactional
+
     public void userAddTask(String userName) {
-        //유저 정보 추가, 유저 1명만
-        // 유저가 성공적으로 등록되어야만
-        User user = processUser(userName); // 이게 비동기라 돌아가나..?
-        if (user != null) {
-            //유저 목록을 사용한 상위 문제 100개 가져오기
-            List<User> users = userRepository.selectAllUser();
-            reloadDomain.processProblem(users); // 코드 재사용
-            //유저의 티어별 문제 갯수 받아오기
-            processUserTier(user);
-        }
+        processUser(userName);
+
     }
 
-
-    private User processUser(String userName) {
+    @Transactional
+    private void processUser(String userName) {
         Map<String, User> map = new HashMap<>();
-        Mono.fromCallable(() ->
-                        fetchDomain.fetchOneQueryData(
-                                        SACApiEnum.USER.getPath(),
-                                        SACApiEnum.USER.getQuery(userName)
-                                )
-                                .doOnNext(data -> {
-                                            map.putIfAbsent("user", userDomain.makeUserObject(data));
-                                        }
-                                )
-                )
-                .subscribe(
-                        null, // onNext 처리는 필요 없음
-                        Throwable::printStackTrace, // 에러 처리
-                        () -> {
-                            if (map.get("user") != null) {
-                                insertUser(map.get("user"));
-                                System.out.println("ADD USER good");
-                            }
-                        }
-                );
-        return map.get("user");
+        var mono = Mono.defer(() ->
+                fetchDomain.fetchOneQueryDataMono(
+                                SACApiEnum.USER.getPath(),
+                                SACApiEnum.USER.getQuery(userName)
+                        )
+                        .doOnNext(data -> {
+                            map.put("user", userDomain.makeUserObject(data));
+                        })
+        );
+
+        mono.subscribe(
+                user -> {
+                    System.out.println(map.get("user"));
+                }, Throwable::printStackTrace,
+                () -> {
+                    User user = map.get("user");
+                    if (user != null) {
+                        insertUser(user);
+                        User newUser = userRepository.selectUserByName(userName);
+                        System.out.println("ADD USER good");
+                        processProblem(newUser);
+                        processUserTier(newUser);
+                    }
+                }
+        );
+
     }
 
     private void insertUser(User user) {
         userRepository.insertUser(user);
     }
 
+    private void processProblem(User user) {
+        List<ProblemAndAlgoObjectDomain> list = new ArrayList<>();
+        var mono = Mono.defer(() ->
+                fetchDomain.fetchOneQueryDataMono(
+                                SACApiEnum.PROBLEMANDALGO.getPath(),
+                                SACApiEnum.PROBLEMANDALGO.getQuery(user.getUserName())
+                        )
+                        .doOnNext(data ->
+                                list.addAll(problemDomain.makeProblemAndAlgoDomainObjectMono(data, user))
+                        ));
+
+        mono.subscribe(
+                null, // onNext 처리는 필요 없음
+                Throwable::printStackTrace, // 에러 처리
+                () -> {
+                    resetProblems(list);
+                } // 완료 처리
+        );
+    }
+
+    private void resetProblems(List<ProblemAndAlgoObjectDomain> list) {
+        Collections.sort(list);
+        System.out.println(list.size());
+        System.out.println(list);
+        problemAlgorithmRepository.insertAlgorithms(list);
+        problemRepository.insertProblems(list);
+
+        System.out.println("ADD problem good");
+    }
+
     private void processUserTier(User user) {
         Map<Integer, List<UserTier>> totalMap = new HashMap<>();
         totalMap.put(user.getUserId(), new ArrayList<>());
-        Mono.fromCallable(() ->
-                        fetchDomain.fetchOneQueryDataUserTIer(
+
+        var mono = Flux.defer(() ->
+                        fetchDomain.fetchOneQueryDataUserTier(
                                         SACApiEnum.TIER.getPath(),
                                         SACApiEnum.TIER.getQuery(user.getUserName())
                                 )
@@ -105,25 +130,27 @@ public class UserAddReloadDomain {
                                             data.setUserId(user.getUserId());
                                         }
                                 )
-                )
-                .subscribe(
-                        null,
-                        Throwable::printStackTrace, // 에러 처리
-                        () -> {
-                            userTierDomain.makeUserTierObject(totalMap.get(user.getUserId()), user.getUserId());
-                            resetUserTier(totalMap.get(user.getUserId()));
-                            System.out.println("tier good");
-                            processUserTierProblem(user, totalMap);
-                        } // 완료 처리
                 );
+
+        mono.subscribe(
+                data -> {
+                    totalMap.get(data.getUserId()).add(data);
+                }, Throwable::printStackTrace,
+                () -> {
+                    userTierDomain.makeUserTierObject(totalMap.get(user.getUserId()), user.getUserId());
+                    resetUserTier(totalMap.get(user.getUserId()));
+                    System.out.println("ADD tier good");
+                    processUserTierProblem(user, totalMap);
+                }
+        );
 
     }
 
-    private void resetUserTier(List<UserTier> list){
+    private void resetUserTier(List<UserTier> list) {
         tierProblemRepository.insertUserTiers(list);
     }
 
-    private void processUserTierProblem(User user, Map<Integer, List<UserTier>> totalMap){
+    private void processUserTierProblem(User user, Map<Integer, List<UserTier>> totalMap) {
         Long cur = System.currentTimeMillis();
         List<UserPageNoObjectDomain> userPageNoObjectDomainList = userTierProblemDomain.makeUserPageNoObjectDomainList(user, totalMap.get(user.getUserId()));
         Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap = new HashMap<>();
@@ -154,12 +181,13 @@ public class UserAddReloadDomain {
                             Long cur2 = System.currentTimeMillis();
                             System.out.println(cur2 - cur);
                             resetUserTierProblems(totalProblemAndAlgoList);
-                            System.out.println("tier problem good");
+                            System.out.println("ADD tier problem good");
                         } // 완료 처리
                 );
+
     }
 
-    private void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> list){
+    private void resetUserTierProblems(List<ProblemAndAlgoObjectDomain> list) {
         problemAlgorithmRepository.insertAlgorithms(list);
         userTierProblemRepository.insertTierProblems(list);
     }

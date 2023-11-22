@@ -60,7 +60,7 @@ public class GroupServiceImpl implements GroupService{
     @Transactional
     public int removeGroup(int groupId) {
         userGroupRepository.removeAllUserGroup(groupId);
-        recomProblemRepository.deleteRecomProblemByGroupId(groupId);
+        recomProblemRepository.deleteGroupRecomProblemd(groupId);
         return groupRepository.deleteGroup(groupId);
     }
 

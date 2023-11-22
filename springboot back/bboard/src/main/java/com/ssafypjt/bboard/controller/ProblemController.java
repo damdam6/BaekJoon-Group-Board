@@ -3,11 +3,12 @@ package com.ssafypjt.bboard.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafypjt.bboard.model.dto.Group;
 import com.ssafypjt.bboard.model.dto.Problem;
-import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.service.GroupService;
 import com.ssafypjt.bboard.model.service.ProblemService;
 import com.ssafypjt.bboard.model.service.UserService;
+import com.ssafypjt.bboard.session.SessionManager;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,17 @@ public class ProblemController {
     private final ProblemService problemService;
     private final ObjectMapper mapper;
     private final GroupService groupService;
+    private final SessionManager sessionManager;
+
 
 
     @Autowired
-    public ProblemController(UserService userService, ProblemService problemService, ObjectMapper mapper, GroupService groupService){
+    public ProblemController(UserService userService, ProblemService problemService, ObjectMapper mapper, GroupService groupService, SessionManager sessionManager){
         this.userService = userService;
         this.problemService = problemService;
         this.mapper = mapper;
         this.groupService = groupService;
+        this.sessionManager = sessionManager;
     }
 
     @GetMapping("")
@@ -56,13 +60,12 @@ public class ProblemController {
         if (problemList == null) return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<List<Problem>>(problemList, HttpStatus.OK);
     }
-    //5e8267f0-958e-49a2-ba4d-df0efffcbf45
 
-    // 유저 id, group id, problem num 필요
+    // group id, problem num 필요
     @PostMapping("/recomproblem")
-    public ResponseEntity<?> addRecomProblem(@RequestBody Map<String, Object> requestMap){
+    public ResponseEntity<?> addRecomProblem(@RequestBody Map<String, Object> requestMap, HttpServletRequest request){
         Problem problem = problemService.getProblemByNum(mapper.convertValue(requestMap.get("problemNum"), Integer.class));
-        problem.setUserId(mapper.convertValue(requestMap.get("user"), Integer.class)); // 이렇게 해도 되나..?
+        problem.setUserId((Integer) sessionManager.getSession(request)); // 이렇게 해도 되나..?
         Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
 
         int result = problemService.addRecomProblem(problem, group.getId());
