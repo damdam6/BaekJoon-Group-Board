@@ -34,6 +34,6 @@ export const dbStore = defineStore('allData', () => {
   const userTop100problemList = computed( () => fullObject.value.userTop100problems
   )
   
-  return {fullObject,
+  return {fullObject, userList,
   userMap, top100problemList, userTierproblemList, recomProblemList, algorithmMap, userTop100problemList}
 })

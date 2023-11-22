@@ -4,7 +4,7 @@ import { dbStore } from '../stores/db'
 
 export const selectedUserStore= defineStore('pickUser', () => {
   const userId = ref(0);
-  const userName = computed( )
+  const userName = computed(() => 'temp')
   const userTier = ref(0)
   const userRank = ref(0)
   const userSolvedCnt = ref(0)

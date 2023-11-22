@@ -4,7 +4,7 @@
    <div>
 
       <NavigationHeader />
-      <div v-if="dbStoreInt.userList" class="text-white">{{ dbStoreInt.userList.data }}</div>
+      <!-- <div v-if="dbStoreInt.userList.data" class="text-white">{{ dbStoreInt.userList.data }}</div> -->
       <div class="flex w-full pt-16 overflow-hidden bg-black">
          <div id="main-content" class="relative w-full min-h-screen overflow-y-auto ">
             <main>
@@ -168,19 +168,34 @@ export default {
       const fetchData = async () => {
          console.log('test')
          try {
-            const response = await axios.post('http://localhost:8080/api/main/group', {
-               user: 1,
-               group: 1
-            }
-            );
-            dbStoreInst.fullObject.value = response.data;
+            // axios.post('http://localhost:8080/api/main/group', {
+            //    user: 1,
+            //    group: 1
+            // }
+            // ).then((response) => {
+            //    dbStoreInst.fullObject.value = response.data;
+            // });
+            const id = 1;
+            axios({
+               url: `http://localhost:8080/api/main/group/${id}`,
+               method: "GET",
+               headers: {
+                  Cookie: 'mySessionId=bc8891b3-b654-4ae7-b561-d4fb06342d67;'
+               }
+            }).then((response) => {
+               console.log(response.data)
+               dbStoreInst.fullObject.value = response.data;
+            })
+
+
+
          } catch (err) {
             error.value = err.message;
          } finally {
             //임시 테스트용 
 
-            console.log(dbStoreInst.fullObject.value.users)
-            console.log('User List:', dbStoreInst.userList);
+            //console.log(dbStoreInst.fullObject.value.users)
+            //console.log('User List:', dbStoreInst.userList);
          }
       };
       onMounted(() => {
