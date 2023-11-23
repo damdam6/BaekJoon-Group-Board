@@ -11,7 +11,16 @@ export const fixedBoxStore = defineStore('fixedBoxData', () => {
       return [];
     }
     const sortedList = [...mainApiStoreInst.userList].sort((a, b) => a.rank - b.rank);
-    return sortedList.slice(0,3);
+
+    sortedList.forEach((user, index) => {
+      // mainApiStoreInst.userMap에서 사용자 객체를 가져옵니다.
+      const userObj = mainApiStoreInst.userMap.get(user.userId);
+      if (userObj) {
+        userObj.groupRank = index + 1;
+        mainApiStoreInst.userMap.set(user.userId, userObj);
+      }
+    });
+    return sortedList;
   });
 
   const recomProAlgoObject = computed(() => {
@@ -30,8 +39,6 @@ export const fixedBoxStore = defineStore('fixedBoxData', () => {
       const algorithmArr = algo.split(" ");
       recomProAndAlgo[key] = { ...value, algorithm: algorithmArr };
     });
-    console.log(typeof(recomProAndAlgo))
-    console.log(recomProAndAlgo)
     return recomProAndAlgo;
   }
 

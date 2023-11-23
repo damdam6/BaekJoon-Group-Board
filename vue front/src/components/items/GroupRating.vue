@@ -14,7 +14,7 @@ export default {
     },
     setup() {
         const fixedBoxInst = fixedBoxStore();
-        const users = fixedBoxInst.rankTop3;
+        const users = fixedBoxInst.rankTop3.slice(0, 3);
         return { users };
     }
 }

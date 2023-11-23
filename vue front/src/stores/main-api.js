@@ -19,7 +19,6 @@ export const mainApiStore = defineStore('allData', () => {
           console.log(fullObject.value)
        });
     } catch (err) {
-      console.log(err.message);
       isLoading.value = false;
     }
  };
@@ -34,8 +33,8 @@ export const mainApiStore = defineStore('allData', () => {
 const userMap = computed(() => {
   if (userList.value && userList.value.length > 0) {
     
-    return new Map(userList.value.map(item => {
-      const newItem = {... item, inTopSolved: [] }
+    return new Map(userList.value.map((item, index )=> {
+      const newItem = {... item, inTopSolved: [], groupRank: index+1 }
       return [item.userId, newItem]}));
   }
   return new Map(); // userList.value가 없으면 빈 Map 반환

@@ -13,7 +13,7 @@ export const selectedUserStore= defineStore('pickUser', () => {
 
   const userName = computed(() => {
     const user = getUserMap.value;
-    return user ? user.userName : '';
+    return user ? user.handle : '';
   });
 
   const userTier = computed(() => {
@@ -26,19 +26,18 @@ export const selectedUserStore= defineStore('pickUser', () => {
     return user ? user.rank : 0;
   });
 
-  const userSolvedCnt = computed(() => {
+  const groupRank = computed(()=>{
     const user = getUserMap.value;
-    return user ? user.solvedCnt : 0;
-  });
+    return user ? user.groupRank : 0;
+  })
 
   const userProfileImg = computed(() => {
     const user = getUserMap.value;
-
     return user ? user.profileImageUrl : 0;
   });
 
 
 
-  return { userProfileImg, userId, userName, userTier, userRank, userSolvedCnt };
+  return { userProfileImg, userId, userName, userTier, userRank, groupRank };
 
 })

@@ -26,7 +26,6 @@ export default {
             const getUserId = userInfoInst.userId;
             // userInfo의 problemNum 목록에 현재 problemNum이 있는지 확인합니다.
             const isSolved = getUserId && mainApiStoreInst.setUserTop100[getUserId].includes(problemNum);
-            console.log(isSolved)
             return isSolved ? 'bg-red-500' : 'bg-blue-500';
         }
 
