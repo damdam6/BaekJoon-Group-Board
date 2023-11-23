@@ -1,8 +1,10 @@
 <template>
     <div class="flex items-center w-64 h-32 p-5 m-8 text-white border border-pink-600 shadow-lg bg-cyan-700 rounded-xl">
         <div class="w-6 h-6">
-            <img :src="`https://static.solved.ac/tier_small/${proData.level}.svg`" class="object-contain w-6 h-6">
+            <img :src="`https://static.solved.ac/tier_small/${proData?.tier}.svg` || 'https://static.solved.ac/misc/360x360/default_profile.png'"
+                class="object-contain w-6 h-6">
         </div>
+
         <div class="ml-4">
             <h2 class="mb-2 font-semibold">{{ proData.titleKo }}</h2>
             <AlgorithmTag v-for="(algorithm, index) in proData.algorithm" :key="index"
