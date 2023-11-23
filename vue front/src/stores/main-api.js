@@ -1,12 +1,12 @@
 import { ref, computed } from "vue";
 import { groupStore } from "../stores/group";
-import { userStore } from "../stores/loginInfo";
+import { loginStore } from "../stores/loginInfo";
 import { defineStore } from "pinia";
 import axios from "axios";
 
 export const mainApiStore = defineStore("allData", () => {
   const gStore = groupStore();
-  const uStore = userStore();
+  const uStore = loginStore();
   const fullObject = ref({ key: "value" });
   const isLoading = ref(true);
   const selectedGroup = gStore.selectedGroup;
