@@ -94,7 +94,7 @@ public class GroupDomain {
     }
 
     // 그룹의 모든 문제의 알고리즘 정보 선정
-    // user_group과 problem_algorithm 테이블을 연동하기 위해서는 join을 3번해야해서 모든 알고리즘을 가져오고 이진 탐색을 사용하였다.
+    // user_group과 problem_algorithm 테이블을 연동하기 위해서는 join을 3번해야해서 모든 알고리즘을 가져오고 이분 탐색을 사용하였다.
     public List<ProblemAlgorithm> getAlgorithms(List<Problem> top100problemList, List<RecomProblem> recomProblemList){
         List<ProblemAlgorithm> algorithms = problemAlgorithmRepository.selectAllAlgorithm(); // ASC
         int[] algoProblemNum = new int[algorithms.size()];

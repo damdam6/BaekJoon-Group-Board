@@ -37,7 +37,8 @@ public class UserTierProblemDomain {
     }
 
     // problemDomain 코드 이용함
-    public List<ProblemAndAlgoObjectDomain> makeTotalProblemAndAlgoList(Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap, Map<Integer, List<UserTier>> userTierMap){
+    public List<ProblemAndAlgoObjectDomain> makeTotalProblemAndAlgoList(Map<User, Map<Integer,
+            List<ProblemAndAlgoObjectDomain>>> memoMap, Map<Integer, List<UserTier>> userTierMap){
 
         List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = new ArrayList<>();
         for (User user: memoMap.keySet()) {
