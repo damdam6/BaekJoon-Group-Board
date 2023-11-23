@@ -1,19 +1,43 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { dbStore } from '../stores/db'
+
+import { mainApiStore } from '@/stores/main-api';
+import { fixedBoxStore } from '@/stores/fixedbox-db';
 
 export const selectedUserStore= defineStore('pickUser', () => {
+  const mainApiStoreInst = mainApiStore()
   const userId = ref(0);
-  const userName = computed(() => 'temp')
-  const userTier = ref(0)
-  const userRank = ref(0)
-  const userSolvedCnt = ref(0)
-  const userRecomPro = {
-    proNum : ref(0),
-    proTitle : ref(null),
-    proAlgo :ref([])
-  }
+
+  const getUserMap = computed(() => 
+  mainApiStoreInst.userMap.get(userId.value));
+
+  const userName = computed(() => {
+    const user = getUserMap.value;
+    return user ? user.handle : '';
+  });
+
+  const userTier = computed(() => {
+    const user = getUserMap.value;
+    return user ? user.tier : '';
+  });
+
+  const userRank = computed(() => {
+    const user = getUserMap.value;
+    return user ? user.rank : 0;
+  });
+
+  const groupRank = computed(()=>{
+    const user = getUserMap.value;
+    return user ? user.groupRank : 0;
+  })
+
+  const userProfileImg = computed(() => {
+    const user = getUserMap.value;
+    return user ? user.profileImageUrl : 0;
+  });
 
 
-  return { userName, userTier, userRank, userSolvedCnt, userRecomPro }
+
+  return { userProfileImg, userId, userName, userTier, userRank, groupRank };
+
 })
