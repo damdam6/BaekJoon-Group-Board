@@ -21,36 +21,27 @@ public class ProblemDomain {
     }
 
     public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
-    public Map<Integer,List<ProblemAndAlgoObjectDomain>> proAndAlgoMap = new HashMap<>();
-
 
     private void addToList(List<ProblemAndAlgoObjectDomain> tmpList){
         proAndAlgoList.addAll(tmpList);
     }
-    private void addToMap(int userId,List<ProblemAndAlgoObjectDomain> problemAndAlgoObjectDomain){
-        proAndAlgoMap.put(userId, problemAndAlgoObjectDomain);
-    }
-
-    private void addCase(String enumName, int userId, List<ProblemAndAlgoObjectDomain> tmpList){
-        switch (enumName){
-            case "tierProblem":
-                addToMap(userId, tmpList);
-                break;
-            case "problemAndAlgo":
-                addToList(tmpList);
-
-        }
-    }
-
 
     // 코드 재활용을 위해 코드 분기
     //합쳐서 list 만드는 과정임 ->
-    public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user, String enumName) {
+    public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user) {
         JsonNode arrayNode = aNode.path("items");
         if(!arrayNode.isArray()){
             return;
         }
-        addCase(enumName, user.getUserId(), makeProblemAndAlgoDomainList(arrayNode, user));
+        addToList(makeProblemAndAlgoDomainList(arrayNode, user));
+    }
+
+    public List<ProblemAndAlgoObjectDomain> makeProblemAndAlgoDomainObjectMono(JsonNode aNode, User user) {
+        JsonNode arrayNode = aNode.path("items");
+        if(!arrayNode.isArray()){
+            return null;
+        }
+        return makeProblemAndAlgoDomainList(arrayNode, user);
     }
 
     public List<ProblemAndAlgoObjectDomain> makeProblemAndAlgoDomainList(JsonNode arrayNode, User user){

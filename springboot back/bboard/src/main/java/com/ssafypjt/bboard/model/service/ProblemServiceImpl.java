@@ -62,17 +62,23 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public int addRecomProblem(Problem problem, int groupId) { // 그룹별로 10개가 초과되면 id가 빠른 순 (등록이 빠른 순) 으로 삭제된다.
+
+        // 이미 같은 그룹에 해당 문제가 등록된 적이 있는지 확인
+        if (recomProblemRepository.selectRecomProblem(problem.getProblemNum(), groupId) != null){
+            return 0;
+        }
+
         if (recomProblemRepository.selectGroupRecomProblems(groupId).size() >= 10){
             recomProblemRepository.deleteFirstRecomProblem();
         }
-        // 이미 등록된 문제가 있는지 확인 필요
+
 
         return recomProblemRepository.insertRecomProblem(problem, groupId);
     }
 
     @Override
-    public RecomProblem getRecomProblem(int userId, int groupId) {
-        return recomProblemRepository.selectRecomProblem(userId, groupId);
+    public RecomProblem getRecomProblem(int problemNum, int groupId) {
+        return recomProblemRepository.selectRecomProblem(problemNum, groupId);
     }
 
     @Override

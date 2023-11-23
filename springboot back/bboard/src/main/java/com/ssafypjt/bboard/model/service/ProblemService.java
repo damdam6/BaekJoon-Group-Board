@@ -28,7 +28,7 @@ public interface ProblemService {
     // recom_problem 로직
     public int addRecomProblem(Problem problem, int groupId);
 
-    public RecomProblem getRecomProblem(int userId, int groupId);
+    public RecomProblem getRecomProblem(int problemNum, int groupId);
 
     public List<RecomProblem> getAllRecomProblems();
 
