@@ -4,7 +4,9 @@
   >
     <div class="bg-white p-3 max-w-md mx-auto">
       <div class="text-center">
-        <h1 class="m-2 text-3xl font-bold">Admin Page</h1>
+        <h1 class="m-2 text-xl font-bold">
+          {{ store.selectedGroup.groupName }} Admin Page
+        </h1>
         <h3 class="m-2 text-2xl font-bold">UserList</h3>
       </div>
       <div class="mt-3">
@@ -94,7 +96,6 @@ import { useRouter } from "vue-router";
 
 const store = adminStore();
 const router = useRouter();
-const groupId = 0;
 
 const returnToGroupPage = () => {
   router.push({ name: "group" });

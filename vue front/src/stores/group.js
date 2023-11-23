@@ -77,7 +77,7 @@ export const groupStore = defineStore("group", () => {
         withCredentials: true,
       });
 
-      groupUserMap.value.set(groupId, response.data);
+      fetchGroupList();
     } catch (err) {
       console.log(err.message);
     }

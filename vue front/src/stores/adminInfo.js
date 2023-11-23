@@ -11,6 +11,12 @@ export const adminStore = defineStore("adminStore", () => {
   const router = useRouter();
   const selectedGroup = gStore.selectedGroup;
 
+  const reset = () => {
+    console.log(selectedGroup.id);
+    getAllUser();
+    getGroupUser();
+  };
+
   // group : groupId
   // password : password
   const adminLogin = async (password) => {
@@ -35,11 +41,6 @@ export const adminStore = defineStore("adminStore", () => {
     } catch (err) {
       console.error(err.message);
     }
-  };
-
-  const reset = () => {
-    getAllUser();
-    getGroupUser();
   };
 
   const getAllUser = async () => {
@@ -86,7 +87,7 @@ export const adminStore = defineStore("adminStore", () => {
     }
 
     const jsonData = {
-      group: selectedGroup.value.id,
+      group: selectedGroup.id,
       user: userId,
     };
 
@@ -128,7 +129,7 @@ export const adminStore = defineStore("adminStore", () => {
     }
 
     const jsonData = {
-      group: selectedGroup.value.id,
+      group: selectedGroup.id,
       user: userId,
     };
 

@@ -7,7 +7,9 @@
     >
       <div class="text-slate-100 items-center flex m-3">
         <img src="@/assets/logoImg.png" class="h-20 p-1" alt="Windster Logo" />
-        <div class="text-center pb-3 text-3xl m-2">으아아아아</div>
+        <div class="text-center pb-3 text-3xl m-2">
+          {{ store.selectedGroup.groupName }} 관리자 페이지
+        </div>
       </div>
 
       <div
