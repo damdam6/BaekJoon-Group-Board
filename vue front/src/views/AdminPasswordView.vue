@@ -6,49 +6,34 @@
       class="flex justify-center container mx-auto my-auto w-screen h-screen items-center flex-col"
     >
       <div class="text-slate-100 items-center flex m-3">
-        <img
-          src="@/assets/logoImg.png"
-          class="h-20 p-1"
-          alt="Windster Logo"
-        />``
-        <div class="text-4xl text-center p-3">BBOARD</div>
+        <img src="@/assets/logoImg.png" class="h-20 p-1" alt="Windster Logo" />
+        <div class="text-center pb-3 text-3xl m-2">
+          {{ selectedGroup.groupName }}
+        </div>
       </div>
-      <div class="flex text-slate-100 p-3 text-xl">
-        당신의 "두뇌 운동"을 위해
-      </div>
+
       <div
         class="w-full md:w-3/4 lg:w-1/2 flex flex-col items-center bg-slate-50 rounded-md pt-12"
       >
         <!-- ID input -->
         <div class="w-3/4 mb-6">
           <input
-            v-model="solvedACID"
-            type="text"
-            name="text"
-            id="solvedACID"
+            v-model="password"
+            type="password"
+            name="password"
             class="w-full py-4 px-8 bg-slate-200 placeholder:font-semibold rounded hover:ring-1 hover:ring-gray-600 outline-slate-500 border-solid border-2 border-slate-300"
-            placeholder="solved.ac ID"
+            placeholder="Enter Group Password"
           />
         </div>
         <!-- button -->
         <div class="w-3/4 mb-7">
           <button
-            @click="store.login(solvedACID)"
+            @click="store.adminLogin(selectedGroup.id, password)"
             type="submit"
-            id="login-btn"
+            id="password-btn"
             class="py-4 bg-indigo-800 w-full rounded text-blue-50 font-bold hover:bg-blue-700"
           >
-            LOGIN
-          </button>
-        </div>
-        <div class="w-3/4 mb-12">
-          <button
-            @click="store.regist(solvedACID)"
-            type="submit"
-            id="regist-btn"
-            class="py-4 bg-indigo-800 w-full rounded text-blue-50 font-bold hover:bg-blue-700"
-          >
-            REGIST
+            Go To Admin Page
           </button>
         </div>
       </div>
@@ -65,10 +50,13 @@
 
 <script setup>
 import { ref } from "vue";
-import { loginStore } from "@/stores/loginInfo";
+import { adminStore } from "@/stores/adminInfo";
+import { useRouter } from "vue-router";
 
-const store = loginStore();
-const solvedACID = ref(null);
+const router = useRouter();
+const store = adminStore();
+const selectedGroup = { id: 3, groupName: "group3", password: "****" };
+const password = ref("");
 </script>
 
 <style scoped></style>
