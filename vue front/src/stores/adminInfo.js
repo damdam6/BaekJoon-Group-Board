@@ -5,17 +5,18 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 
 export const adminStore = defineStore("adminStore", () => {
+  const gStore = groupStore();
   const allUserList = ref([]);
   const groupUserList = ref([]); // groupStore에서 가져오기
   const router = useRouter();
-  let groupIdStore = 0;
+  const selectedGroup = gStore.selectedGroup;
 
   // group : groupId
   // password : password
-  const adminLogin = async (groupId, password) => {
+  const adminLogin = async (password) => {
     try {
       const jsonData = {
-        group: groupId,
+        group: selectedGroup.id,
         password: password,
       };
 
@@ -29,7 +30,6 @@ export const adminStore = defineStore("adminStore", () => {
       console.log(response.data);
 
       if (response.data) {
-        groupIdStore = groupId;
         router.push({ name: "admin" });
       } else router.push({ name: "group" });
     } catch (err) {
@@ -56,9 +56,10 @@ export const adminStore = defineStore("adminStore", () => {
   };
 
   const getGroupUser = async () => {
+    console.log(selectedGroup.id);
     try {
       axios({
-        url: `http://localhost:8080/api/user-group/group/admin/${groupIdStore}`,
+        url: `http://localhost:8080/api/user-group/group/admin/${selectedGroup.id}`,
         method: "GET",
         withCredentials: true,
       }).then((response) => {
@@ -85,7 +86,7 @@ export const adminStore = defineStore("adminStore", () => {
     }
 
     const jsonData = {
-      group: groupIdStore,
+      group: selectedGroup.value.id,
       user: userId,
     };
 
@@ -127,7 +128,7 @@ export const adminStore = defineStore("adminStore", () => {
     }
 
     const jsonData = {
-      group: groupIdStore,
+      group: selectedGroup.value.id,
       user: userId,
     };
 
@@ -154,7 +155,7 @@ export const adminStore = defineStore("adminStore", () => {
   const deleteGroup = async () => {
     try {
       const response = await axios({
-        url: `http://localhost:8080/api/user-group/group/admin/${groupIdStore}`,
+        url: `http://localhost:8080/api/user-group/group/admin/${selectedGroup.id}`,
         method: "DELETE",
         withCredentials: true,
       });
@@ -180,5 +181,6 @@ export const adminStore = defineStore("adminStore", () => {
     addUser,
     deleteGroup,
     adminLogin,
+    selectedGroup,
   };
 });

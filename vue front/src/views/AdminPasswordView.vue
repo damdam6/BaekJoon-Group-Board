@@ -7,9 +7,7 @@
     >
       <div class="text-slate-100 items-center flex m-3">
         <img src="@/assets/logoImg.png" class="h-20 p-1" alt="Windster Logo" />
-        <div class="text-center pb-3 text-3xl m-2">
-          {{ selectedGroup.groupName }}
-        </div>
+        <div class="text-center pb-3 text-3xl m-2">으아아아아</div>
       </div>
 
       <div
@@ -28,7 +26,7 @@
         <!-- button -->
         <div class="w-3/4 mb-7">
           <button
-            @click="store.adminLogin(selectedGroup.id, password)"
+            @click="store.adminLogin(password)"
             type="submit"
             id="password-btn"
             class="py-4 bg-indigo-800 w-full rounded text-blue-50 font-bold hover:bg-blue-700"
@@ -52,10 +50,12 @@
 import { ref } from "vue";
 import { adminStore } from "@/stores/adminInfo";
 import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 const store = adminStore();
-const selectedGroup = { id: 3, groupName: "group3", password: "****" };
+
 const password = ref("");
 </script>
 

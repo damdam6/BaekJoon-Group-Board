@@ -44,23 +44,6 @@
           </svg>
           {{ p.userList }}
         </li>
-        <!-- <li class="flex items-center">
-          <svg
-            class="w-4 h-4 mr-2 text-green-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            ></path>
-          </svg>
-          24/7 Support
-        </li> -->
       </ul>
     </div>
     <div class="p-4">
@@ -101,6 +84,7 @@ import { useRouter } from "vue-router";
 import { groupStore } from "@/stores/group";
 
 const store = groupStore();
+
 const router = useRouter();
 const p = defineProps({
   groupInfo: Object,
@@ -108,17 +92,19 @@ const p = defineProps({
 });
 
 const userCount = computed(() => {
-  if (p.userList != undefined) return p.userList.value.length;
+  if (p.userList != undefined) return p.userList.length;
   return 0;
 });
 
 const moveToAdminLogin = () => {
-  router.push({ name: "adminPassword" });
+  store.selectedGroup = p.groupInfo;
+  router.push({
+    name: "adminPassword",
+  });
 };
 
 const leaveGroup = () => {
-  console.log(p.groupInfo);
-  store.leaveGroup(p.groupInfo["id"]);
+  store.leaveGroup(p.groupInfo.id);
   router.push({ name: "group" });
 };
 
@@ -128,10 +114,9 @@ const leaveGroup = () => {
 // });
 
 const enterMainPage = () => {
-  console.log(p.groupInfo.id);
+  store.selectedGroup = p.groupInfo;
   router.push({
     name: "about",
-    params: { groupId: p.groupInfo.id },
   });
 };
 </script>

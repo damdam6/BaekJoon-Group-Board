@@ -1,16 +1,23 @@
 import { ref, computed } from "vue";
+import { groupStore } from "../stores/group";
+import { userStore } from "../stores/loginInfo";
 import { defineStore } from "pinia";
 import axios from "axios";
 
 export const mainApiStore = defineStore("allData", () => {
+  const gStore = groupStore();
+  const uStore = userStore();
   const fullObject = ref({ key: "value" });
   const isLoading = ref(true);
+  const selectedGroup = gStore.selectedGroup;
+  const loginUser = uStore.loginUser;
 
-  const fetchData = async (id) => {
+  const fetchData = async () => {
     isLoading.value = true;
+    console.log(selectedGroup.id);
     try {
       axios({
-        url: `http://localhost:8080/api/main/group/${id}`,
+        url: `http://localhost:8080/api/main/group/${selectedGroup.id}`,
         method: "GET",
         withCredentials: true,
       }).then((response) => {
@@ -102,5 +109,6 @@ export const mainApiStore = defineStore("allData", () => {
     recomProblemList,
     algorithmMap,
     userTop100problemList,
+    loginUser,
   };
 });

@@ -39,10 +39,7 @@ export default {
     const route = useRoute();
 
     onMounted(() => {
-      console.log(route.params.groupId);
-      const groupId = route.params.groupId;
-      console.log(groupId);
-      mainApiStoreInst.fetchData(groupId);
+      mainApiStoreInst.fetchData();
     });
 
     return { mainApiStoreInst };

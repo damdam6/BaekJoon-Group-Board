@@ -6,6 +6,7 @@ export const groupStore = defineStore("group", () => {
   const groupList = ref([]);
   const groupUserMap = ref({});
   const isLoading = ref(true);
+  const selectedGroup = ref({});
 
   //   const fetchGroupList = async () => {
   //     try {

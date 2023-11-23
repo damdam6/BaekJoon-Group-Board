@@ -8,7 +8,6 @@
         v-if="!store.groupList.length"
         class="flex items-center justify-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        <div>그룹 정보가 없음</div>
         <EmptyGroupBox />
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -32,12 +31,6 @@ import GroupBox from "../components/grouppage/GroupBox.vue";
 import EmptyGroupBox from "../components/grouppage/EmptyGroupBox.vue";
 
 const store = groupStore();
-
-// const userList = computed((id) => {
-//   if (store.groupUserMap.value.get(id) != undefined)
-//     return store.groupUserMap.get(id);
-//   return ref([]);
-// });
 
 onMounted(() => {
   store.fetchGroupList();
