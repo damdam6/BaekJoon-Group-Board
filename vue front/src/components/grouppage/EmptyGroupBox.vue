@@ -9,7 +9,8 @@
     </div>
     <div class="p-4">
       <button
-        class="w-full bg-blue-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+        @click="moveToForm()"
+        class="py-4 p-3 w-full bg-indigo-800 text-white text-xl rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
       >
         make new group
       </button>
@@ -17,6 +18,16 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { storeToRefs } from "pinia";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const moveToForm = () => {
+  router.push({ name: "newGroupForm" });
+};
+</script>
 
 <style scoped></style>

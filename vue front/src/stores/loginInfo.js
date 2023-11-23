@@ -1,20 +1,26 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useRouter } from "vue-router";
 import axios from "axios";
 
 export const loginStore = defineStore("loginInfo", () => {
   const loginUser = ref({});
+  const router = useRouter();
 
   const login = async (userName) => {
     try {
-      axios({
+      const response = await axios({
         url: `http://localhost:8080/api/user-group/login/${userName}`,
         method: "GET",
         withCredentials: true,
-      }).then((response) => {
-        console.log(response.data);
-        loginUser.value = response.data;
       });
+
+      console.log(response.data);
+      loginUser.value = response.data;
+
+      if (response.data) {
+        router.push({ name: "group" });
+      }
     } catch (err) {
       alert("오류가 발생하였습니다. 담비한테 물어보세요.");
       console.log(err.message);

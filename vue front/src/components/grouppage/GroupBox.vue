@@ -64,22 +64,31 @@
       </ul>
     </div>
     <div class="p-4">
+      <!-- <button
+      @click="enterMainPage()"
+            id="regist-btn"
+            class="py-4 bg-indigo-800 w-full rounded text-blue-50 font-bold hover:bg-blue-700"
+          > -->
+
+      <div class="flex justify-items-end">
+        <button
+          @click="moveToAdminLogin()"
+          class="m-3 bg-orange-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+        >
+          admin
+        </button>
+        <button
+          @click="leaveGroup()"
+          class="m-3 bg-red-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+        >
+          leave
+        </button>
+      </div>
       <button
-        class="w-full bg-blue-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+        @click="enterMainPage()"
+        class="py-4 p-3 w-full bg-indigo-800 text-white text-xl rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
       >
         Enter
-      </button>
-      <button
-        @click="moveToAdminLogin()"
-        class="bg-orange-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-      >
-        admin
-      </button>
-      <button
-        @click="leaveGroup()"
-        class="bg-red-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-      >
-        leave
       </button>
     </div>
   </div>
@@ -113,8 +122,17 @@ const leaveGroup = () => {
   router.push({ name: "group" });
 };
 
+// const groupId = computed(() => {
+//   if (!p.groupInfo) return 0;
+//   return;
+// });
+
 const enterMainPage = () => {
-  router.push({ name: "adminPassword" });
+  console.log(p.groupInfo.id);
+  router.push({
+    name: "about",
+    params: { groupId: p.groupInfo.id },
+  });
 };
 </script>
 

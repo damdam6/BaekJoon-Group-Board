@@ -10,7 +10,7 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/about",
+      path: "/about/:groupId",
       name: "about",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -30,12 +30,17 @@ const router = createRouter({
     {
       path: "/admin",
       name: "admin",
-      component: () => import("../views/GroupSelectView.vue"),
+      component: () => import("../views/AdminPageView.vue"),
     },
     {
       path: "/admin/password",
       name: "adminPassword",
       component: () => import("../views/AdminPasswordView.vue"),
+    },
+    {
+      path: "/newGroupForm",
+      name: "newGroupForm",
+      component: () => import("../views/NewGroupFormView.vue"),
     },
   ],
 });

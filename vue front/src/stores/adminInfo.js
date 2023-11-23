@@ -1,12 +1,14 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import { groupStore } from "../stores/group";
+import { useRouter } from "vue-router";
 import axios from "axios";
 
 export const adminStore = defineStore("adminStore", () => {
-  const group = ref({});
   const allUserList = ref([]);
   const groupUserList = ref([]); // groupStore에서 가져오기
+  const router = useRouter();
+  let groupIdStore = 0;
 
   // group : groupId
   // password : password
@@ -26,10 +28,18 @@ export const adminStore = defineStore("adminStore", () => {
 
       console.log(response.data);
 
-      return response.data;
+      if (response.data) {
+        groupIdStore = groupId;
+        router.push({ name: "admin" });
+      } else router.push({ name: "group" });
     } catch (err) {
       console.error(err.message);
     }
+  };
+
+  const reset = () => {
+    getAllUser();
+    getGroupUser();
   };
 
   const getAllUser = async () => {
@@ -45,10 +55,10 @@ export const adminStore = defineStore("adminStore", () => {
     }
   };
 
-  const getGroupUser = async (groupId) => {
+  const getGroupUser = async () => {
     try {
       axios({
-        url: `http://localhost:8080/api/user-group/group/admin/${groupId}`,
+        url: `http://localhost:8080/api/user-group/group/admin/${groupIdStore}`,
         method: "GET",
         withCredentials: true,
       }).then((response) => {
@@ -63,9 +73,19 @@ export const adminStore = defineStore("adminStore", () => {
   // "group" : groupId
   // "user" : userId
 
-  const removeUser = async (groupId, userId) => {
+  const removeUser = async (userId) => {
+    if (
+      !window.confirm(
+        `정말로 ${
+          groupUserList.value.find((user) => user.userId === userId).handle
+        }님을 내보내시겠습니까?`
+      )
+    ) {
+      return;
+    }
+
     const jsonData = {
-      group: groupId,
+      group: groupIdStore,
       user: userId,
     };
 
@@ -80,10 +100,12 @@ export const adminStore = defineStore("adminStore", () => {
       if (response.data.status == "400") {
         alert("오류가 발생하였습니다. 담비한테 물어보세요.");
       } else {
-        alert(`유저가 방출완료되었습니다.`);
+        alert(`유저가 방출되었습니다.`);
       }
     } catch (err) {
       console.error(err.message);
+    } finally {
+      reset();
     }
 
     // 다시 페이지로 돌아가야함
@@ -93,9 +115,19 @@ export const adminStore = defineStore("adminStore", () => {
   // "group" : groupId
   // "user" : userId
 
-  const addUser = async (groupId, userId) => {
+  const addUser = async (userId) => {
+    if (
+      !window.confirm(
+        `${
+          allUserList.value.find((user) => user.userId === userId).handle
+        }님을 그룹에 추가하시겠습니까?`
+      )
+    ) {
+      return;
+    }
+
     const jsonData = {
-      group: groupId,
+      group: groupIdStore,
       user: userId,
     };
 
@@ -109,28 +141,29 @@ export const adminStore = defineStore("adminStore", () => {
 
       if (response.data.status == "400") {
         alert("오류가 발생하였습니다. 담비한테 물어보세요.");
-      } else {
-        alert(`유저가 그룹에 등록되었습니다.`);
       }
     } catch (err) {
       console.error(err.message);
+    } finally {
+      reset();
     }
 
     // 다시 페이지로 돌아가야함
   };
 
-  const deleteGroup = async (groupId) => {
+  const deleteGroup = async () => {
     try {
       const response = await axios({
-        url: `http://localhost:8080/api/user-group/group/admin/${groupId}`,
+        url: `http://localhost:8080/api/user-group/group/admin/${groupIdStore}`,
         method: "DELETE",
         withCredentials: true,
       });
 
-      if (response.data.status == "400") {
+      if (response.data.status === 400) {
         alert("오류가 발생하였습니다. 담비한테 물어보세요.");
       } else {
         alert(`그룹이 정상적으로 삭제되었습니다.`);
+        router.push({ name: "group" });
       }
     } catch (err) {
       console.error(err.message);
@@ -138,6 +171,7 @@ export const adminStore = defineStore("adminStore", () => {
   };
 
   return {
+    reset,
     allUserList,
     groupUserList,
     getAllUser,

@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <div>{{ store.groupList }}</div>
-    <div>{{ store.groupList.length }}</div>
+  <div v-if="store.isLoading">로딩중</div>
+  <div v-else>
     <div
-      class="bg-gray-100 min-h-screen py-12 flex items-center justify-center"
+      class="from-blue-900 via-indigo-800 to-indigo-500 bg-gradient-to-br min-h-screen py-12 flex items-center justify-center"
     >
       <div
         v-if="!store.groupList.length"
@@ -17,7 +16,7 @@
           v-for="group in store.groupList"
           :key="group.id"
           :groupInfo="group"
-          :userList="store.groupUserMap.get(group.id)"
+          :userList="store.groupUserMap[group.id]"
         />
         <!-- 그룹길이가 2개이하라면 -->
         <EmptyGroupBox v-if="store.groupList.length <= 2" />
@@ -27,7 +26,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted } from "vue";
 import { groupStore } from "@/stores/group";
 import GroupBox from "../components/grouppage/GroupBox.vue";
 import EmptyGroupBox from "../components/grouppage/EmptyGroupBox.vue";
