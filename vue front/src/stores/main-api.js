@@ -16,7 +16,7 @@ export const mainApiStore = defineStore('allData', () => {
        }).then((response) => {
           fullObject.value = {...response.data};
           isLoading.value = false;
-          console.log(fullObject.value)
+          //console.log(fullObject.value)
        });
     } catch (err) {
       isLoading.value = false;
@@ -55,18 +55,23 @@ const algorithmMap = computed(() => {
     if (!fullObject.value || !fullObject.value.top100problems) {
       return [];
     }
+    console.log(fullObject.value.top100problems)
    return fullObject.value.top100problems
   });
+  
 
   const setUserTop100 = computed(() => {
     if (!fullObject.value || !top100problemList.value) {
       return {};
     }
-
+  
     const problemsByUserId = top100problemList.value.reduce((acc, element) => {
       // userId와 problemNum을 가져옵니다.
       const { userId, problemId } = element;
   
+      if(!getTop100ProNum.value.includes(problemId)){
+        return acc;
+      }
       // 아직 이 userId를 가진 그룹이 없으면 새 그룹을 생성하고, problemNum을 배열에 추가합니다.
       if (!acc[userId]) {
         acc[userId] = [];
@@ -75,8 +80,19 @@ const algorithmMap = computed(() => {
   
       return acc;
     }, {});
-  
+
     return problemsByUserId;
+  });
+  
+  const getTop100ProNum = computed(() => {
+    const uniqueProblemIds = top100problemList.value.reduce((acc, current) => {
+      if (!acc.includes(current.problemId)) {
+        acc.push(current.problemId);
+      }
+      return acc;
+    }, []);
+
+    return uniqueProblemIds;
   });
   
 
@@ -87,6 +103,6 @@ const algorithmMap = computed(() => {
   const userTop100problemList = computed( () => fullObject.value.userTop100problems
   )
   
-  return {fetchData,fullObject, userList, isLoading, setUserTop100,
+  return {fetchData,fullObject, userList, isLoading, setUserTop100, getTop100ProNum,
   userMap, top100problemList, userTierProblemList, recomProblemList, algorithmMap, userTop100problemList}
 })

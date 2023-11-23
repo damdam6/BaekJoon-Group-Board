@@ -2,7 +2,6 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 import { mainApiStore } from '@/stores/main-api';
-import { fixedBoxStore } from '@/stores/fixedbox-db';
 
 export const selectedUserStore= defineStore('pickUser', () => {
   const mainApiStoreInst = mainApiStore()
@@ -18,7 +17,7 @@ export const selectedUserStore= defineStore('pickUser', () => {
 
   const userTier = computed(() => {
     const user = getUserMap.value;
-    return user ? user.tier : '';
+    return user ? user.tier : null;
   });
 
   const userRank = computed(() => {
@@ -36,8 +35,17 @@ export const selectedUserStore= defineStore('pickUser', () => {
     return user ? user.profileImageUrl : 0;
   });
 
+  const userCnt = computed( () => {
+    
+    const solvedCnt = mainApiStoreInst.top100problemList.filter( (element) => 
+    element.userId === userId.value
+    ).length;
+    
+    return solvedCnt;
+  })
 
 
-  return { userProfileImg, userId, userName, userTier, userRank, groupRank };
+
+  return { userProfileImg, userId, userName, userTier, userRank, groupRank, userCnt};
 
 })
