@@ -5,7 +5,7 @@
         <div class="overflow-x-auto rounded-lg">
             <div class="inline-block min-w-full align-middle">
                 <div class="overflow-hidden shadow sm:rounded-lg">
-                    <GroupRating class="bg-gray-900 rounded-lg shadow md-4 sm:p-6 xl:p-8" />
+                    <GroupRating class="border border-white rounded-lg shadow md-4 sm:p-6 xl:p-8" />
                     <RecoPro class="m-10" />
                 </div>
             </div>

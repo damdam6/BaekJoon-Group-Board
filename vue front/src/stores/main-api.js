@@ -24,8 +24,6 @@ export const mainApiStore = defineStore("allData", () => {
       }).then((response) => {
         fullObject.value = { ...response.data };
         isLoading.value = false;
-        console.log(gStore.selectedGroup.id)
-        console.log(fullObject.value);
       });
     } catch (err) {
       console.log(err)
@@ -53,6 +51,7 @@ export const mainApiStore = defineStore("allData", () => {
 
   const algorithmList = computed(() => {
     if (fullObject.value && fullObject.value.algorithms) {
+      console.log(fullObject.value.algorithms)
       return fullObject.value.algorithms;
     }
     return [];
@@ -103,7 +102,6 @@ export const mainApiStore = defineStore("allData", () => {
       }
       return acc;
     }, []);
-
     return uniqueProblemIds;
   });
 

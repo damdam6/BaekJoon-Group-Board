@@ -8,26 +8,6 @@ export const groupStore = defineStore("group", () => {
   const isLoading = ref(true);
   const selectedGroup = ref({});
 
-  //   const fetchGroupList = async () => {
-  //     try {
-  //       axios({
-  //         url: `http://localhost:8080/api/user-group/group`,
-  //         method: "GET",
-  //         withCredentials: true,
-  //       })
-  //         .then((response) => {
-  //           groupList.value = response.data;
-  //         })
-  //         .finally(() => {
-  //           groupList.value.forEach((group) => {
-  //             fetchUsers(group["id"]);
-  //           })
-  //         });
-  //     } catch (err) {
-  //       console.log(err.message);
-  //     }
-  //   };
-
   const fetchGroupList = async () => {
     isLoading.value = true;
     try {
@@ -41,6 +21,7 @@ export const groupStore = defineStore("group", () => {
       // 여기서 비동기 함수를 사용하여 각 그룹에 대한 사용자 정보를 가져오도록 수정
       Promise.all(groupList.value.map((group) => fetchUsers(group.id))).then(
         () => {
+          console.log(groupList.value)
           isLoading.value = false;
           console.log("완료");
         }

@@ -1,17 +1,15 @@
 <template>
-  <div
-    class="bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105"
-  >
-    <div class="p-1 bg-blue-200"></div>
+  <NewGroupFormView v-if="isModalVisible" @close="isModalVisible = false" />
+
+  <div class="overflow-hidden transition-transform border border-white shadow-lg transformrounded-lg hover:scale-105">
+    <div class="p-1 bg-blue-200 bg-opacity-30"></div>
 
     <div class="p-8">
-      <h2 class="text-3xl font-bold text-gray-800 mb-4">New Group</h2>
+      <h2 class="mb-4 text-3xl font-bold text-white">New Group</h2>
     </div>
     <div class="p-4">
-      <button
-        @click="moveToForm()"
-        class="py-4 p-3 w-full bg-indigo-800 text-white text-xl rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-      >
+      <button @click="moveToForm()"
+        class="w-full p-3 px-4 py-2 py-4 text-xl text-indigo-800 border border-indigo-800 rounded hover:bg-gray-800 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
         make new group
       </button>
     </div>
@@ -19,14 +17,14 @@
 </template>
 
 <script setup>
-import { storeToRefs } from "pinia";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-
+import { ref } from 'vue'
+import NewGroupFormView from "../../views/NewGroupFormView.vue";
+const props = defineProps({
+  isVisible: Boolean
+});
+const isModalVisible = ref(false);
 const moveToForm = () => {
-  router.push({ name: "newGroupForm" });
+  isModalVisible.value = true;
 };
 </script>
 
