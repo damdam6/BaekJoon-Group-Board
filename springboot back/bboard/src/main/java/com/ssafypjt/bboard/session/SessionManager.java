@@ -29,7 +29,7 @@ public class SessionManager {
         // 쿠키 생성
         Cookie mySessionCookie = new Cookie(SESSION_COOKIE_NAME, sessionId);
         mySessionCookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정
-        mySessionCookie.setMaxAge(3600); // 쿠키의 유효 시간을 설정 (초 단위, 예: 1시간)
+        mySessionCookie.setMaxAge(3600 * 24); // 24시간으로 쿠키 수명 설정
         response.addCookie(mySessionCookie);
     }
 

@@ -3,7 +3,6 @@ package com.ssafypjt.bboard.model.repository;
 import com.ssafypjt.bboard.model.domain.groupinfo.UserAndGroupObjectDomain;
 import com.ssafypjt.bboard.model.domain.solvedacAPI.ProblemAndAlgoObjectDomain;
 import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
-import com.ssafypjt.bboard.model.repository.sqlprovider.AlgorithmInsertSqlProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

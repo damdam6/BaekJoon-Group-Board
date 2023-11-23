@@ -14,13 +14,12 @@ import java.util.*;
 public class ProblemDomain {
 
     private ObjectMapper mapper;
+    public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
 
     @Autowired
     public ProblemDomain(ObjectMapper mapper) {
         this.mapper = mapper;
     }
-
-    public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
 
     private void addToList(List<ProblemAndAlgoObjectDomain> tmpList){
         proAndAlgoList.addAll(tmpList);

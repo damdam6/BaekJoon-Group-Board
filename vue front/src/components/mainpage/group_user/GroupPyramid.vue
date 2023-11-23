@@ -1,20 +1,72 @@
 <template>
     <div class="flex flex-col items-center mt-8">
-        <div v-for="level in 15" :key="level" class="flex justify-center mb-2 space-x-2">
+        <div v-for="level in 14" :key="level" class="flex justify-center mb-2 space-x-2">
             <div v-for="box in level" :key="level + '-' + box">
-                <div v-if="level < 5" class="w-5 h-5 bg-blue-500 rounded-sm sm:rounded-md md:w-6 md:h-6">
-                </div>
-                <div v-else-if="level === 5" class="hidden w-5 h-5 bg-blue-500 rounded-sm sm:rounded-md md:w-6 md:h-6">
-                </div>
-                <div v-else class="w-4 h-4 bg-blue-500 rounded-sm sm:rounded-md sm:w-4 sm:h-4 md:w-5 md:h-5">
-                </div>
+                <a :href="getBoxLink(level, box)" target="_blank">
+                    <div :class="['border-2', getBoxClass(level, box), getBoxSize(level)]"
+                        @mouseover="handleMouseOver(level, box)" @mouseleave="handleMouseLeave">
+                    </div>
+                </a>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    name: 'GroupPyramid',
+<script setup>
+import { mainApiStore } from '@/stores/main-api';
+import { selectedUserStore } from '@/stores/userInfo';
+import { changeboxStore } from '@/stores/changebox-db';
+const mainApiStoreInst = mainApiStore();
+const userInfoInst = selectedUserStore();
+const changeboxStoreInst = changeboxStore();
+
+const handleMouseOver = (level, box) => {
+    let idx = level * (level - 1) / 2 + box - 1;
+    if (level > 5) {
+        idx -= 5;
+    }
+    changeboxStoreInst.overProblemNum = mainApiStoreInst.getTop100ProNum[idx];
+
+};
+
+const handleMouseLeave = () => {
+
+    if (changeboxStoreInst.overProblemNum.value) {
+        changeboxStoreInst.overProblemNum.value = 0;
+    }
+};
+
+
+const boxId = (level, box) => `${level}-${box}`;
+
+const getBoxClass = (level, box) => {
+    let idx = level * (level - 1) / 2 + box - 1;
+    if (level > 5) {
+        idx -= 5;
+    }
+    const problemNum = mainApiStoreInst.getTop100ProNum[idx];
+    const getUserId = userInfoInst.userId;
+    const isSolved = getUserId && mainApiStoreInst.setUserTop100[getUserId].includes(problemNum);
+    return isSolved ? 'hover:bg-red-500 border-red-500' : 'hover:bg-blue-500 border-blue-500';
+};
+
+
+const getBoxSize = (level) => {
+    if (level < 5) {
+        return 'w-5 h-5 rounded-sm sm:rounded-md md:w-6 md:h-6'; // 20px
+    } else if (level === 5) {
+        return 'hidden w-5 h-5 rounded-sm sm:rounded-md md:w-6 md:h-6';
+    } else {
+        return 'w-4 h-4 rounded-sm sm:rounded-md sm:w-4 sm:h-4 md:w-5 md:h-5'; // 16px
+    }
+};
+
+const getBoxLink = (level, box) => {
+    let idx = level * (level - 1) / 2 + box - 1;
+    if (level > 5) {
+        idx -= 5;
+    }
+    const problemNum = mainApiStoreInst.getTop100ProNum[idx];
+    return `https://www.acmicpc.net/problem/${problemNum}`;
 };
 </script>

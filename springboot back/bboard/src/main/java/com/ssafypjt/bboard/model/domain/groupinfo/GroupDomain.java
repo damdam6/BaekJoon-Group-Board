@@ -14,11 +14,9 @@ import java.util.*;
 @Component
 public class GroupDomain {
 
-    private final GroupRepository groupRepository;
     private final ProblemAlgorithmRepository problemAlgorithmRepository;
     private final ProblemRepository problemRepository;
     private final RecomProblemRepository recomProblemRepository;
-    private final TierProblemRepository tierProblemRepository;
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
     private final UserTierProblemRepository userTierProblemRepository;
@@ -27,12 +25,10 @@ public class GroupDomain {
     private final int TIER_DIFF_LOWERBOUND = -2;
 
     @Autowired
-    public GroupDomain(GroupRepository groupRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemRepository problemRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserGroupRepository userGroupRepository, UserRepository userRepository, UserTierProblemRepository userTierProblemRepository) {
-        this.groupRepository = groupRepository;
+    public GroupDomain(ProblemAlgorithmRepository problemAlgorithmRepository, ProblemRepository problemRepository, RecomProblemRepository recomProblemRepository, UserGroupRepository userGroupRepository, UserRepository userRepository, UserTierProblemRepository userTierProblemRepository) {
         this.problemAlgorithmRepository = problemAlgorithmRepository;
         this.problemRepository = problemRepository;
         this.recomProblemRepository = recomProblemRepository;
-        this.tierProblemRepository = tierProblemRepository;
         this.userGroupRepository = userGroupRepository;
         this.userRepository = userRepository;
         this.userTierProblemRepository = userTierProblemRepository;
@@ -106,7 +102,7 @@ public class GroupDomain {
             algoProblemNum[i] = algorithms.get(i).getProblemNum();
         }
 
-        // BinarySearch
+        // BinarySearch / 이분탐색
         List<ProblemAlgorithm> returnList = new ArrayList<>();
         for (Problem problem : top100problemList){
             returnList.add(algorithms.get(Arrays.binarySearch(algoProblemNum, problem.getProblemNum())));

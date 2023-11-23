@@ -35,6 +35,4 @@ public interface UserRepository {
             " FROM users WHERE user_Name = #{userName}")
     public User selectUserByName(@Param("userName") String userName);
 
-    //    public int deleteUser(int userId); // (안하기로)
-
 }

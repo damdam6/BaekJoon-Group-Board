@@ -2,11 +2,7 @@ package com.ssafypjt.bboard.model.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@Data
 public class Group {
     private int id;
     private String groupName;

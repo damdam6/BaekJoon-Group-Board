@@ -1,14 +1,31 @@
 <template>
-    <div class="flex items-center justify-center">
-        <div class="grid grid-cols-10 gap-3">
-            <img v-for="n in 30" :key="n" class="rounded-md w-7 h-7"
-                src="https://demo.themesberg.com/windster/images/users/neil-sims.png" alt="Neil image">
-        </div>
+    <div class="flex grid items-center justify-center grid-cols-10 gap-3">
+        <UserTile v-for="user in mainApiStoreInst.userList" :key="user.userId"
+            :src="user.profileImageUrl || 'https://static.solved.ac/misc/360x360/default_profile.png'"
+            :alt="user.userName || 'Default Name'" @onTileClick="handleTileClick(user.userId)" />
     </div>
 </template>
 
 <script>
+import { mainApiStore } from '@/stores/main-api';
+import { selectedUserStore } from '@/stores/userInfo';
+import { fixedBoxStore } from '@/stores/fixedbox-db'; // Pinia 스토어 임포트
+import UserTile from '@/components/items/UserTile.vue';
+
 export default {
-    // 여기에 필요한 스크립트를 추가할 수 있습니다.
+    components: {
+        UserTile
+    },
+    setup() {
+        const mainApiStoreInst = mainApiStore()
+        const fixedBoxInst = fixedBoxStore();
+        const userInfoInst = selectedUserStore();
+
+        const handleTileClick = (userId) => {
+            userInfoInst.userId = userId;
+        };
+
+        return { mainApiStoreInst, fixedBoxInst, userInfoInst, handleTileClick };
+    }
 }
 </script>

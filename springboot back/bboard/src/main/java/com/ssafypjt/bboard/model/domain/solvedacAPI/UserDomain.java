@@ -23,7 +23,10 @@ public class UserDomain {
 
     public User makeUserObject(JsonNode aNode) {
         User user = mapper.convertValue(aNode, User.class);
-        if (user.getImgUrl() == null) user.setImgUrl("");
+        if (user.getImgUrl() == null) {
+            int no = (int) (Math.random() * 10);
+            user.setImgUrl("http://localhost:8080/images/default_image_" + no + ".jpg");
+        }
         return user;
     }
 
