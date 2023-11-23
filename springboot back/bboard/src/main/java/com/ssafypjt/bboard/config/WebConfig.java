@@ -8,9 +8,7 @@ import org.springframework.web.servlet.config.annotation.*;
 public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// static에 자료가 없다면 해당 코드를 추가하지 않아도 된다
 		registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
-
 		registry.addResourceHandler("/swagger-ui/**")
 				.addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 

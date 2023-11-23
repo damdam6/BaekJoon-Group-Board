@@ -11,18 +11,14 @@ import java.util.*;
 public class ProblemServiceImpl implements ProblemService {
 
     private ProblemRepository problemRepository;
-    private GroupService groupService;
-
     private ProblemAlgorithmRepository problemAlgorithmRepository;
-
     private RecomProblemRepository recomProblemRepository;
     private TierProblemRepository tierProblemRepository;
     private UserTierProblemRepository userTierProblemRepository;
 
     @Autowired
-    public ProblemServiceImpl(ProblemRepository problemRepository, GroupService groupService, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemRepository userTierProblemRepository) {
+    public ProblemServiceImpl(ProblemRepository problemRepository, ProblemAlgorithmRepository problemAlgorithmRepository, RecomProblemRepository recomProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemRepository userTierProblemRepository) {
         this.problemRepository = problemRepository;
-        this.groupService = groupService;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
         this.recomProblemRepository = recomProblemRepository;
         this.tierProblemRepository = tierProblemRepository;
@@ -95,7 +91,5 @@ public class ProblemServiceImpl implements ProblemService {
     public ProblemAlgorithm getProblemAlgorithm(int problemNum) {
         return problemAlgorithmRepository.selectAlgorithm(problemNum);
     }
-
-
 
 }

@@ -1,6 +1,6 @@
 # feature/ProblemService
 
-### Mono : 비동기 처리해주는 객체
+### Mono / Flux : 비동기 처리해주는 객체
 
 - block() : 동기적 처리
 - subscribe() : mono 처리 후 처리
@@ -16,7 +16,7 @@
 
 <받아와야 하는 API>
 
-1. 각 유저별 상위 100 문제 (page X 2)
+1. 각 유저별 상위 100 문제
 2. 티어 별 문제수
 3. 사용자 정보
 4. 각 사용자의 티어에 따른 문제들... -> tier_problem domain

@@ -31,10 +31,9 @@ public class ReloadDomain {
     private final UserTierProblemRepository userTierProblemRepository;
     private final TierProblemRepository tierProblemRepository;
     private final UserTierProblemDomain userTierProblemDomain;
-    private final RecomProblemRepository recomProblemRepository;
 
     @Autowired
-    public ReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain, RecomProblemRepository recomProblemRepository) {
+    public ReloadDomain(ProblemRepository problemRepository, UserRepository userRepository, ProblemAlgorithmRepository problemAlgorithmRepository, ProblemDomain problemDomain, UserDomain userDomain, FetchDomain fetchDomain, UserTierDomain userTierDomain, UserTierProblemRepository userTierProblemRepository, TierProblemRepository tierProblemRepository, UserTierProblemDomain userTierProblemDomain) {
         this.problemRepository = problemRepository;
         this.userRepository = userRepository;
         this.problemAlgorithmRepository = problemAlgorithmRepository;
@@ -45,7 +44,6 @@ public class ReloadDomain {
         this.userTierProblemRepository = userTierProblemRepository;
         this.tierProblemRepository = tierProblemRepository;
         this.userTierProblemDomain = userTierProblemDomain;
-        this.recomProblemRepository = recomProblemRepository;
     }
 
     @Scheduled(fixedRate = 1000000)
@@ -54,11 +52,9 @@ public class ReloadDomain {
         //유저 정보 업데이트
         List<User> users = userRepository.selectAllUser();
         processUser(users);
-
         //유저 목록을 사용한 상위 문제 100개 가져오기
         users = userRepository.selectAllUser();
         processProblem(users);
-
         //유저의 티어별 문제 갯수 받아오기
         processUserTier(users);
     }
@@ -158,7 +154,7 @@ public class ReloadDomain {
                             () -> {
                                 for (Integer userId : totalMap.keySet()) {
                                     List<UserTier> userTierList = totalMap.get(userId);
-                                    userTierDomain.makeUserTierObject(userTierList, userId);
+                                    userTierDomain.makeUserTierObject(userTierList);
                                 }
                                 resetUserTier(totalMap);
                                 System.out.println("tier good");

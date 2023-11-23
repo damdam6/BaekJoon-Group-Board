@@ -15,18 +15,6 @@ public class FetchDomain {
         this.webClient = webClient;
     }
 
-//    public Flux<JsonNode> fetchProblemPageData(String userName, String pageNum) {
-//        return webClient.get()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/api/v3/search/problem")
-//                        .queryParam("query", "@" + userName)
-//                        .queryParam("sort", "level")
-//                        .queryParam("direction", "desc")
-//                        .queryParam("page", pageNum)
-//                        .build()).retrieve()
-//                .bodyToFlux(JsonNode.class);
-//    }
-
     public Flux<JsonNode> fetchOneQueryData(String pathQuery, String query) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -52,15 +40,6 @@ public class FetchDomain {
                         .query(query)
                         .build()).retrieve()
                 .bodyToFlux(UserTier.class);
-    }
-
-    public Mono<UserTier> fetchOneQueryDataUserTierMono(String pathQuery, String query) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(pathQuery)
-                        .query(query)
-                        .build()).retrieve()
-                .bodyToMono(UserTier.class);
     }
 
 }
