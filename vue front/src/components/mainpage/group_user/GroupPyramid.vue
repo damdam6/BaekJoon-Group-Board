@@ -66,6 +66,7 @@ const getBoxLink = (level, box) => {
     if (level > 5) {
         idx -= 5;
     }
+    console.log(idx)
     const problemNum = mainApiStoreInst.getTop100ProNum[idx];
     return `https://www.acmicpc.net/problem/${problemNum}`;
 };

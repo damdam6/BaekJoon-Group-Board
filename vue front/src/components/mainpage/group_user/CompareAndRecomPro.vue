@@ -3,7 +3,7 @@
         <!-- CompareView : 사람 프로필 -->
         <CompareView />
         <!-- CompareView : 사람 프로필 -->
-        <HoverPro />
+        <!-- <HoverPro /> -->
     </div>
 </template>
 

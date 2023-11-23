@@ -9,15 +9,12 @@
 
 <script>
 import UserProfile from '../../items/UserProfile.vue';
-import { ref } from 'vue';
-import TableRowComponent from './TableRowComponent.vue';
 import { selectedUserStore } from '@/stores/userInfo';
 import { mainApiStore } from '../../../stores/main-api';
-import CircleImg from '../../items/CircleImg.vue';
 
 
 export default {
-    components: { TableRowComponent, CircleImg, UserProfile, UserProfile },
+    components: { UserProfile },
     setup() {
         const mainApiStoreInst = mainApiStore();
         const userInfoInst = selectedUserStore();

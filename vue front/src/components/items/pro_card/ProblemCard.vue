@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center w-64 h-32 p-5 m-8 text-white border border-pink-600 shadow-lg bg-cyan-700 rounded-xl">
+    <div class="flex items-center w-64 h-32 p-5 m-8 text-white border bg-cyan-700 rounded-xl">
         <div class="w-6 h-6">
             <img :src="`https://static.solved.ac/tier_small/${proData.level}.svg`" class="object-contain w-6 h-6">
         </div>
