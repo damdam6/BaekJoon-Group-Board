@@ -32,8 +32,8 @@
           <div class="w-3/4 mb-6">
             <input
               v-model="solvedACID"
-              type="email"
-              name="email"
+              type="text"
+              name="text"
               id="solvedACID"
               class="w-full py-4 px-8 bg-slate-200 placeholder:font-semibold rounded hover:ring-1 hover:ring-gray-600 outline-slate-500 border-solid border-2 border-slate-300"
               placeholder="solved.ac ID"
@@ -78,7 +78,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { loginStore } from "@/stores/login";
+import { loginStore } from "@/stores/loginInfo";
 
 const store = loginStore();
 const solvedACID = ref(null);

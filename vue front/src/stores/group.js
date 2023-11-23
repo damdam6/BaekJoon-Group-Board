@@ -2,10 +2,8 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 
-// @GetMapping("/group/admin/{groupId}")
-
 export const groupStore = defineStore("group", () => {
-  const groupList = ref({});
+  const groupList = ref([]);
   const groupUserMap = ref(new Map());
 
   //   const fetchGroupList = async () => {
@@ -60,5 +58,25 @@ export const groupStore = defineStore("group", () => {
     }
   };
 
-  return { groupList, fetchGroupList, fetchUsers, groupUserMap };
+  const leaveGroup = async (groupId) => {
+    if (!window.confirm("정말로 그룹을 나가시겠습니까?")) {
+      return;
+    }
+
+    try {
+      axios({
+        url: `http://localhost:8080/api/user-group/group/leave/${groupId}`,
+        method: "GET",
+        withCredentials: true,
+      }).then((response) => {
+        console.log(response.data);
+        groupUserMap.value.set(groupId, response.data);
+        console.log(groupUserMap.value.get(groupId));
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  return { fetchGroupList, fetchUsers, groupList, groupUserMap, leaveGroup };
 });
