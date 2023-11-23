@@ -1,12 +1,17 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { defineStore } from "pinia";
+import { loginStore } from "@/stores/loginInfo";
 import axios from "axios";
 
 export const groupStore = defineStore("group", () => {
+  const lStore = loginStore();
   const groupList = ref([]);
   const groupUserMap = ref({});
   const isLoading = ref(true);
   const selectedGroup = ref({});
+  const loginUser = computed(() => {
+    return lStore.loginUser;
+  });
 
   //   const fetchGroupList = async () => {
   //     try {
@@ -90,5 +95,6 @@ export const groupStore = defineStore("group", () => {
     groupUserMap,
     leaveGroup,
     isLoading,
+    loginUser,
   };
 });

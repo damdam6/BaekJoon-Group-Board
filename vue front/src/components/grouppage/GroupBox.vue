@@ -1,16 +1,14 @@
 <template>
   <div
-    class="bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105"
+    class="m-5 bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105 flex flex-col"
   >
-    <div class="p-1 bg-blue-200"></div>
+    <div class="p-1 bg-indigo-400"></div>
     <div class="p-8">
-      <h2 class="text-3xl font-bold text-gray-800 mb-4">
+      <h2 class="text-3xl font-bold text-violet-700 mb-4">
         {{ p.groupInfo.groupName }}
       </h2>
-      <p class="text-gray-600 mb-6">{{ p.groupInfo }}</p>
-      <!-- <p class="text-4xl font-bold text-gray-800 mb-6">$19.99</p> -->
-      <ul class="text-sm text-gray-600 mb-6">
-        <li class="mb-2 flex items-center">
+      <ul class="text-sm text-gray-600 mb-6 grid grid-cols-3 gap-2">
+        <li class="mb-2 flex items-center text-l font-bold text-violet-700">
           <svg
             class="w-4 h-4 mr-2 text-green-500"
             fill="none"
@@ -27,42 +25,27 @@
           </svg>
           {{ userCount }} Users
         </li>
-        <li class="mb-2 flex items-center">
-          <svg
-            class="w-4 h-4 mr-2 text-green-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            ></path>
-          </svg>
-          {{ p.userList }}
+        <li
+          class="mb-2 flex items-center"
+          v-for="user in p.userList"
+          :key="user.userId"
+        >
+          <img :src="user.profileImageUrl" class="rounded-lg w-5 h-5" />
+          <div class="pl-2 text-sm">{{ user.handle }}</div>
         </li>
       </ul>
     </div>
-    <div class="p-4">
-      <!-- <button
-      @click="enterMainPage()"
-            id="regist-btn"
-            class="py-4 bg-indigo-800 w-full rounded text-blue-50 font-bold hover:bg-blue-700"
-          > -->
-
+    <div class="p-4 flex flex-col justify-end mt-auto">
       <div class="flex justify-items-end">
         <button
           @click="moveToAdminLogin()"
-          class="m-3 bg-orange-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+          class="m-3 ml-0 bg-orange-500 text-white rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
         >
           admin
         </button>
         <button
           @click="leaveGroup()"
-          class="m-3 bg-red-500 text-white rounded-full px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+          class="m-3 ml-0 bg-red-500 text-white rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
         >
           leave
         </button>

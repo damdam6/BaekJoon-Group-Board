@@ -9,15 +9,19 @@ export const mainApiStore = defineStore("allData", () => {
   const uStore = loginStore();
   const fullObject = ref({ key: "value" });
   const isLoading = ref(true);
-  const selectedGroup = gStore.selectedGroup;
-  const loginUser = uStore.loginUser;
+  const selectedGroup = computed(() => {
+    return gStore.selectedGroup;
+  });
+  const loginUser = computed(() => {
+    return uStore.loginUser;
+  });
 
   const fetchData = async () => {
     isLoading.value = true;
-    console.log(selectedGroup.id);
+    console.log(selectedGroup.value.id);
     try {
       axios({
-        url: `http://localhost:8080/api/main/group/${selectedGroup.id}`,
+        url: `http://localhost:8080/api/main/group/${selectedGroup.value.id}`,
         method: "GET",
         withCredentials: true,
       }).then((response) => {

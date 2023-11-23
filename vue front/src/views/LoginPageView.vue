@@ -6,11 +6,7 @@
       class="flex justify-center container mx-auto my-auto w-screen h-screen items-center flex-col"
     >
       <div class="text-slate-100 items-center flex m-3">
-        <img
-          src="@/assets/logoImg.png"
-          class="h-20 p-1"
-          alt="Windster Logo"
-        />``
+        <img src="@/assets/logoImg.png" class="h-20 p-1" alt="Windster Logo" />
         <div class="text-4xl text-center p-3">BBOARD</div>
       </div>
       <div class="flex text-slate-100 p-3 text-xl">
