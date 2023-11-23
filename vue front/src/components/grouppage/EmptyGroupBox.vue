@@ -2,7 +2,7 @@
   <div
     class="opacity-75 m-5 bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105 flex flex-col"
   >
-    <div class="p-1 bg-indigo-500"></div>
+    <div class="p-1 bg-indigo-400"></div>
 
     <div class="p-8 pb-1">
       <h2 class="text-3xl font-bold text-indigo-800 mb-4">New Group</h2>
