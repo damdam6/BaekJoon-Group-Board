@@ -1,30 +1,16 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <main>
-    <div>{{ mainApiStoreInst.setUserTop100 }}</div>
-
-  </main>
+  <main></main>
 </template>
 
-<script>
-import { mainApiStore } from '../stores/main-api';
-import { onMounted } from 'vue';
+<script setup>
+import { mainApiStore } from "../stores/main-api";
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 
-export default {
-  setup() {
-    const mainApiStoreInst = mainApiStore();
-
-    onMounted(() => {
-      mainApiStoreInst.fetchData();
-    }
-
-    )
-
-
-    return { mainApiStoreInst }
-  },
-
-};
+const router = useRouter();
+onMounted(() => {
+  router.replace({ name: "login" });
+});
 </script>
