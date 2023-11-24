@@ -1,15 +1,36 @@
 <template>
-  <NewGroupFormView v-if="isModalVisible" @close="isModalVisible = false" />
 
-  <div class="overflow-hidden transition-transform border border-white shadow-lg transformrounded-lg hover:scale-105">
-    <div class="p-1 bg-blue-200 bg-opacity-30"></div>
+  <NewGroupFormView v-if="isModalVisible" @close="reset()" />
+  <div
+    class="opacity-75 m-5 bg-white rounded-lg overflow-hidden transition-transform border border-white shadow-lg transformrounded-lg hover:scale-105 flex flex-col"
+  >
+    <div class="p-1 bg-slate-600"></div>
 
-    <div class="p-8">
-      <h2 class="mb-4 text-3xl font-bold text-white">New Group</h2>
+    <div class="p-8 pb-1">
+      <h2 class="text-3xl font-bold text-slate-800 mb-4">New Group</h2>
     </div>
-    <div class="p-4">
-      <button @click="moveToForm()"
-        class="w-full p-3 px-4 py-2 py-4 text-xl text-indigo-800 border border-indigo-800 rounded hover:bg-gray-800 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
+    <div class="p-4 mt-auto flex items-center justify-center">
+      <svg
+        class="mr-2 w-12 h-12 text-slate-800"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 2v20M2 12h20"
+        ></path>
+      </svg>
+    </div>
+    <div class="p-4 mt-auto">
+      <button
+        @click="moveToForm()"
+        class="py-4 p-3 w-full bg-black text-white text-xl rounded px-4 py-2 hover:bg-slate-800 focus:outline-none focus:shadow-outline-blue active:bg-slate-400"
+      >
+
         make new group
       </button>
     </div>
@@ -17,15 +38,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+
+import { ref } from "vue";
+import { groupStore } from "@/stores/group";
 import NewGroupFormView from "../../views/NewGroupFormView.vue";
+
 const props = defineProps({
-  isVisible: Boolean
+  isVisible: Boolean,
 });
+const store = groupStore();
+
+
 const isModalVisible = ref(false);
 const moveToForm = () => {
   isModalVisible.value = true;
 };
+
+const reset = () => {
+  isModalVisible.value = false;
+  store.fetchGroupList();
+};
+
 </script>
 
 <style scoped></style>

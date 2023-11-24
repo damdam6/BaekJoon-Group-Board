@@ -171,7 +171,6 @@ public class ReloadDomain {
         }
     }
 
-    // 동기적으로 작동하는 코드 > 비동기로 바꿔야
     // problemDomain 코드 재시용
     public void processUserTierProblem(List<User> users, Map<Integer, List<UserTier>> totalMap) {
         Long cur = System.currentTimeMillis();

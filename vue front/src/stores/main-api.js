@@ -9,21 +9,28 @@ export const mainApiStore = defineStore("allData", () => {
   const uStore = loginStore();
   const fullObject = ref({ key: "value" });
   const isLoading = ref(true);
-  const isComputing = ref(true);
-  const selectedGroup = gStore.selectedGroup;
-  const loginUser = uStore.loginUser;
+
+  const selectedGroup = computed(() => {
+    return gStore.selectedGroup;
+  });
+  const loginUser = computed(() => {
+    return uStore.loginUser;
+  });
 
   const fetchData = async () => {
     isLoading.value = true;
-
+    console.log(selectedGroup.value.id);
     try {
       axios({
-        url: `http://localhost:8080/api/main/group/${selectedGroup.id}`,
+        url: `http://localhost:8080/api/main/group/${selectedGroup.value.id}`,
+
         method: "GET",
         withCredentials: true,
       }).then((response) => {
         fullObject.value = { ...response.data };
         isLoading.value = false;
+
+
       });
     } catch (err) {
       console.log(err)
@@ -51,7 +58,7 @@ export const mainApiStore = defineStore("allData", () => {
 
   const algorithmList = computed(() => {
     if (fullObject.value && fullObject.value.algorithms) {
-      console.log(fullObject.value.algorithms)
+
       return fullObject.value.algorithms;
     }
     return [];
@@ -79,10 +86,12 @@ export const mainApiStore = defineStore("allData", () => {
     const problemsByUserId = top100problemList.value.reduce((acc, element) => {
       // userId와 problemNum을 가져옵니다.
       const { userId, problemId } = element;
+
   
       if(!getTop100ProNum.value.includes(problemId)){
         return acc;
       }
+
       // 아직 이 userId를 가진 그룹이 없으면 새 그룹을 생성하고, problemNum을 배열에 추가합니다.
       if (!acc[userId]) {
         acc[userId] = [];
@@ -94,6 +103,7 @@ export const mainApiStore = defineStore("allData", () => {
 
     return problemsByUserId;
   });
+
   
   const getTop100ProNum = computed(() => {
     const uniqueProblemIds = top100problemList.value.reduce((acc, current) => {
@@ -108,6 +118,11 @@ export const mainApiStore = defineStore("allData", () => {
 
   const userTierProblemList = computed(() => fullObject.value.userTierProblems);
   const recomProblemList = computed(() => fullObject.value.recomProblems);
+
+
+  const userTierProblemList = computed(() => fullObject.value.userTierProblems);
+  const recomProblemList = computed(() => fullObject.value.recomProblems);
+
 
   const userTop100problemList = computed(
     () => fullObject.value.userTop100problems
@@ -128,5 +143,6 @@ export const mainApiStore = defineStore("allData", () => {
     loginUser,
     isComputing,
     getTop100ProNum
+
   };
 });

@@ -1,13 +1,13 @@
 <template>
-  <div
-    class="w-full h-full from-blue-900 via-indigo-800 to-indigo-500 bg-gradient-to-br p-8"
-  >
-    <div class="bg-white p-3 max-w-md mx-auto">
+
+  <div class="w-full h-full bg-black p-8">
+    <div class="bg-black border border-white rounded-xl p-3 max-w-md mx-auto">
       <div class="text-center">
-        <h1 class="m-2 text-xl font-bold">
+        <h1 class="m-2 text-xl font-bold text-slate-100">
           {{ store.selectedGroup.groupName }} Admin Page
         </h1>
-        <h3 class="m-2 text-2xl font-bold">UserList</h3>
+        <h3 class="m-2 text-4xl font-bold text-white">UserList</h3>
+
       </div>
       <div class="mt-3">
         <ul>
@@ -18,7 +18,9 @@
           >
             <div class="flex align-middle flex-row justify-between">
               <div class="p-1">
-                <p class="text-neutral-950">
+
+                <p class="text-white font-mono">
+
                   {{ user.handle }}
                 </p>
               </div>
@@ -26,10 +28,12 @@
               <button
                 v-if="store.groupUserList.some((u) => u.userId === user.userId)"
                 @click="store.removeUser(user.userId)"
-                class="flex text-red-500 border-2 border-red-500 p-2 rounded-lg"
+
+                class="flex text-red-500 border-2 border-red-500 hover:text-white hover:bg-red-500 p-2 rounded-lg"
               >
                 <svg
-                  class="h-6 w-6 text-red-500"
+                  class="h-6 w-6"
+
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -74,13 +78,17 @@
       <div class="mt-8">
         <button
           @click="store.deleteGroup()"
-          class="border-2 border-red-500 p-2 text-red-500"
+
+          class="border-2 border-red-500 p-2 text-red-500 hover:text-white hover:bg-red-500"
+
         >
           Remove Group
         </button>
         <button
-          @click="returnToGroupPage"
-          class="border-2 border-indigo-500 p-2 text-indigo-500 ml-4"
+
+          @click="returnToGroupPage()"
+          class="border-2 border-indigo-500 p-2 text-indigo-500 hover:text-white hover:bg-indigo-500 ml-4"
+
         >
           Go Back
         </button>
