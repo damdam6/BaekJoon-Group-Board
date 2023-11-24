@@ -29,11 +29,9 @@ export const mainApiStore = defineStore("allData", () => {
       }).then((response) => {
         fullObject.value = { ...response.data };
         isLoading.value = false;
-
-
       });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -58,7 +56,6 @@ export const mainApiStore = defineStore("allData", () => {
 
   const algorithmList = computed(() => {
     if (fullObject.value && fullObject.value.algorithms) {
-
       return fullObject.value.algorithms;
     }
     return [];
@@ -76,19 +73,17 @@ export const mainApiStore = defineStore("allData", () => {
     }
     return fullObject.value.top100problems;
   });
-  
 
   const setUserTop100 = computed(() => {
     if (!fullObject.value || !top100problemList.value) {
       return {};
     }
-  
+
     const problemsByUserId = top100problemList.value.reduce((acc, element) => {
       // userId와 problemNum을 가져옵니다.
       const { userId, problemId } = element;
 
-  
-      if(!getTop100ProNum.value.includes(problemId)){
+      if (!getTop100ProNum.value.includes(problemId)) {
         return acc;
       }
 
@@ -104,7 +99,6 @@ export const mainApiStore = defineStore("allData", () => {
     return problemsByUserId;
   });
 
-  
   const getTop100ProNum = computed(() => {
     const uniqueProblemIds = top100problemList.value.reduce((acc, current) => {
       if (!acc.includes(current.problemId)) {
@@ -115,11 +109,8 @@ export const mainApiStore = defineStore("allData", () => {
     return uniqueProblemIds;
   });
 
-
   const userTierProblemList = computed(() => fullObject.value.userTierProblems);
   const recomProblemList = computed(() => fullObject.value.recomProblems);
-
-
 
   const userTop100problemList = computed(
     () => fullObject.value.userTop100problems
@@ -138,7 +129,6 @@ export const mainApiStore = defineStore("allData", () => {
     algorithmMap,
     userTop100problemList,
     loginUser,
-    getTop100ProNum
-
+    getTop100ProNum,
   };
 });

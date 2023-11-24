@@ -82,7 +82,6 @@ const addgroup = async () => {
 
     goBackToGroupPage();
 
-
     if (!response.data) {
       alert("오류가 생겼습니다. 담비한테 물어보세용!");
     }
@@ -94,7 +93,6 @@ const addgroup = async () => {
 
 const goBackToGroupPage = () => {
   emit('close');
-
 };
 </script>
 
