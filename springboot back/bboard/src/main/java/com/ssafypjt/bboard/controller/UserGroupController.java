@@ -109,6 +109,13 @@ public class UserGroupController {
         return new ResponseEntity<List<Group>>(list, HttpStatus.OK);
     }
 
+    @GetMapping("/user/loginuser") // 로그인된 유저의 그룹 정보 가져오기
+    public ResponseEntity<User> getLoginUser(HttpServletRequest request){
+        User user = userService.getUser((Integer) sessionManager.getSession(request));
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+
     // 그룹 등록
     // 그룹 정상 생성시 group 반환 (비밀번호는 암호화되어서 리턴)
     // 비밀번호 4자리 이하이면 BAD_REQUEST

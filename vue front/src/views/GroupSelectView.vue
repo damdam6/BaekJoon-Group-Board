@@ -1,14 +1,15 @@
 <template>
   <div v-if="store.isLoading">로딩중</div>
   <div v-else>
-    <div class="h-screen from-blue-900 via-indigo-800 to-indigo-500 bg-gradient-to-br">
+    <!-- from-blue-900 via-indigo-800 to-indigo-500 bg-gradient-to-br -->
+    <div class="h-screen bg-black">
       <div class="pt-5 pl-5 flex">
-        <p class="flex p-5 bg-slate-200 w-fit rounded items-center">
+        <p class="border-2 border-white flex p-5 w-fit rounded items-center">
           <img
           :src="store.loginUser.profileImageUrl"
           class="rounded-lg w-10 h-10"
         />
-        <p class="pl-2 font-bold text-center">{{ store.loginUser.handle }}</p>
+        <p class="pl-2 font-bold text-center text-white">{{ store.loginUser.handle }}</p>
         </p>
       </div>
       <div class="py-12 flex items-center justify-center">

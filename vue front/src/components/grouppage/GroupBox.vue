@@ -2,13 +2,13 @@
   <div
     class="m-5 bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105 flex flex-col"
   >
-    <div class="p-1 bg-indigo-400"></div>
+    <div class="p-1 bg-slate-600"></div>
     <div class="p-8">
-      <h2 class="text-3xl font-bold text-violet-700 mb-4">
+      <h2 class="text-3xl font-bold text-slate-800 mb-4">
         {{ p.groupInfo.groupName }}
       </h2>
       <ul class="text-sm text-gray-600 mb-6 grid grid-cols-3 gap-2">
-        <li class="mb-2 flex items-center text-l font-bold text-violet-700">
+        <li class="mb-2 flex items-center text-l font-bold text-slate-950">
           <svg
             class="w-4 h-4 mr-2 text-green-500"
             fill="none"
@@ -39,20 +39,20 @@
       <div class="flex justify-items-end">
         <button
           @click="moveToAdminLogin()"
-          class="m-3 ml-0 bg-orange-500 text-white rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+          class="m-3 ml-0 bg-orange-500 text-white rounded px-4 py-2 hover:bg-orange-400 focus:outline-none focus:shadow-outline-blue active:bg-orange-800"
         >
           admin
         </button>
         <button
           @click="leaveGroup()"
-          class="m-3 ml-0 bg-red-500 text-white rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+          class="m-3 ml-0 bg-red-500 text-white rounded px-4 py-2 hover:bg-red-400 focus:outline-none focus:shadow-outline-blue active:bg-red-800"
         >
           leave
         </button>
       </div>
       <button
         @click="enterMainPage()"
-        class="py-4 p-3 w-full bg-indigo-800 text-white text-xl rounded px-4 py-2 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+        class="py-4 p-3 w-full bg-black text-white text-xl rounded px-4 py-2 hover:bg-slate-800 focus:outline-none focus:shadow-outline-blue active:bg-slate-400"
       >
         Enter
       </button>
