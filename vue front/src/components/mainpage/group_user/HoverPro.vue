@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="flex justify-center w-80 h-90">
         <ProblemCard v-if="objCheck" :pro-data="changeboxStoreInst.getProblemObj" />
     </div>
 </template>

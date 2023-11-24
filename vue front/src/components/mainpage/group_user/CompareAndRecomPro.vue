@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-10">
+    <div class="flex flex-col h-full gap-10">
         <CompareView />
         <HoverPro />
     </div>

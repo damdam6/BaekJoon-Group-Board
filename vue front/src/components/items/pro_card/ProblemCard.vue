@@ -1,17 +1,21 @@
 <template>
-    <div class="flex items-center w-64 h-32 p-5 m-8 text-white border shadow-lg bg-opacity-60 rounded-xl">
-        <div class="w-20 h-20 mb-12 mr-3">
-            <img
-                :src="`https://static.solved.ac/tier_small/${proData.level}.svg` || 'https://static.solved.ac/misc/360x360/default_profile.png'">
+    <a :href="`https://www.acmicpc.net/problem/${proData.problemId}`" target="_blank">
+        <div class="w-64 m-8 text-white border border-white shadow-lg bg-opacity-60 rounded-xl">
+            <div class="flex items-center">
+                <div class="w-10 h-10 pl-3 mt-2 ">
+                    <img class="object-cover"
+                        :src="`https://static.solved.ac/tier_small/${proData.level}.svg` || 'https://static.solved.ac/misc/360x360/default_profile.png'">
+                </div>
+                <h2 class="mt-2 mb-2 ml-5 font-bold">{{ proData.titleKo }}</h2>
+            </div>
+            <div class="m-4 w-60">
+                <div class="w-50">
+                    <AlgorithmTag v-for="(algorithm, index) in proData.algorithm" :key="index"
+                        :class="shuffledColorPairs[index % shuffledColorPairs.length].join(' ')" :algorithm="algorithm" />
+                </div>
+            </div>
         </div>
-
-
-        <div class="ml-4">
-            <h2 class="mb-2 font-semibold">{{ proData.titleKo }}</h2>
-            <AlgorithmTag v-for="(algorithm, index) in proData.algorithm" :key="index"
-                :class="shuffledColorPairs[index % shuffledColorPairs.length].join(' ')" :algorithm="algorithm" />
-        </div>
-    </div>
+    </a>
 </template>
 
 
@@ -30,9 +34,9 @@ export default {
         return {
             // 초기 색상 배열 정의
             colorPairs: [
-                ["bg-blue-300", "text-blue-800"],
-                ["bg-green-300", "text-green-800"],
-                ["bg-red-300", "text-red-800"],
+                ["border border-blue-300", "text-blue-800"],
+                ["border border-green-300", "text-green-800"],
+                ["border border-red-300", "text-red-800"],
                 // ... 기타 색상 쌍
             ],
         };

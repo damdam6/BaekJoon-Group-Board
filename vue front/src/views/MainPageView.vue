@@ -1,13 +1,12 @@
 <template>
-  <!-- component -->
   <div v-if="mainApiStoreInst.isLoading">로딩중</div>
   <!-- This is an example component -->
-  <div v-else>
+  <div v-else class="h-screen overflow-hidden bg-black">
     <NavigationHeader />
-    <div class="flex w-full pt-16 overflow-hidden bg-black">
-      <div id="main-content" class="relative w-full overflow-y-hidden">
-        <main>
-          <div class="px-20 pt-10">
+    <div class="flex w-full h-full pt-16 overflow-hidden bg-black">
+      <div id="main-content" class="relative w-full h-full overflow-y-hidden">
+        <main class="h-full">
+          <div class="h-full px-20 pt-10">
             <div class="grid w-full h-full grid-cols-1 gap-4 2xl:grid-cols-7">
               <LeftChangeBox />
               <RightFixedBox />
@@ -48,12 +47,4 @@ export default {
 };
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style></style>

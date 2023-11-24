@@ -1,5 +1,5 @@
 <template>
-    <div class="h-full p-4 mb-4 border border-yellow-600 rounded-lg shadow sm:p-6">
+    <div class="p-4 mb-4 border border-yellow-600 rounded-lg shadow h-fit sm:p-6">
 
 
         <div class="grid gap-6">
