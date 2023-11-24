@@ -27,6 +27,21 @@ const router = createRouter({
       name: "group",
       component: () => import("../views/GroupSelectView.vue"),
     },
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("../views/AdminPageView.vue"),
+    },
+    {
+      path: "/admin/password",
+      name: "adminPassword",
+      component: () => import("../views/AdminPasswordView.vue"),
+    },
+    {
+      path: "/newGroupForm",
+      name: "newGroupForm",
+      component: () => import("../views/NewGroupFormView.vue"),
+    },
   ],
 });
 

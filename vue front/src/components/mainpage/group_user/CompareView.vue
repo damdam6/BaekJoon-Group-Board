@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="['p-5 text-gray-200 bg-gray-800 rounded-lg shadow sm:p-6 xl:p-8', userInfoInst.userId === 0 ? 'invisible' : '']">
+        :class="['p-5 text-gray-200 border border-white rounded-lg shadow sm:p-6 xl:p-8', userInfoInst.userId === 0 ? 'invisible' : '']">
         <div>
             <UserProfile class="bg-black" />
         </div>

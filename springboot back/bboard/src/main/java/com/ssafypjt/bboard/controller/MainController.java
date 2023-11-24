@@ -62,6 +62,8 @@ public class MainController {
         List<Problem> userTop100ProblemList = groupDomain.getUserProblems(userAndGroup); // 유저의 top 100개 문제 정보 (Recomproblem 등록 위해)
 
         ObjectNode responseJson = JsonNodeFactory.instance.objectNode();
+        responseJson.set("user", mapper.valueToTree(user));
+        responseJson.set("group", mapper.valueToTree(group));
         responseJson.set("users", mapper.valueToTree(userList));
         responseJson.set("top100problems", mapper.valueToTree(top100problemList));
         responseJson.set("userTierProblems", mapper.valueToTree((userTierProblemList)));

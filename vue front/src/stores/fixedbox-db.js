@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed} from 'vue'
 import { defineStore } from 'pinia'
 import { mainApiStore } from '@/stores/main-api';
 
@@ -25,6 +25,7 @@ export const fixedBoxStore = defineStore('fixedBoxData', () => {
 
   const recomProAlgoObject = computed(() => {
     let recomObject = {};
+
     if(mainApiStoreInst.recomProblemList.length === 0){
       recomObject = mainApiStoreInst.userTierProblemList;
     }else{
@@ -32,17 +33,26 @@ export const fixedBoxStore = defineStore('fixedBoxData', () => {
     }
 
     let recomProAndAlgo = {};
+    console.log(recomObject)
     recomObject.forEach((value, key) => {
       const proNum = value.problemId;
-
+      console.log(mainApiStoreInst.algorithmMap)
+      console.log(proNum)
       const algo= mainApiStoreInst.algorithmMap.get(proNum);
-      const algorithmArr = algo.split(" ");
+      console.log(algo)
+      let algorithmArr = [];
+      if(algo){
+        algorithmArr = algo.split(" ");
+      }
+      console.log(algorithmArr)
       recomProAndAlgo[key] = { ...value, algorithm: algorithmArr };
     });
+    console.log(recomProAndAlgo)
     return recomProAndAlgo;
   }
 
   )
+
 
   return {
     rankTop3, recomProAlgoObject

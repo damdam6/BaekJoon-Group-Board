@@ -1,15 +1,15 @@
 <template>
-    <div class="relative w-64 px-6 py-6 my-4 bg-gray-900 shadow-xl rounded-3xl">
-        <div class="absolute flex items-center px-1 py-1 text-white bg-pink-500 rounded-full shadow-xl left-4 -top-6">
+    <div class="relative w-64 px-10 py-6 my-4 border border-white shadow-xl rounded-3xl">
+        <div class="absolute flex items-center px-1 py-1 text-white bg-black rounded-full shadow-xl left-4 -top-6">
             <img class="object-cover w-12 h-12 rounded-full"
                 :src="userInfoInst.userProfileImg || 'https://static.solved.ac/misc/360x360/default_profile.png'" />
         </div>
 
         <div class="mt-8">
-            <p class="my-2 text-xl font-semibold">{{ userInfoInst.userName }}</p>
+            <p class="my-2 mb-3 text-xl font-semibold">{{ userInfoInst.userName }}</p>
             <div class="flex space-x-2 text-sm text-gray-400">
                 <img :src="`https://static.solved.ac/tier_small/${userInfoInst.userTier}.svg` || 'https://static.solved.ac/misc/360x360/default_profile.png'"
-                    class="w-6 h-6">
+                    class="w-5 h-5">
                 <p>{{ rankMap[userInfoInst.userTier] }}</p>
             </div>
             <div class="flex my-3 space-x-2 text-sm text-gray-400">
@@ -23,7 +23,7 @@
                     <p class="mb-2 text-sm font-semibold">Group Rank</p>
                     <div class="text-base font-semibold text-gray-400">
                         <div class="flex space-x-2">
-                            <p>{{ userInfoInst.groupRank }} + 100</p>
+                            <p>{{ userInfoInst.groupRank }}</p>
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                     <p class="mb-2 text-sm font-semibold">Solved Rank</p>
                     <div class="text-base font-semibold text-gray-400">
                         <div class="flex space-x-2">
-                            <p>{{ userInfoInst.userRank }} + 100</p>
+                            <p>{{ userInfoInst.userRank }}</p>
                         </div>
                     </div>
                 </div>
@@ -41,11 +41,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { selectedUserStore } from '@/stores/userInfo'
-import { mainApiStore } from '@/stores/main-api';
 const userInfoInst = selectedUserStore();
-const mainApiStoreInst = mainApiStore();
 
 
 

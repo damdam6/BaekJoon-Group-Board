@@ -47,7 +47,7 @@ const getBoxClass = (level, box) => {
     const problemNum = mainApiStoreInst.getTop100ProNum[idx];
     const getUserId = userInfoInst.userId;
     const isSolved = getUserId && mainApiStoreInst.setUserTop100[getUserId].includes(problemNum);
-    return isSolved ? 'hover:bg-red-500 border-red-500' : 'hover:bg-blue-500 border-blue-500';
+    return isSolved ? 'hover:bg-orange-500 border-orange-500' : 'hover:bg-gray-300 border-gray-300';
 };
 
 

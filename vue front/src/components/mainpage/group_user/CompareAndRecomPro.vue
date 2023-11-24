@@ -1,8 +1,6 @@
 <template>
-    <div class="flex flex-col gap-10">
-        <!-- CompareView : 사람 프로필 -->
+    <div class="flex flex-col h-full gap-10">
         <CompareView />
-        <!-- CompareView : 사람 프로필 -->
         <HoverPro />
     </div>
 </template>

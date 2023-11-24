@@ -1,11 +1,11 @@
 //우측 추천 문제들
 
 <template>
-    <div class="flex flex-col items-center justify-center mt-8 2xl:col-span-2">
+    <div class="flex flex-col items-center mt-8 2xl:col-span-2">
         <div class="overflow-x-auto rounded-lg">
             <div class="inline-block min-w-full align-middle">
                 <div class="overflow-hidden shadow sm:rounded-lg">
-                    <GroupRating class="bg-gray-900 rounded-lg shadow md-4 sm:p-6 xl:p-8" />
+                    <GroupRating class="border border-white rounded-lg shadow md-4 sm:p-6 xl:p-8" />
                     <RecoPro class="m-10" />
                 </div>
             </div>
