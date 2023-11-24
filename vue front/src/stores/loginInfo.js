@@ -17,9 +17,9 @@ export const loginStore = defineStore("loginInfo", () => {
 
       console.log(response.data);
       loginUser.value = response.data;
-
+      localStorage.setItem('user', JSON.stringify(response.data));
       if (response.data) {
-        router.push({ name: "group" });
+        router.replace({ name: "group" });
       }
     } catch (err) {
       alert("오류가 발생하였습니다. 담비한테 물어보세요.");

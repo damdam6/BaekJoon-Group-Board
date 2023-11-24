@@ -1,6 +1,6 @@
 <template>
     <span class="text-xl text-yellow-300">
-        {{ groupInfo }}
+        {{ group.groupName }}
     </span>
 </template>
 
@@ -8,7 +8,7 @@
 import { mainApiStore } from '@/stores/main-api';
 import { computed } from 'vue';
 const mainApiStoreInst = mainApiStore();
-
+const group = JSON.parse(localStorage.getItem('group'));
 const groupInfo = computed(() =>
     mainApiStoreInst.selectedGroup
 );

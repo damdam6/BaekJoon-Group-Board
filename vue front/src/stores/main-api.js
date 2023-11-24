@@ -120,9 +120,6 @@ export const mainApiStore = defineStore("allData", () => {
   const recomProblemList = computed(() => fullObject.value.recomProblems);
 
 
-  const userTierProblemList = computed(() => fullObject.value.userTierProblems);
-  const recomProblemList = computed(() => fullObject.value.recomProblems);
-
 
   const userTop100problemList = computed(
     () => fullObject.value.userTop100problems
@@ -141,7 +138,6 @@ export const mainApiStore = defineStore("allData", () => {
     algorithmMap,
     userTop100problemList,
     loginUser,
-    isComputing,
     getTop100ProNum
 
   };
