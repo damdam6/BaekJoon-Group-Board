@@ -1,4 +1,5 @@
 <template>
+
   <NewGroupFormView v-if="isModalVisible" @close="reset()" />
   <div
     class="opacity-75 m-5 bg-white rounded-lg overflow-hidden transition-transform border border-white shadow-lg transformrounded-lg hover:scale-105 flex flex-col"
@@ -29,6 +30,7 @@
         @click="moveToForm()"
         class="py-4 p-3 w-full bg-black text-white text-xl rounded px-4 py-2 hover:bg-slate-800 focus:outline-none focus:shadow-outline-blue active:bg-slate-400"
       >
+
         make new group
       </button>
     </div>
@@ -36,6 +38,7 @@
 </template>
 
 <script setup>
+
 import { ref } from "vue";
 import { groupStore } from "@/stores/group";
 import NewGroupFormView from "../../views/NewGroupFormView.vue";
@@ -44,6 +47,7 @@ const props = defineProps({
   isVisible: Boolean,
 });
 const store = groupStore();
+
 
 const isModalVisible = ref(false);
 const moveToForm = () => {
@@ -54,6 +58,7 @@ const reset = () => {
   isModalVisible.value = false;
   store.fetchGroupList();
 };
+
 </script>
 
 <style scoped></style>

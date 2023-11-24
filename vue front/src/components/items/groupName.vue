@@ -1,13 +1,17 @@
 <template>
     <span class="text-xl text-yellow-300">
-        group_name
+        {{ groupInfo }}
     </span>
 </template>
 
-<script>
+<script setup>
+import { mainApiStore } from '@/stores/main-api';
+import { computed } from 'vue';
+const mainApiStoreInst = mainApiStore();
 
-export default {
+const groupInfo = computed(() =>
+    mainApiStoreInst.selectedGroup
+);
 
-}
 
 </script>

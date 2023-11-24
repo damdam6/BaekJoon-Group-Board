@@ -1,6 +1,7 @@
 <template>
   <div v-if="store.isLoading">로딩중</div>
   <div v-else>
+
     <!-- from-blue-900 via-indigo-800 to-indigo-500 bg-gradient-to-br -->
     <div class="h-screen bg-black">
       <div class="pt-5 pl-5 flex">
@@ -32,6 +33,7 @@
           <!-- 그룹길이가 2개이하라면 -->
           <EmptyGroupBox v-if="store.groupList.length <= 2" />
         </div>
+
       </div>
     </div>
   </div>

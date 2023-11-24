@@ -11,9 +11,9 @@
    </nav>
 </template>
 <script>
-import GroupName from '../items/groupName.vue';
+import GroupName from '@/components/items/groupName.vue';
 
-import LogoTitle from '../items/logoTitle.vue';
+import LogoTitle from '@/components/items/logoTitle.vue';
 import LoginUserInfo from './LoginUserInfo.vue';
 
 

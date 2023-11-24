@@ -1,3 +1,4 @@
+
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 import { loginStore } from "@/stores/loginInfo";
@@ -5,11 +6,14 @@ import axios from "axios";
 
 export const groupStore = defineStore("group", () => {
   const lStore = loginStore();
+
   const groupList = ref([]);
   const groupUserMap = ref({});
   const isLoading = ref(true);
   const selectedGroup = ref({});
+
   const loginUser = ref({});
+
 
   const fetchGroupList = async () => {
     isLoading.value = true;
@@ -21,11 +25,13 @@ export const groupStore = defineStore("group", () => {
       });
       groupList.value = response.data;
 
+
       await fetchLoginUser();
 
       // 여기서 비동기 함수를 사용하여 각 그룹에 대한 사용자 정보를 가져오도록 수정
       Promise.all(groupList.value.map((group) => fetchUsers(group.id))).then(
         () => {
+
           isLoading.value = false;
           console.log("완료");
         }
@@ -49,6 +55,7 @@ export const groupStore = defineStore("group", () => {
       console.log(err.message);
     }
   };
+
 
   const fetchLoginUser = async () => {
     try {
@@ -92,5 +99,6 @@ export const groupStore = defineStore("group", () => {
     isLoading,
     loginUser,
     fetchLoginUser,
+
   };
 });

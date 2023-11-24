@@ -5,7 +5,8 @@
                 <img class="mr-[-15px] inline-block shrink-0 rounded-lg w-[50px] h-[50px]"
                     :src="ranker.profileImageUrl || 'https://static.solved.ac/misc/360x360/default_profile.png'"
                     alt="avatar image">
-                <img class="inline-block w-[25px] h-[25px]" :src="`https://static.solved.ac/tier_small/${ranker.tier}.svg`"
+                <img class="inline-block w-[25px] h-[25px]"
+                    :src="`https://static.solved.ac/tier_small/${ranker.tier}.svg` || 'https://static.solved.ac/misc/360x360/default_profile.png'"
                     alt="tier image">
             </div>
         </div>

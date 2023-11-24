@@ -1,4 +1,5 @@
 <template>
+
   <div
     class="m-5 bg-white rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105 flex flex-col"
   >
@@ -54,6 +55,7 @@
         @click="enterMainPage()"
         class="py-4 p-3 w-full bg-black text-white text-xl rounded px-4 py-2 hover:bg-slate-800 focus:outline-none focus:shadow-outline-blue active:bg-slate-400"
       >
+
         Enter
       </button>
     </div>
@@ -97,7 +99,9 @@ const leaveGroup = () => {
 // });
 
 const enterMainPage = () => {
+
   store.selectedGroup = p.groupInfo;
+
   router.push({
     name: "about",
   });
