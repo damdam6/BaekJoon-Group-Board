@@ -13,9 +13,6 @@ public interface ProblemAlgorithmRepository {
     @Delete("DELETE FROM problem_algorithm")
     public int deleteAll();
 
-    @Insert("INSERT IGNORE INTO problem_algorithm (problem_num, algorithm) VALUES (#{problemNum}, #{algorithm})")
-    public int insertAlgorithm(ProblemAlgorithm problemAlgorithm);
-
     @Insert({
             "<script>",
             "INSERT IGNORE INTO problem_algorithm (problem_num, algorithm) VALUES ",
@@ -31,8 +28,5 @@ public interface ProblemAlgorithmRepository {
 
     @Select("SELECT problem_num as problemNum, algorithm FROM problem_algorithm ORDER BY problem_num ASC")
     public List<ProblemAlgorithm> selectAllAlgorithm();
-
-    @Select("SELECT problem_num as problemNum, algorithm FROM problem_algorithm pa INNER JOIN  WHERE ")
-    public List<ProblemAlgorithm> selectGroupAlgorithm(UserAndGroupObjectDomain userAndGroup);
 
 }

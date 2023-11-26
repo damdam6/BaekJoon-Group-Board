@@ -52,6 +52,7 @@ public class ReloadDomain {
         //유저 정보 업데이트
         List<User> users = userRepository.selectAllUser();
         processUser(users);
+
         //유저 목록을 사용한 상위 문제 100개 가져오기
         users = userRepository.selectAllUser();
         processProblem(users);
@@ -60,8 +61,8 @@ public class ReloadDomain {
     }
 
     public void processProblem(List<User> users) {
-        synchronized (problemDomain.proAndAlgoList) {
-            problemDomain.proAndAlgoList.clear();
+        List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
+        synchronized (proAndAlgoList) {
             Flux.fromIterable(users)
                     .delayElements(Duration.ofMillis(1))
                     .flatMap(user ->
@@ -70,14 +71,14 @@ public class ReloadDomain {
                                             SACApiEnum.PROBLEMANDALGO.getQuery(user.getUserName())
                                     )
                                     .doOnNext(data ->
-                                            problemDomain.makeProblemAndAlgoDomainObject(data, user)
+                                            problemDomain.makeProblemAndAlgoDomainObject(proAndAlgoList, data, user)
                                     )
                     ).then()
                     .subscribe(
                             null, // onNext 처리는 필요 없음
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
-                                resetProblems(problemDomain.proAndAlgoList);
+                                resetProblems(proAndAlgoList);
                             } // 완료 처리
                     );
         }
@@ -92,7 +93,6 @@ public class ReloadDomain {
         Collections.sort(list);
         problemAlgorithmRepository.insertAlgorithms(list);
         problemRepository.insertProblems(list);
-
         System.out.println("problem good");
     }
 
@@ -132,7 +132,6 @@ public class ReloadDomain {
         for (User user : users) {
             totalMap.put(user.getUserId(), new ArrayList<>());
         }
-        // 수정
         synchronized (totalMap) {
             Flux.fromIterable(users)
                     .delayElements(Duration.ofMillis(1))
@@ -176,8 +175,6 @@ public class ReloadDomain {
         Long cur = System.currentTimeMillis();
         List<UserPageNoObjectDomain> userPageNoObjectDomainList = userTierProblemDomain.makeUserPageNoObjectDomainList(users, totalMap);
         Map<User, Map<Integer, List<ProblemAndAlgoObjectDomain>>> memoMap = new HashMap<>();
-        Integer a = 0;
-
         Flux.fromIterable(userPageNoObjectDomainList)
                 .delayElements(Duration.ofMillis(1))
                 .flatMap(userPageNoObjectDomain ->
@@ -195,15 +192,13 @@ public class ReloadDomain {
                                         }
                                     }
                             )
-
                 )
                 .subscribe(
                         null, // onNext 처리는 필요 없음
                         Throwable::printStackTrace, // 에러 처리
                         () -> {
                             List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
-                            Long cur2 = System.currentTimeMillis();
-                            System.out.println(cur2 - cur);
+                            System.out.println(System.currentTimeMillis() - cur);
                             resetUserTierProblems(totalProblemAndAlgoList);
                             System.out.println("tier problem good");
                         } // 완료 처리

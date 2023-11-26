@@ -14,25 +14,19 @@ import java.util.*;
 public class ProblemDomain {
 
     private ObjectMapper mapper;
-    public List<ProblemAndAlgoObjectDomain> proAndAlgoList = new ArrayList<>();
-
     @Autowired
     public ProblemDomain(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
-    private void addToList(List<ProblemAndAlgoObjectDomain> tmpList){
-        proAndAlgoList.addAll(tmpList);
-    }
-
     // 코드 재활용을 위해 코드 분기
     //합쳐서 list 만드는 과정임 ->
-    public void makeProblemAndAlgoDomainObject(JsonNode aNode, User user) {
+    public void makeProblemAndAlgoDomainObject(List<ProblemAndAlgoObjectDomain> proAndAlgoList, JsonNode aNode, User user) {
         JsonNode arrayNode = aNode.path("items");
         if(!arrayNode.isArray()){
             return;
         }
-        addToList(makeProblemAndAlgoDomainList(arrayNode, user));
+        proAndAlgoList.addAll(makeProblemAndAlgoDomainList(arrayNode, user));
     }
 
     public List<ProblemAndAlgoObjectDomain> makeProblemAndAlgoDomainObjectMono(JsonNode aNode, User user) {

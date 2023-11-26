@@ -7,7 +7,6 @@ import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 

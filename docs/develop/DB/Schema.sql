@@ -79,3 +79,33 @@ ALTER TABLE `user_tier_problem` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (
 
 ALTER TABLE `user_tier_problem` ADD FOREIGN KEY (`problem_num`) REFERENCES `problem_algorithm` (`problem_num`);
 
+INSERT INTO users (user_name, tier, solved_rank, img_url) VALUES 
+('kjh105702', 0, 0, ''),
+('csj9912', 0, 0, ''),
+('bmike0413', 0, 0, ''),
+('98cline', 0, 0, ''),
+('pisouz7', 0, 0, ''),
+('jwon000', 0, 0, ''),
+('tbsapc', 0, 0, ''),
+('29tigerhg', 0, 0, ''),
+('ygj9605', 0, 0, ''),
+('soyi_java', 0, 0, ''),
+('wbypes18', 0, 0, ''),
+('end24', 0, 0, ''),
+('d_heon', 0, 0, ''),
+('yhu2121', 0, 0, ''),
+('leeje0506', 0, 0, ''),
+('lsy9752', 0, 0, ''),
+('oree', 0, 0, ''),
+('thakd221', 0, 0, ''),
+('lbsoo1021', 0, 0, ''),
+('kwonjaehyunssafy10th', 0, 0, ''),
+('deu03161', 0, 0, ''),
+('hyes0211', 0, 0, ''),
+('wlghks98k', 0, 0, ''),
+('lache9688', 0, 0, ''),
+('minah', 0, 0, ''),
+('suzy0120', 0, 0, ''),
+('gardener', 0, 0, ''),
+('jo8gwang', 0, 0, ''),
+('kasey', 0, 0, '');

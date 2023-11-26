@@ -23,7 +23,4 @@ public interface UserGroupRepository {
     @Delete("DELETE FROM user_group WHERE group_id = #{groupId}") // 그룹-유저 관계 삭제
     public int removeAllUserGroup(@Param("groupId") int groupId);
 
-    @Delete("DELETE from user_group")
-    public int deleteAll();
-
 }

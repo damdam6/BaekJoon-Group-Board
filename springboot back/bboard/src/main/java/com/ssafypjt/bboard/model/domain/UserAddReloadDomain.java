@@ -172,8 +172,7 @@ public class UserAddReloadDomain {
                             Throwable::printStackTrace, // 에러 처리
                             () -> {
                                 List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
-                                Long cur2 = System.currentTimeMillis();
-                                System.out.println(cur2 - cur);
+                                System.out.println(System.currentTimeMillis() - cur);
                                 resetUserTierProblems(totalProblemAndAlgoList);
                                 System.out.println("ADD tier problem good");
                             } // 완료 처리

@@ -78,7 +78,6 @@ public class GroupServiceImpl implements GroupService{
         if (groupId == 0) { // 새로운 그룹이라면
             groupId = groupRepository.selectGroupByName(group.getGroupName()).getId();
         }
-        System.out.println(groupId);
         return userGroupRepository.insertUserGroup(userId, groupId);
     }
 
