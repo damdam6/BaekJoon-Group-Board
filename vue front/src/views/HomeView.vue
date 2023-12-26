@@ -1,11 +1,10 @@
 <script setup></script>
 
 <template>
-  <main></main>
+  <main class="w-screen h-screen bg-black"></main>
 </template>
 
 <script setup>
-import { mainApiStore } from "../stores/main-api";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 

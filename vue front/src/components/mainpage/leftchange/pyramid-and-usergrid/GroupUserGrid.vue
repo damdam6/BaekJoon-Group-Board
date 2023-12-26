@@ -14,8 +14,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import UserTile from '@/components/items/UserTile.vue';
-import MiniProfile from '@/components/items/MiniProfile.vue';
+import UserTile from '@/components/mainpage/leftchange/pyramid-and-usergrid/usergrid/UserTile.vue';
+import MiniProfile from '@/components/mainpage/leftchange/pyramid-and-usergrid/usergrid/MiniProfile.vue';
 
 // Pinia 스토어를 사용하는 경우 (예시)
 import { mainApiStore } from '@/stores/main-api';

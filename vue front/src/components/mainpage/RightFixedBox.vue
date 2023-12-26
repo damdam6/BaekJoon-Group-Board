@@ -15,8 +15,8 @@
   
 
 <script>
-import GroupRating from '@/components/items/GroupRating.vue';
-import RecoPro from './right_fixed/RecoPro.vue';
+import GroupRating from '@/components/mainpage/rightfixed/GroupRating.vue';
+import RecoPro from '@/components/mainpage/rightfixed/RecoPro.vue';
 export default {
     setup() {
     },

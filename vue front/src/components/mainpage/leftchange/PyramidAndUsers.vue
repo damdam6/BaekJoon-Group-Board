@@ -14,9 +14,10 @@
     </div>
 </template>
 <script>
-import GroupUserGrid from './GroupUserGrid.vue';
-import GroupPyramid from './GroupPyramid.vue';
+import GroupUserGrid from '@/components/mainpage/leftchange/pyramid-and-usergrid/GroupUserGrid.vue';
+import GroupPyramid from '@/components/mainpage/leftchange/pyramid-and-usergrid/GroupPyramid.vue';
 export default {
     components: { GroupUserGrid, GroupPyramid }
 }
 </script>
+

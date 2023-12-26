@@ -6,9 +6,9 @@
                     <img class="object-cover"
                         :src="`https://static.solved.ac/tier_small/${proData.level}.svg` || 'https://static.solved.ac/misc/360x360/default_profile.png'">
                 </div>
-                <h2 class="mt-2 mb-2 ml-5 font-bold">{{ proData.titleKo }}</h2>
+                <h2 class="mt-2 mb-2 ml-5 mr-3 font-bold">{{ proData.titleKo }}</h2>
             </div>
-            <div class="m-4 w-60">
+            <div class="flex m-4 justify-stretch w-50 ">
                 <div class="w-50">
                     <AlgorithmTag v-for="(algorithm, index) in proData.algorithm" :key="index"
                         :class="shuffledColorPairs[index % shuffledColorPairs.length].join(' ')" :algorithm="algorithm" />
@@ -20,7 +20,7 @@
 
 
 <script>
-import AlgorithmTag from '@/components/items/pro_card/AlgorithmTag.vue';
+import AlgorithmTag from '@/components/items/problem-card/AlgorithmTag.vue';
 
 export default {
     components: { AlgorithmTag },

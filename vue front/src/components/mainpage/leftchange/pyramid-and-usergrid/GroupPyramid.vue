@@ -1,17 +1,10 @@
 <template>
   <div class="flex flex-col items-center mt-8">
-    <div
-      v-for="level in 14"
-      :key="level"
-      class="flex justify-center mb-2 space-x-2"
-    >
+    <div v-for="level in 14" :key="level" class="flex justify-center mb-2 space-x-2">
       <div v-for="box in level" :key="level + '-' + box">
         <a :href="getBoxLink(level, box)" target="_blank">
-          <div
-            :class="['border-2', getBoxClass(level, box), getBoxSize(level)]"
-            @mouseover="handleMouseOver(level, box)"
-            @mouseleave="handleMouseLeave"
-          ></div>
+          <div :class="['border-2', getBoxClass(level, box), getBoxSize(level)]" @mouseover="handleMouseOver(level, box)"
+            @mouseleave="handleMouseLeave"></div>
         </a>
       </div>
     </div>
@@ -39,8 +32,6 @@ const handleMouseLeave = () => {
     changeboxStoreInst.overProblemNum.value = 0;
   }
 };
-
-const boxId = (level, box) => `${level}-${box}`;
 
 const getBoxClass = (level, box) => {
   let idx = (level * (level - 1)) / 2 + box - 1;

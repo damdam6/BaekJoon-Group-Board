@@ -9,7 +9,7 @@
 
 <script>
 import { computed } from 'vue';
-import ProblemCard from '@/components/items/pro_card/ProblemCard.vue';
+import ProblemCard from '@/components/items/problem-card/ProblemCard.vue';
 import { fixedBoxStore } from '@/stores/fixedbox-db';
 
 export default {

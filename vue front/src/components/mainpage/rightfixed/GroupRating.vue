@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import RatingProfile from '@/components/items/RatingProfile.vue';
+import RatingProfile from '@/components/mainpage/rightfixed/ratingprofile/RatingProfile.vue';
 import { fixedBoxStore } from '@/stores/fixedbox-db';
 
 export default {

@@ -11,10 +11,10 @@
    </nav>
 </template>
 <script>
-import GroupName from '@/components/items/groupName.vue';
+import GroupName from '@/components/mainpage/header/items/GroupName.vue';
 
-import LogoTitle from '@/components/items/logoTitle.vue';
-import LoginUserInfo from './LoginUserInfo.vue';
+import LogoTitle from '@/components/mainpage/header/items/LogoTitle.vue';
+import LoginUserInfo from '@/components/mainpage/header/items/LoginUserInfo.vue';
 
 
 
