@@ -5,6 +5,7 @@ import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.enums.SACApiEnum;
 import com.ssafypjt.bboard.model.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.time.Duration;
 import java.util.*;
 
 @Component
+@Slf4j
 public class UserAddReloadDomain {
 
     private final ProblemRepository problemRepository;
@@ -60,15 +62,14 @@ public class UserAddReloadDomain {
             );
 
             mono.subscribe(
-                    user -> {
-                        System.out.println(map.get("user"));
-                    }, Throwable::printStackTrace,
+                    null,
+                    e -> log.error("error message : {}", e.getMessage()),
                     () -> {
                         User user = map.get("user");
                         if (user != null) {
                             insertUser(user);
                             User newUser = userRepository.selectUserByName(userName);
-                            System.out.println("ADD USER good");
+                            log.info("{} user added : ", user);
                             processProblem(newUser);
                             processUserTier(newUser);
                         }
@@ -94,7 +95,7 @@ public class UserAddReloadDomain {
 
             mono.subscribe(
                     null, // onNext 처리는 필요 없음
-                    Throwable::printStackTrace, // 에러 처리
+                    e -> log.error("error message : {}", e.getMessage()),
                     () -> {
                         resetProblems(list);
                     } // 완료 처리
@@ -103,12 +104,11 @@ public class UserAddReloadDomain {
 
         private void resetProblems(List<ProblemAndAlgoObjectDomain> list) {
             Collections.sort(list);
-            System.out.println(list.size());
-            System.out.println(list);
             problemAlgorithmRepository.insertAlgorithms(list);
             problemRepository.insertProblems(list);
 
-            System.out.println("ADD problem good");
+            log.info("problems added : {}", list.size());
+            log.info("add problems are {}", list.size());
         }
 
         private void processUserTier(User user) {
@@ -129,11 +129,12 @@ public class UserAddReloadDomain {
             mono.subscribe(
                     data -> {
                         totalMap.get(data.getUserId()).add(data);
-                    }, Throwable::printStackTrace,
+                    },
+                    e -> log.error("error message : {}", e.getMessage()),
                     () -> {
                         userTierDomain.makeUserTierObject(totalMap.get(user.getUserId()));
                         resetUserTier(totalMap.get(user.getUserId()));
-                        System.out.println("ADD tier good");
+                        log.info("{} user tier changed : {}", user, totalMap.get(user.getUserId()));
                         processUserTierProblem(user, totalMap);
                     }
             );
@@ -169,12 +170,12 @@ public class UserAddReloadDomain {
                     )
                     .subscribe(
                             null, // onNext 처리는 필요 없음
-                            Throwable::printStackTrace, // 에러 처리
+                            e -> log.error("error message : {}", e.getMessage()),
                             () -> {
                                 List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
-                                System.out.println(System.currentTimeMillis() - cur);
                                 resetUserTierProblems(totalProblemAndAlgoList);
-                                System.out.println("ADD tier problem good");
+                                log.info("{} user tier problem added : {}", user, totalProblemAndAlgoList.size());
+                                log.info("{} user reload time : {}s", user, System.currentTimeMillis() - cur);
                             } // 완료 처리
                     );
 

@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework:spring-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-web' // 로깅 포함
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
 	implementation 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

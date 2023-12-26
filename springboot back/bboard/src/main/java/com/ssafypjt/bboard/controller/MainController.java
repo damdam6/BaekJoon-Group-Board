@@ -12,6 +12,7 @@ import com.ssafypjt.bboard.model.service.UserService;
 import com.ssafypjt.bboard.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/main")
+@Slf4j
 public class MainController {
 
     private final UserService userService;
@@ -73,6 +75,8 @@ public class MainController {
 
         return new ResponseEntity<ObjectNode>(responseJson, HttpStatus.OK);
     }
+
+
 
 
 

@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafypjt.bboard.model.dto.Problem;
 import com.ssafypjt.bboard.model.dto.ProblemAlgorithm;
 import com.ssafypjt.bboard.model.dto.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@Slf4j
 public class ProblemDomain {
 
     private ObjectMapper mapper;
@@ -56,7 +58,7 @@ public class ProblemDomain {
             problem = mapper.treeToValue(nodeItem, Problem.class);
             problem.setUserId(user.getUserId());
         } catch (Exception e ) {
-            e.printStackTrace();
+            log.error("error message : {}", e.getMessage());
         }
         return problem;
     }

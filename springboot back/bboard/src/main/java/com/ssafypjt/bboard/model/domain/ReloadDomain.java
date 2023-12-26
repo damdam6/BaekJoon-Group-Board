@@ -8,6 +8,7 @@ import com.ssafypjt.bboard.model.dto.User;
 import com.ssafypjt.bboard.model.dto.UserTier;
 import com.ssafypjt.bboard.model.enums.SACApiEnum;
 import com.ssafypjt.bboard.model.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,6 +20,7 @@ import java.time.Duration;
 import java.util.*;
 
 @Component
+@Slf4j
 public class ReloadDomain {
 
     private final ProblemRepository problemRepository;
@@ -76,9 +78,10 @@ public class ReloadDomain {
                     ).then()
                     .subscribe(
                             null, // onNext 처리는 필요 없음
-                            Throwable::printStackTrace, // 에러 처리
+                            e -> log.error("error message : {}", e.getMessage()),
                             () -> {
                                 resetProblems(proAndAlgoList);
+                                log.info("updated problem : {}", proAndAlgoList.size());
                             } // 완료 처리
                     );
         }
@@ -93,7 +96,6 @@ public class ReloadDomain {
         Collections.sort(list);
         problemAlgorithmRepository.insertAlgorithms(list);
         problemRepository.insertProblems(list);
-        System.out.println("problem good");
     }
 
 
@@ -117,8 +119,8 @@ public class ReloadDomain {
                     )
                     .subscribe(
                             null, // onNext 처리는 필요 없음
-                            Throwable::printStackTrace, // 에러 처리// 완료 처리
-                            () -> System.out.println("user good")
+                            e -> log.error("error message : {}", e.getMessage()),
+                            () -> log.info("updated user : {}", users.size())
                     );
         }
     }
@@ -149,14 +151,14 @@ public class ReloadDomain {
                             data -> {
                                 totalMap.get(data.getUserId()).add(data);
                             },
-                            Throwable::printStackTrace, // 에러 처리
+                            e -> log.error("error message : {}", e.getMessage()),
                             () -> {
                                 for (Integer userId : totalMap.keySet()) {
                                     List<UserTier> userTierList = totalMap.get(userId);
                                     userTierDomain.makeUserTierObject(userTierList);
                                 }
                                 resetUserTier(totalMap);
-                                System.out.println("tier good");
+                                log.info("tier updated user : {}", users.size());
                                 processUserTierProblem(users, totalMap);
                             } // 완료 처리
                     );
@@ -195,12 +197,12 @@ public class ReloadDomain {
                 )
                 .subscribe(
                         null, // onNext 처리는 필요 없음
-                        Throwable::printStackTrace, // 에러 처리
+                        e -> log.error("error message : {}", e.getMessage()),
                         () -> {
                             List<ProblemAndAlgoObjectDomain> totalProblemAndAlgoList = userTierProblemDomain.makeTotalProblemAndAlgoList(memoMap, totalMap);
-                            System.out.println(System.currentTimeMillis() - cur);
                             resetUserTierProblems(totalProblemAndAlgoList);
-                            System.out.println("tier problem good");
+                            log.info("updated user-tier-problem : {}", totalProblemAndAlgoList.size());
+                            log.info("reset time : {} ms", System.currentTimeMillis() - cur);
                         } // 완료 처리
                 );
     }
