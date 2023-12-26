@@ -29,7 +29,6 @@ public class UserTierDomain {
             if (problemPrefixSum[i+1] == 0) continue;
             now.setPageNo(problemPrefixSum[i+1] / NUMBER_OF_PAGES + 1);
             now.setPageIdx(problemPrefixSum[i+1] % NUMBER_OF_PAGES == 0 ? 0 : problemPrefixSum[i+1] % NUMBER_OF_PAGES);
-
         }
         return userTierList;
     }
