@@ -12,7 +12,6 @@ public class User {
     private int userId;
     @JsonProperty("handle")
     private String userName;
-    @JsonProperty("tier")
     private int tier;
     @JsonProperty("rank")
     private int solvedRank;

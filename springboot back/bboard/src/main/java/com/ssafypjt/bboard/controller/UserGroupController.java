@@ -167,11 +167,6 @@ public class UserGroupController {
     public ResponseEntity<Boolean> adminLogin(@RequestBody Map<String, Object> requestMap){
         Group group = groupService.getGroup(mapper.convertValue(requestMap.get("group"), Integer.class));
         String inputPassword = mapper.convertValue(requestMap.get("password"), String.class);
-
-        System.out.println(group);
-        System.out.println(inputPassword);
-
-
         if (groupService.adminValid(group.getId(), inputPassword)){
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
         }
